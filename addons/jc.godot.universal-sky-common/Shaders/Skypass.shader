@@ -70,7 +70,6 @@ const float kMIE_ZENITH_LENGTH = 1.25e3;
 uniform float _clouds_coverage;
 uniform float _clouds_thickness;
 uniform float _clouds_absorption;
-uniform int _clouds_step;
 uniform float _clouds_noise_freq;
 uniform float _clouds_sky_tint_fade;
 uniform float _clouds_intensity;
@@ -78,6 +77,7 @@ uniform float _clouds_size;
 uniform float _clouds_offset_speed;
 uniform vec3 _clouds_offset;
 uniform sampler2D _clouds_texture;
+const int kCLOUDS_STEP = 6;
 
 // Common.
 // Math Constants.
@@ -245,13 +245,13 @@ vec4 renderClouds(vec3 pos, float tm){
 	pos.xy = pos.xz / pos.y;
 	vec3 wind = _clouds_offset * (tm * _clouds_offset_speed);
 	
-	float marchStep = float(_clouds_step) * _clouds_thickness;
+	float marchStep = float(kCLOUDS_STEP) * _clouds_thickness;
 	vec3 dirStep = pos * marchStep;
 	pos *= _clouds_size;
 	
 	float t = _clouds_intensity; float a = 0.0;
-	for(int i = 0; i < _clouds_step; i++){
-		float h = float(i) / float(_clouds_step);
+	for(int i = 0; i < kCLOUDS_STEP; i++){
+		float h = float(i) / float(kCLOUDS_STEP);
 		float density = cloudsDensity(pos, wind, h);
 		float sh = saturate(exp(-_clouds_absorption * density * marchStep));
 		t *= sh;

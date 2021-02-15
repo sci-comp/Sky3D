@@ -510,25 +510,20 @@ func set_fog_render_priority(value: int) -> void:
 	_fogpass_material.render_priority = value
 
 # Clouds.
-var clouds_thickness: float = 0.024 setget set_clouds_thickness
+var clouds_thickness: float = 0.1 setget set_clouds_thickness
 func set_clouds_thickness(value: float) -> void:
 	clouds_thickness = value
 	_skypass_material.set_shader_param("_clouds_thickness", value)
 
-var clouds_coverage: float = 0.65 setget set_clouds_coverage
+var clouds_coverage: float = 0.7 setget set_clouds_coverage
 func set_clouds_coverage(value: float) -> void:
 	clouds_coverage = value 
 	_skypass_material.set_shader_param("_clouds_coverage", value)
 
-var clouds_absorption: float = 11.0 setget set_clouds_absorption
+var clouds_absorption: float = 7.0 setget set_clouds_absorption
 func set_clouds_absorption(value: float) -> void:
 	clouds_absorption = value 
 	_skypass_material.set_shader_param("_clouds_absorption", value)
-
-var clouds_step: int = 10 setget set_clouds_step
-func set_clouds_step(value: int) -> void:
-	clouds_step = value
-	_skypass_material.set_shader_param("_clouds_step", value)
 
 var clouds_noise_frequency: float = 3.0 setget set_clouds_noise_frequency
 func set_clouds_noise_frequency(value: float) -> void:
@@ -550,7 +545,7 @@ func set_clouds_size(value: float) -> void:
 	clouds_size = value
 	_skypass_material.set_shader_param("_clouds_size", value)
 
-var clouds_offset:= Vector3(1.0, 0.0, 0.0) setget set_clouds_offset
+var clouds_offset:= Vector3(1.0, 0.0, 1.0) setget set_clouds_offset
 func set_clouds_offset(value: Vector3) -> void:
 	clouds_offset = value
 	_skypass_material.set_shader_param("_clouds_offset", value)
@@ -679,7 +674,6 @@ func _init_properties() -> void:
 	set_clouds_thickness(clouds_thickness)
 	set_clouds_coverage(clouds_coverage)
 	set_clouds_absorption(clouds_absorption)
-	set_clouds_step(clouds_step)
 	set_clouds_noise_frequency(clouds_noise_frequency)
 	set_clouds_sky_tint_fade(clouds_sky_tint_fade)
 	set_clouds_intensity(clouds_intensity)
@@ -992,7 +986,6 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "clouds_thickness", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 0.1"})
 	ret.push_back({name = "clouds_coverage", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_absorption", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
-	ret.push_back({name = "clouds_step", type=TYPE_INT})
 	ret.push_back({name = "clouds_noise_frequency", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
 	ret.push_back({name = "clouds_sky_tint_fade", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_intensity", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
