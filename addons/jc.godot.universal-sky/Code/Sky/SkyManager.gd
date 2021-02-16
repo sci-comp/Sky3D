@@ -492,7 +492,7 @@ func set_fog_rayleigh_depth(value: float) -> void:
 	fog_rayleigh_depth = value
 	_fogpass_material.set_shader_param("_rayleigh_depth", value)
 
-var fog_mie_depth: float = 0.00071 setget set_fog_mie_depth
+var fog_mie_depth: float = 0.007 setget set_fog_mie_depth
 func set_fog_mie_depth(value: float) -> void:
 	fog_mie_depth = value
 	_fogpass_material.set_shader_param("_mie_depth", value)
@@ -510,32 +510,32 @@ func set_fog_render_priority(value: int) -> void:
 	_fogpass_material.render_priority = value
 
 # Clouds.
-var clouds_thickness: float = 0.1 setget set_clouds_thickness
+var clouds_thickness: float = 0.033 setget set_clouds_thickness
 func set_clouds_thickness(value: float) -> void:
 	clouds_thickness = value
 	_skypass_material.set_shader_param("_clouds_thickness", value)
 
-var clouds_coverage: float = 0.7 setget set_clouds_coverage
+var clouds_coverage: float = 0.6 setget set_clouds_coverage
 func set_clouds_coverage(value: float) -> void:
 	clouds_coverage = value 
 	_skypass_material.set_shader_param("_clouds_coverage", value)
 
-var clouds_absorption: float = 7.0 setget set_clouds_absorption
+var clouds_absorption: float = 20.0 setget set_clouds_absorption
 func set_clouds_absorption(value: float) -> void:
 	clouds_absorption = value 
 	_skypass_material.set_shader_param("_clouds_absorption", value)
 
-var clouds_noise_frequency: float = 3.0 setget set_clouds_noise_frequency
+var clouds_noise_frequency: float = 2.7 setget set_clouds_noise_frequency
 func set_clouds_noise_frequency(value: float) -> void:
 	clouds_noise_frequency = value
 	_skypass_material.set_shader_param("_clouds_noise_freq", value)
 
-var clouds_sky_tint_fade: float = 1.0 setget set_clouds_sky_tint_fade
+var clouds_sky_tint_fade: float = 0.2 setget set_clouds_sky_tint_fade
 func set_clouds_sky_tint_fade(value: float) -> void:
 	clouds_sky_tint_fade = value 
 	_skypass_material.set_shader_param("_clouds_sky_tint_fade", value)
 
-var clouds_intensity: float = 7.0 setget set_clouds_intensity
+var clouds_intensity: float = 30.0 setget set_clouds_intensity
 func set_clouds_intensity(value: float) -> void:
 	clouds_intensity = value
 	_skypass_material.set_shader_param("_clouds_intensity", value)
