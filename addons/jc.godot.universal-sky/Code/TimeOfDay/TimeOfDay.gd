@@ -20,8 +20,8 @@ var sky_node_path: NodePath setget set_sky_node_path
 func set_sky_node_path(value: NodePath) -> void:
 	sky_node_path = value
 	if value != null:
-		sky_node = get_node_or_null(value)
-	
+		sky_node = get_node_or_null(value) as SkyManager
+		
 	sky_node_found = true if sky_node != null else false
 
 # DateTime.
@@ -31,6 +31,7 @@ var total_cycle_in_minutes: float = 15.0
 var total_hours: float = 7.0 setget set_total_hours
 func set_total_hours(value: float) -> void:
 	total_hours = value
+	emit_signal("total_hours_changed", value)
 	if Engine.editor_hint:
 		_set_celestials_coords()
 
@@ -62,6 +63,11 @@ var _time_cycle_duration: float
 var _is_beging_of_time: bool
 var _is_end_of_time: bool
 var _total_hours_utc: float
+
+signal total_hours_changed(value)
+signal day_changed(value)
+signal month_changed(value)
+signal year_changed(value)
 #-------------------------------------------------------------------------------
 
 #---------------------
@@ -147,7 +153,7 @@ func _process(delta: float) -> void:
 		_celestials_update_timer = 0.0
 
 func set_time(hour: int, minute: int, second: int) -> void:
-	total_hours = DateTimeUtil.hours_to_total_hours(hour, minute, second)
+	set_total_hours(DateTimeUtil.hours_to_total_hours(hour, minute, second))
 
 func _set_is_leap_year() -> void:
 	_is_leap_year = DateTimeUtil.get_leap_year(year)
@@ -192,21 +198,30 @@ func _repeat_full_cycle() -> void:
 func _check_cycle() -> void:
 	# Check time cycle.
 	if total_hours > 23.9999:
-		day += 1; total_hours = 0.0
+		day += 1 
+		total_hours = 0.0
+		emit_signal("day_changed", day)
 	if total_hours < 0.0000:
-		day -= 1; total_hours = 23.9999
+		day -= 1 
+		total_hours = 23.9999
+		emit_signal("day_changed", day)
 	
 	# Check days and add month.
 	if day > _max_days_per_month: 
-		month += 1; day = 1
+		month += 1; 
+		day = 1
+		emit_signal("month_changed", month)
 	if day < 1: 
 		month -= 1; day = 31
+		emit_signal("month_changed", month)
 	
 	# Check months and add years.
 	if month > 12: 
 		year += 1; month = 1
+		emit_signal("year_changed", year)
 	if month < 1: 
 		year -= 1; month = 12
+		emit_signal("year_changed", year)
 
 func _set_celestials_coords():
 	if sky_node_found:
