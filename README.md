@@ -19,6 +19,7 @@ Dynamic sky and TOD plugin for godot engine.
 ------------------------------------
 
 ## Feedback is welcome.
+------------------------------------
 
 ## Install:
 - Clone or download the repository. 
