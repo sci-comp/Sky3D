@@ -298,7 +298,7 @@ var _deep_space_basis := Basis()
 
 var deep_space_follow_sun: bool = true setget set_deep_space_follow_sun
 func set_deep_space_follow_sun(value:bool) -> void:
-	deep_space_follow_sun = true
+	deep_space_follow_sun = value
 	_set_sun_coords(sun_azimuth, sun_altitude)
 
 var deep_space_euler:= Vector3(-95.0, 10.0, 0.0) setget set_deep_space_euler
