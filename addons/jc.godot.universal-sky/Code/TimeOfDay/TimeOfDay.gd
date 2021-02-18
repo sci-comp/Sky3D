@@ -1,4 +1,5 @@
-class_name TimeOfDay tool """XD""" extends Node 
+tool 
+class_name TimeOfDay extends Node 
 """========================================================
 °                       Universal Sky.
 °                   ======================

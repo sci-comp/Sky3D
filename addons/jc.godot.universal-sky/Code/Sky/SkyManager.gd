@@ -1,4 +1,5 @@
-class_name SkyManager tool extends Node
+tool
+class_name SkyManager extends Node
 """========================================================
 °                       Universal Sky.
 °                   ======================

@@ -119,7 +119,7 @@ void _opticalDepth(float y, out float sr, out float sm){
 	sm = zenith * kMIE_ZENITH_LENGTH ;
 }
 
-vec3 atmosphericScattering(float sr, float sm, vec2 mu, vec4 mult, float depth){
+vec3 atmosphericScattering(float sr, float sm, vec2 mu, vec3 mult, float depth){
 	vec3 betaMie = _atm_beta_mie;
 	vec3 betaRay = _atm_beta_ray;
 	
@@ -128,7 +128,7 @@ vec3 atmosphericScattering(float sr, float sm, vec2 mu, vec4 mult, float depth){
 	
 	float rayleighPhase = rayleighPhase(mu.x);
 	vec3 BRT = betaRay * rayleighPhase * saturate(depth * _rayleigh_depth);
-	vec3 BMT = betaMie * miePhase(mu.x, _atm_sun_partial_mie_phase) * saturate(depth * _mie_depth) * mult.w;
+	vec3 BMT = betaMie * miePhase(mu.x, _atm_sun_partial_mie_phase) * saturate(depth * _mie_depth);
 	BMT *= _atm_sun_mie_intensity * _atm_sun_mie_tint.rgb;
 	
 	vec3 BRMT = (BRT + BMT) / (betaRay + betaMie);
@@ -138,7 +138,7 @@ vec3 atmosphericScattering(float sr, float sm, vec2 mu, vec4 mult, float depth){
 	vec3 lcol = mix(_atm_day_tint.rgb, _atm_horizon_light_tint.rgb, mult.x);
 	vec3 nscatter = (1.0 - extcFactor) * _atm_night_tint.rgb;
 	nscatter += miePhase(mu.y, _atm_moon_partial_mie_phase) * 
-		_atm_moon_mie_tint.rgb * _atm_moon_mie_intensity * 0.001 * mult.w;
+		_atm_moon_mie_tint.rgb * _atm_moon_mie_intensity * 0.001;
 	return (scatter * lcol) + nscatter;
 }
 
@@ -170,7 +170,7 @@ void fragment(){
 	
 	vec2 mu = vec2(dot(_sun_direction, ray), dot(_moon_direction, ray));
 	float sr; float sm; opticalDepth(ray.y + _atm_params.z, sr, sm);
-	vec3 scatter = atmosphericScattering(sr, sm, mu.xy, vec4(angle_mult.xyz, saturate(ray.y * 100.0)), linearDepth);
+	vec3 scatter = atmosphericScattering(sr, sm, mu.xy, angle_mult.xyz, linearDepth);
 	
 	vec3 tint = scatter;
 	vec4 fogColor = vec4(tint.rgb, 1.0) * fogFactor;
