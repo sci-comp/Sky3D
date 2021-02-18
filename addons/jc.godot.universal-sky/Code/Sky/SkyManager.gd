@@ -511,7 +511,7 @@ func set_fog_render_priority(value: int) -> void:
 	_fogpass_material.render_priority = value
 
 # Clouds.
-var clouds_thickness: float = 0.033 setget set_clouds_thickness
+var clouds_thickness: float = 0.02 setget set_clouds_thickness
 func set_clouds_thickness(value: float) -> void:
 	clouds_thickness = value
 	_skypass_material.set_shader_param("_clouds_thickness", value)
@@ -984,7 +984,7 @@ func _get_property_list() -> Array:
 	
 	# Clouds.
 	ret.push_back({name = "Clouds", type=TYPE_NIL,usage=PROPERTY_USAGE_GROUP, hint_string = "clouds_"})
-	ret.push_back({name = "clouds_thickness", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 0.1"})
+	ret.push_back({name = "clouds_thickness", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 0.03"})
 	ret.push_back({name = "clouds_coverage", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_absorption", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
 	ret.push_back({name = "clouds_noise_frequency", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})

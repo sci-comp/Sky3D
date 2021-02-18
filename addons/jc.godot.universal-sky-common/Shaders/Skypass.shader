@@ -77,7 +77,7 @@ uniform float _clouds_size;
 uniform float _clouds_offset_speed;
 uniform vec3 _clouds_offset;
 uniform sampler2D _clouds_texture;
-const int kCLOUDS_STEP = 6;
+const int kCLOUDS_STEP = 10;
 
 // Common.
 // Math Constants.
@@ -249,17 +249,17 @@ vec4 renderClouds(vec3 pos, float tm){
 	vec3 dirStep = pos * marchStep;
 	pos *= _clouds_size;
 	
-	float t = _clouds_intensity; float a = 0.0;
+	float t = 1.0; float a = 0.0;
 	for(int i = 0; i < kCLOUDS_STEP; i++){
 		float h = float(i) / float(kCLOUDS_STEP);
 		float density = cloudsDensity(pos, wind, h);
-		float sh = saturate(exp(-_clouds_absorption * density * marchStep));
+		float sh = saturate(exp2(-_clouds_absorption * density * marchStep));
 		t *= sh;
 		ret += (t * (exp(h) * 0.571428571) * density * marchStep);
 		a += (1.0 - sh);
 		pos += dirStep;
 	}
-	return vec4(ret.rgb, a);
+	return vec4(ret.rgb * _clouds_intensity, a);
 }
 //------------------------------------------------------------------------------
 
@@ -329,8 +329,8 @@ void fragment(){
 	clouds.rgb *= mix(mix(vec3(1.0), _atm_horizon_light_tint.rgb, angle_mult.x), 
 		_atm_night_tint.rgb, angle_mult.w);
 	clouds.a = mix(0.0, clouds.a, horizonBlend);
+	//clouds.rgb *= miePhase(mu.x, _atm_sun_partial_mie_phase) * _atm_sun_mie_intensity * _atm_sun_mie_tint.rgb;
 	col.rgb = mix(col.rgb, clouds.rgb + mix(vec3(0.0), scatter, _clouds_sky_tint_fade), clouds.a);
-	
 	
 	col.rgb = mix(col.rgb, _ground_color.rgb * scatter, saturate((-ray.y - _atm_params.z)*100.0));
 	col.rgb = tonemapPhoto(col.rgb, _color_correction_params.z, _color_correction_params.y);
