@@ -531,7 +531,7 @@ func set_clouds_noise_frequency(value: float) -> void:
 	clouds_noise_frequency = value
 	_skypass_material.set_shader_param("_clouds_noise_freq", value)
 
-var clouds_sky_tint_fade: float = 0.2 setget set_clouds_sky_tint_fade
+var clouds_sky_tint_fade: float = 0.5 setget set_clouds_sky_tint_fade
 func set_clouds_sky_tint_fade(value: float) -> void:
 	clouds_sky_tint_fade = value 
 	_skypass_material.set_shader_param("_clouds_sky_tint_fade", value)
@@ -546,12 +546,12 @@ func set_clouds_size(value: float) -> void:
 	clouds_size = value
 	_skypass_material.set_shader_param("_clouds_size", value)
 
-var clouds_offset:= Vector3(1.0, 0.0, 1.0) setget set_clouds_offset
+var clouds_offset:= Vector3(0.5, -0.3, 1.0) setget set_clouds_offset
 func set_clouds_offset(value: Vector3) -> void:
 	clouds_offset = value
 	_skypass_material.set_shader_param("_clouds_offset", value)
 
-var clouds_offset_speed: float = 0.01 setget set_clouds_offset_speed
+var clouds_offset_speed: float = 0.005 setget set_clouds_offset_speed
 func set_clouds_offset_speed(value: float) -> void:
 	clouds_offset_speed = value 
 	_skypass_material.set_shader_param("_clouds_offset_speed", value)
@@ -891,8 +891,6 @@ func _update_enviro() -> void:
 	var colA: Color = lerp(atm_day_tint * 0.5, atm_horizon_light_tint, ax)
 	var colB: Color = lerp(colA, atm_night_tint * n_intensity, aw)
 	enviro.ambient_light_color = colB
-	
-	pass
 
 
 func _get_property_list() -> Array:
