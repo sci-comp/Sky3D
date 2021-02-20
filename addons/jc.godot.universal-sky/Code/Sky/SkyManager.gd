@@ -511,17 +511,17 @@ func set_fog_render_priority(value: int) -> void:
 	_fogpass_material.render_priority = value
 
 # Clouds.
-var clouds_thickness: float = 0.02 setget set_clouds_thickness
+var clouds_thickness: float = 0.009 setget set_clouds_thickness
 func set_clouds_thickness(value: float) -> void:
 	clouds_thickness = value
 	_skypass_material.set_shader_param("_clouds_thickness", value)
 
-var clouds_coverage: float = 0.6 setget set_clouds_coverage
+var clouds_coverage: float = 0.7 setget set_clouds_coverage
 func set_clouds_coverage(value: float) -> void:
 	clouds_coverage = value 
 	_skypass_material.set_shader_param("_clouds_coverage", value)
 
-var clouds_absorption: float = 20.0 setget set_clouds_absorption
+var clouds_absorption: float = 60.0 setget set_clouds_absorption
 func set_clouds_absorption(value: float) -> void:
 	clouds_absorption = value 
 	_skypass_material.set_shader_param("_clouds_absorption", value)
@@ -541,12 +541,12 @@ func set_clouds_intensity(value: float) -> void:
 	clouds_intensity = value
 	_skypass_material.set_shader_param("_clouds_intensity", value)
 
-var clouds_size: float = 15.0 setget set_clouds_size
+var clouds_size: float = 4.61 setget set_clouds_size
 func set_clouds_size(value: float) -> void:
 	clouds_size = value
 	_skypass_material.set_shader_param("_clouds_size", value)
 
-var clouds_offset:= Vector3(0.5, -0.3, 1.0) setget set_clouds_offset
+var clouds_offset:= Vector3(-0.6, -0.3, -0.075) setget set_clouds_offset
 func set_clouds_offset(value: Vector3) -> void:
 	clouds_offset = value
 	_skypass_material.set_shader_param("_clouds_offset", value)
