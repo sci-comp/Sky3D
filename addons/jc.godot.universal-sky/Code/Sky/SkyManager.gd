@@ -758,7 +758,7 @@ func _set_sun_coords(azimuth: float, altitude: float) -> void:
 		_sun_transform.origin = SkyMath.to_orbit(altitude, azimuth)
 		_finish_set_sun_position = true
 	if _finish_set_sun_position:
-		_sun_transform = _sun_transform.looking_at(_sky_node.transform.origin, Vector3(0.0, 1.0, 0.0))
+		_sun_transform = _sun_transform.looking_at(_sky_node.transform.origin, Vector3(-1.0, 0.0, 0.0))
 		
 	emit_signal("sun_transform_changed", _sun_transform)
 	

@@ -234,22 +234,20 @@ func _check_cycle() -> void:
 
 func _set_celestials_coords():
 	if sky_node_found:
-		
 		match celestial_calculations:
 			CelestialCalculationsMode.Realistic:
 				_compute_sun_coordinates()
 				sky_node.sun_altitude = _sun_coords.y * SkyMath.RAD_2_DEG
 				sky_node.sun_azimuth = _sun_coords.x * SkyMath.RAD_2_DEG
-		
 				if compute_moon_coords:
 					_compute_moon_coordinates()
 					sky_node.moon_altitude = _moon_coords.y * SkyMath.RAD_2_DEG
 					sky_node.moon_azimuth = _moon_coords.x * SkyMath.RAD_2_DEG
+			
 			CelestialCalculationsMode.Simple:
 				_compute_simple_sun_coordinates()
 				sky_node.sun_altitude = _sun_coords.y
 				sky_node.sun_azimuth = _sun_coords.x
-				
 				if compute_moon_coords:
 					_compute_simple_moon_coordinates()
 					sky_node.moon_altitude = _moon_coords.y
@@ -263,11 +261,11 @@ func _compute_simple_sun_coordinates() -> void:
 	var alt = t * (360/24);
 	_sun_coords.y = (180.0) -alt;
 	_sun_coords.x = latitude
+	print(deg2rad(24.0))
 
 func _compute_simple_moon_coordinates() -> void:
 	_moon_coords.y = 180.0 - _sun_coords.y
 	_moon_coords.x = 180.0 + _sun_coords.x
-
 
 # x = azimuth y = altitude.
 func _compute_sun_coordinates() -> void:
