@@ -988,7 +988,7 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "clouds_noise_frequency", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
 	ret.push_back({name = "clouds_sky_tint_fade", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_intensity", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
-	ret.push_back({name = "clouds_size", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 50.0"})
+	ret.push_back({name = "clouds_size", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 10.0"})
 	ret.push_back({name = "clouds_offset", type=TYPE_VECTOR3})
 	ret.push_back({name = "clouds_offset_speed", type=TYPE_REAL,  hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_enable_set_texture", type=TYPE_BOOL})
