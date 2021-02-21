@@ -278,7 +278,6 @@ func _compute_simple_sun_coordinates() -> void:
 	var alt = t * (360/24);
 	_sun_coords.y = (180.0) -alt;
 	_sun_coords.x = latitude
-	print(deg2rad(24.0))
 
 func _compute_simple_moon_coordinates() -> void:
 	_moon_coords.y = (180.0 - _sun_coords.y) + moon_coords_offset.y
