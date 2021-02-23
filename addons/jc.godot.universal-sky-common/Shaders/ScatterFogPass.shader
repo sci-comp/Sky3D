@@ -12,7 +12,10 @@
 °                   See: LICENSE Archive.
 ========================================================*/
 shader_type spatial;
-render_mode blend_mix, cull_disabled, depth_draw_always, unshaded;
+render_mode blend_mix, 
+cull_disabled,
+//depth_draw_always, 
+unshaded;
 
 uniform float _density;
 uniform vec3 _sun_direction;
