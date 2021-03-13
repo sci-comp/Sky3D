@@ -7,8 +7,7 @@ Dynamic sky and TOD plugin for godot engine.
 
 
 ## Status:
-> Changing design.
-> https://github.com/7leodev/UniversalSky/issues/5
+> Beta.
 ------------------------------------
 
 ## Reflections:
