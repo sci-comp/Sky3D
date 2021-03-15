@@ -42,6 +42,12 @@ preload("res://addons/jc.godot.universal-sky-common/Assets/MyAssets/Graphics/Tex
 var _DEFAULT_CLOUDS_TEXTURE =\
 preload("res://addons/jc.godot.universal-sky-common/Resources/SNoise.tres")
 
+var _CLOUDS_CUMULUS_SHADER =\
+preload("res://addons/jc.godot.universal-sky-common/Shaders/CloudsCumulus.shader")
+
+var _CLOUDS_CUMULUS_TEXTURE =\
+preload("res://addons/jc.godot.universal-sky-common/Assets/MyAssets/Graphics/Textures/noise2.png")
+
 # Scenes.
 var _MOON_RENDER =\
 preload("res://addons/jc.godot.universal-sky-common/Scenes/Moon/MoonRender.tscn")
@@ -51,16 +57,19 @@ preload("res://addons/jc.godot.universal-sky-common/Resources/SunMoonLightFade.t
 
 # Meshes.
 var _sky_mesh:= SphereMesh.new()
+var _clouds_mesh := SphereMesh.new()
 var _fog_mesh:= QuadMesh.new()
 
 # Materials.
 var _skypass_material:= ShaderMaterial.new()
 var _fogpass_material:= ShaderMaterial.new()
 var _moonpass_material:= ShaderMaterial.new()
+var _clouds_cumulus_material:= ShaderMaterial.new()
 
 # Instances.
 var _sky_node: MeshInstance = null
 var _fog_node: MeshInstance = null
+var _clouds_cumulus_node: MeshInstance = null
 var _moon_instance: Viewport
 var _moon_viewport_texture: ViewportTexture
 var _moon_instance_transform: Spatial
@@ -72,6 +81,7 @@ const _DEFAULT_ORIGIN:= Vector3(0.0000001, 0.0000001, 0.0000001)
 const _MAX_EXTRA_CULL_MARGIN:= 16384.0
 const _SKY_INSTANCE_NAME:= "SkyNode"
 const _FOG_INSTANCE_NAME:= "FogNode"
+const _CLOUDS_CUMULUS_INSTANCE_NAME:= "CloudsCumulus"
 const _MOON_INSTANCE_NAME:= "MoonRender"
 const _SUN_DIR_PARAM:= "_sun_direction"
 const _MOON_DIR_PARAM:= "_moon_direction"
@@ -130,6 +140,8 @@ func set_sky_layers(value: int) -> void:
 	if not _init_properties_ok: return
 	assert(_sky_node != null)
 	_sky_node.layers = value
+	assert(_clouds_cumulus_node != null)
+	_clouds_cumulus_node.layers = value
 
 var sky_render_priority: int = -128 setget set_sky_render_priority
 func set_sky_render_priority(value: int) -> void:
@@ -396,6 +408,7 @@ func set_atm_horizon_light_tint(value: Color) -> void:
 	var param = "_atm_horizon_light_tint"
 	_skypass_material.set_shader_param(param, value)
 	_fogpass_material.set_shader_param(param, value)
+	_clouds_cumulus_material.set_shader_param(param, value)
 
 var atm_moon_phases_mult: float
 
@@ -510,23 +523,23 @@ func set_fog_render_priority(value: int) -> void:
 	fog_render_priority = value 
 	_fogpass_material.render_priority = value
 
-# Clouds.
-var clouds_thickness: float = 3.3 setget set_clouds_thickness
+# Clouds Simple.
+var clouds_thickness: float = 2.5 setget set_clouds_thickness
 func set_clouds_thickness(value: float) -> void:
 	clouds_thickness = value
 	_skypass_material.set_shader_param("_clouds_thickness", value)
 
-var clouds_coverage: float = 0.512 setget set_clouds_coverage
+var clouds_coverage: float = 0.524 setget set_clouds_coverage
 func set_clouds_coverage(value: float) -> void:
 	clouds_coverage = value 
 	_skypass_material.set_shader_param("_clouds_coverage", value)
 
-var clouds_absorption: float = 7.3 setget set_clouds_absorption
+var clouds_absorption: float = 6.7 setget set_clouds_absorption
 func set_clouds_absorption(value: float) -> void:
 	clouds_absorption = value 
 	_skypass_material.set_shader_param("_clouds_absorption", value)
 
-var clouds_noise_frequency: float = 2.0 setget set_clouds_noise_frequency
+var clouds_noise_frequency: float = 0.525 setget set_clouds_noise_frequency
 func set_clouds_noise_frequency(value: float) -> void:
 	clouds_noise_frequency = value
 	_skypass_material.set_shader_param("_clouds_noise_freq", value)
@@ -536,12 +549,12 @@ func set_clouds_sky_tint_fade(value: float) -> void:
 	clouds_sky_tint_fade = value 
 	_skypass_material.set_shader_param("_clouds_sky_tint_fade", value)
 
-var clouds_intensity: float = 30.0 setget set_clouds_intensity
+var clouds_intensity: float = 20.0 setget set_clouds_intensity
 func set_clouds_intensity(value: float) -> void:
 	clouds_intensity = value
 	_skypass_material.set_shader_param("_clouds_intensity", value)
 
-var clouds_size: float = 0.075 setget set_clouds_size
+var clouds_size: float = 0.415 setget set_clouds_size
 func set_clouds_size(value: float) -> void:
 	clouds_size = value
 	_skypass_material.set_shader_param("_clouds_size", value)
@@ -570,6 +583,68 @@ func set_clouds_texture(value: Texture) -> void:
 	clouds_texture = value
 	_skypass_material.set_shader_param("_clouds_texture", value)
 
+# Clouds Cumulus.
+var clouds_cumulus_visible: bool = true setget set_clouds_cumulus_visible
+func set_clouds_cumulus_visible(value: bool) -> void:
+	clouds_cumulus_visible = value
+	if not _init_properties_ok: return
+	assert(_clouds_cumulus_node != null)
+	_clouds_cumulus_node.visible = value
+
+var clouds_cumulus_thickness: float = 0.043 setget set_clouds_cumulus_thickness
+func set_clouds_cumulus_thickness(value: float) -> void:
+	clouds_cumulus_thickness = value
+	_clouds_cumulus_material.set_shader_param("_clouds_thickness", value)
+
+var clouds_cumulus_coverage: float = 0.7 setget set_clouds_cumulus_coverage
+func set_clouds_cumulus_coverage(value: float) -> void:
+	clouds_cumulus_coverage = value 
+	_clouds_cumulus_material.set_shader_param("_clouds_coverage", value)
+
+var clouds_cumulus_absorption: float = 17.0 setget set_clouds_cumulus_absorption
+func set_clouds_cumulus_absorption(value: float) -> void:
+	clouds_cumulus_absorption = value 
+	_clouds_cumulus_material.set_shader_param("_clouds_absorption", value)
+
+var clouds_cumulus_noise_frequency: float = 2.7 setget set_clouds_cumulus_noise_frequency
+func set_clouds_cumulus_noise_frequency(value: float) -> void:
+	clouds_cumulus_noise_frequency = value
+	_clouds_cumulus_material.set_shader_param("_clouds_noise_freq", value)
+
+var clouds_cumulus_intensity: float = 50.0 setget set_clouds_cumulus_intensity
+func set_clouds_cumulus_intensity(value: float) -> void:
+	clouds_cumulus_intensity = value
+	_clouds_cumulus_material.set_shader_param("_clouds_intensity", value)
+
+var clouds_cumulus_size: float = 20.0 setget set_clouds_cumulus_size
+func set_clouds_cumulus_size(value: float) -> void:
+	clouds_cumulus_size = value
+	_clouds_cumulus_material.set_shader_param("_clouds_size", value)
+	
+var clouds_cumulus_offset:= Vector3(0.1, 0.254, -0.075) setget set_clouds_cumulus_offset
+func set_clouds_cumulus_offset(value: Vector3) -> void:
+	clouds_cumulus_offset = value
+	_clouds_cumulus_material.set_shader_param("_clouds_offset", value)
+
+var clouds_cumulus_offset_speed: float = 0.005 setget set_clouds_cumulus_offset_speed
+func set_clouds_cumulus_offset_speed(value: float) -> void:
+	clouds_offset_speed = value 
+	_clouds_cumulus_material.set_shader_param("_clouds_offset_speed", value)
+
+var clouds_cumulus_enable_set_texture: bool setget set_clouds_cumulus_enable_set_texture
+func set_clouds_cumulus_enable_set_texture(value: bool) -> void:
+	clouds_cumulus_enable_set_texture = value
+	
+	if not value:
+		set_clouds_cumulus_texture(_CLOUDS_CUMULUS_TEXTURE)
+		
+	property_list_changed_notify()
+
+var clouds_cumulus_texture: Texture setget set_clouds_cumulus_texture
+func set_clouds_cumulus_texture(value: Texture) -> void:
+	clouds_cumulus_texture = value
+	_clouds_cumulus_material.set_shader_param("_clouds_texture", value)
+
 
 # Environment.
 var _enable_enviro: bool = false
@@ -584,8 +659,9 @@ func _init():
 	_init_resources()
 	_sky_node = get_node_or_null(_SKY_INSTANCE_NAME)
 	_fog_node = get_node_or_null(_FOG_INSTANCE_NAME)
+	_clouds_cumulus_node = get_node_or_null(_CLOUDS_CUMULUS_INSTANCE_NAME)
 	_moon_instance = get_node_or_null(_MOON_INSTANCE_NAME)
-	if _sky_node != null && _fog_node != null && _moon_instance != null:
+	if _sky_node != null && _fog_node != null && _moon_instance != null && _clouds_cumulus_node != null:
 		_init_properties_ok = true
 		_init_mesh_instances()
 	_skypass_material.set_shader_param("_noise_tex", _DEFAULT_STARS_FIELD_NOISE_TEXTURE)
@@ -685,6 +761,19 @@ func _init_properties() -> void:
 	if clouds_enable_set_texture:
 		set_clouds_texture(clouds_texture)
 	
+	set_clouds_cumulus_visible(clouds_cumulus_visible)
+	set_clouds_cumulus_thickness(clouds_cumulus_thickness)
+	set_clouds_cumulus_coverage(clouds_cumulus_coverage)
+	set_clouds_cumulus_absorption(clouds_cumulus_absorption)
+	set_clouds_cumulus_noise_frequency(clouds_cumulus_noise_frequency)
+	set_clouds_cumulus_intensity(clouds_cumulus_intensity)
+	set_clouds_cumulus_size(clouds_cumulus_size)
+	set_clouds_cumulus_offset(clouds_cumulus_offset)
+	set_clouds_cumulus_offset_speed(clouds_cumulus_offset_speed)
+	set_clouds_cumulus_enable_set_texture(clouds_cumulus_enable_set_texture)
+	if clouds_cumulus_enable_set_texture:
+		set_clouds_cumulus_texture(clouds_cumulus_texture)
+	
 	set_enviro(enviro)
 
 func _init_resources() -> void:
@@ -700,6 +789,12 @@ func _init_resources() -> void:
 	
 	_moonpass_material.shader = _MOONPASS_SHADER
 	_moonpass_material.setup_local_to_scene()
+	
+	_clouds_mesh.radial_segments = 16
+	_clouds_mesh.rings = 8
+	_clouds_cumulus_material.shader = _CLOUDS_CUMULUS_SHADER
+	_clouds_cumulus_material.render_priority = sky_render_priority + 1
+	
 
 func _build_dome() -> void:
 	# Skydome.
@@ -722,6 +817,13 @@ func _build_dome() -> void:
 		_moon_instance = _MOON_RENDER.instance() 
 		self.add_child(_moon_instance)
 	
+	# Clouds.
+	_clouds_cumulus_node = get_node_or_null(_CLOUDS_CUMULUS_INSTANCE_NAME)
+	if _clouds_cumulus_node == null:
+		_clouds_cumulus_node = MeshInstance.new()
+		_clouds_cumulus_node.name = _CLOUDS_CUMULUS_INSTANCE_NAME
+		self.add_child(_clouds_cumulus_node)
+	
 	_init_mesh_instances()
 
 func _init_mesh_instances() -> void:
@@ -743,11 +845,19 @@ func _init_mesh_instances() -> void:
 	_moon_instance_transform = _moon_instance.get_node_or_null("MoonTransform")
 	_moon_instance_mesh = _moon_instance_transform.get_node_or_null("Camera/Mesh")
 	_moon_instance_mesh.material_override = _moonpass_material
+	
+	assert(_clouds_cumulus_node != null)
+	_clouds_cumulus_node.transform.origin = Vector3.ZERO
+	_clouds_cumulus_node.mesh = _clouds_mesh
+	_clouds_cumulus_node.extra_cull_margin = _MAX_EXTRA_CULL_MARGIN
+	_clouds_cumulus_node.cast_shadow = _clouds_cumulus_node.SHADOW_CASTING_SETTING_OFF
+	_clouds_cumulus_node.material_override = _clouds_cumulus_material
 
 func _set_nodes_owner() -> void: # Debug.
 	_sky_node.owner = self.get_tree().edited_scene_root
 	_fog_node.owner = self.get_tree().edited_scene_root
 	_moon_instance.owner = self.get_tree().edited_scene_root
+	_clouds_cumulus_node.owner = self.get_tree().edited_scene_root
 
 func _set_sun_coords(azimuth: float, altitude: float) -> void:
 	if not _init_properties_ok: return
@@ -770,6 +880,7 @@ func _set_sun_coords(azimuth: float, altitude: float) -> void:
 	_skypass_material.set_shader_param(_SUN_DIR_PARAM, sun_direction)
 	_fogpass_material.set_shader_param(_SUN_DIR_PARAM, sun_direction)
 	_moonpass_material.set_shader_param(_SUN_DIR_PARAM, sun_direction)
+	_clouds_cumulus_material.set_shader_param(_SUN_DIR_PARAM, sun_direction)
 	
 	if _sun_light_enable: 
 		if _sun_light_node.light_energy > 0.0:
@@ -803,6 +914,7 @@ func _set_moon_coords(azimuth: float, altitude: float) -> void:
 	emit_signal("moon_direction_changed", moon_direction)
 	
 	_skypass_material.set_shader_param(_MOON_DIR_PARAM, moon_direction)
+	_clouds_cumulus_material.set_shader_param(_MOON_DIR_PARAM, moon_direction)
 	_skypass_material.set_shader_param("_moon_matrix", _moon_transform.basis)
 	_fogpass_material.set_shader_param(_MOON_DIR_PARAM, moon_direction)
 	_moonpass_material.set_shader_param(_SUN_DIR_PARAM, sun_direction)
@@ -882,6 +994,7 @@ func _set_night_intensity() -> void:
 		n_intensity = SkyMath.saturate(moon_direction.y) * atm_moon_phases_mult
 	_skypass_material.set_shader_param("_atm_night_tint", atm_night_tint * n_intensity)
 	_fogpass_material.set_shader_param("_atm_night_tint", atm_night_tint * n_intensity)
+	_clouds_cumulus_material.set_shader_param("_atm_night_tint", atm_night_tint * n_intensity)
 	set_atm_moon_mie_intensity(atm_moon_mie_intensity)
 
 func _update_enviro() -> void:
@@ -995,6 +1108,25 @@ func _get_property_list() -> Array:
 	
 	if clouds_enable_set_texture:
 		ret.push_back({name = "clouds_texture", type=TYPE_OBJECT, hint=PROPERTY_HINT_FILE, hint_string="Texture"})
+	
+	
+	
+	# Clouds Cumulus.
+	ret.push_back({name = "Clouds Cumulus", type=TYPE_NIL,usage=PROPERTY_USAGE_GROUP, hint_string = "clouds_cumulus_"})
+	ret.push_back({name = "clouds_cumulus_visible", type=TYPE_BOOL})
+	ret.push_back({name = "clouds_cumulus_thickness", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 0.1"})
+	ret.push_back({name = "clouds_cumulus_coverage", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
+	ret.push_back({name = "clouds_cumulus_absorption", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
+	ret.push_back({name = "clouds_cumulus_noise_frequency", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 4.0"})
+	ret.push_back({name = "clouds_cumulus_intensity", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
+	ret.push_back({name = "clouds_cumulus_size", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 50.0"})
+	ret.push_back({name = "clouds_cumulus_offset", type=TYPE_VECTOR3})
+	ret.push_back({name = "clouds_cumulus_offset_speed", type=TYPE_REAL,  hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
+	ret.push_back({name = "clouds_cumulus_enable_set_texture", type=TYPE_BOOL})
+	
+	if clouds_cumulus_enable_set_texture:
+		ret.push_back({name = "clouds_cumulus_texture", type=TYPE_OBJECT, hint=PROPERTY_HINT_FILE, hint_string="Texture"})
+	
 	
 	ret.push_back({name = "Environment", type=TYPE_NIL,usage=PROPERTY_USAGE_GROUP})
 	ret.push_back({name = "enviro", type=TYPE_OBJECT, hint=PROPERTY_HINT_RESOURCE_TYPE, hint_string="Environment"})
