@@ -77,7 +77,7 @@ uniform float _clouds_size;
 uniform float _clouds_offset_speed;
 uniform vec3 _clouds_offset;
 uniform sampler2D _clouds_texture;
-const int kCLOUDS_STEP = 10;
+const int kCLOUDS_STEP = 8;
 
 // Common.
 // Math Constants.
@@ -199,6 +199,49 @@ vec3 atmosphericScattering(float sr, float sm, vec2 mu, vec3 mult){
 	return (scatter * lcol) + nscatter;
 }
 
+// 2D Clouds.
+float noiseClouds(vec2 coords, vec2 offset)
+{
+	float a = textureLod(_clouds_texture, coords.xy + offset.x, 0.0).r;
+	float b = textureLod(_clouds_texture, coords.xy + offset.y, 0.0).r;
+	return (a + b) * 0.5;
+}
+
+float cloudsFBM(vec2 p, vec2 offset){
+	float ret;
+	float l = _clouds_noise_freq;
+	ret = 0.51749673 * noiseClouds(p, offset);  
+	p *= l;
+	ret += 0.25584929 * noiseClouds(p, offset); 
+	p *= l; 
+	ret += 0.12527603 * noiseClouds(p, offset); 
+	p *= l;
+	ret += 0.06255931 * noiseClouds(p, offset);
+	return ret;
+}
+
+float cloudsDensity(vec2 p, vec2 offset)
+{
+	float d = cloudsFBM(p,offset);
+	float c = 1.0 - _clouds_coverage;
+	d = d - c;
+	return saturate(d);
+}
+
+vec4 renderClouds(vec3 pos, float tm)
+{
+	pos.xy = pos.xz / pos.y;
+	pos *= _clouds_size;
+	vec2 wind = _clouds_offset.xy * (tm * _clouds_offset_speed);
+	float density = cloudsDensity(pos.xy, wind);
+	float sh = saturate(exp(-_clouds_absorption * density));
+	float a = saturate(density * _clouds_thickness);
+	return vec4(vec3(density*sh) * _clouds_intensity, a);
+}
+
+
+
+/*
 //==============================================================================
 // Clouds based in Danil work.
 // MIT License.
@@ -258,11 +301,11 @@ vec4 renderClouds(vec3 pos, float tm){
 		float sh = saturate(exp2(-_clouds_absorption * density * marchStep));
 		t *= sh;
 		ret += (t * (exp(h) * 0.571428571) * density * marchStep);
-		a += (1.0 - sh);
+		a += (1.0 - sh) * (1.0 - a);
 		pos += dirStep;
 	}
 	return vec4(ret.rgb * _clouds_intensity, a);
-}
+}*/
 //------------------------------------------------------------------------------
 
 varying vec4 world_pos;

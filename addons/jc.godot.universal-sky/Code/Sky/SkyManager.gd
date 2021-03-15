@@ -40,7 +40,7 @@ var _DEFAULT_STARS_FIELD_NOISE_TEXTURE =\
 preload("res://addons/jc.godot.universal-sky-common/Assets/MyAssets/Graphics/Textures/noise.jpg")
 
 var _DEFAULT_CLOUDS_TEXTURE =\
-preload("res://addons/jc.godot.universal-sky-common/Assets/MyAssets/Graphics/Textures/noise.jpg")
+preload("res://addons/jc.godot.universal-sky-common/Resources/SNoise.tres")
 
 # Scenes.
 var _MOON_RENDER =\
@@ -511,27 +511,27 @@ func set_fog_render_priority(value: int) -> void:
 	_fogpass_material.render_priority = value
 
 # Clouds.
-var clouds_thickness: float = 0.009 setget set_clouds_thickness
+var clouds_thickness: float = 3.3 setget set_clouds_thickness
 func set_clouds_thickness(value: float) -> void:
 	clouds_thickness = value
 	_skypass_material.set_shader_param("_clouds_thickness", value)
 
-var clouds_coverage: float = 0.7 setget set_clouds_coverage
+var clouds_coverage: float = 0.512 setget set_clouds_coverage
 func set_clouds_coverage(value: float) -> void:
 	clouds_coverage = value 
 	_skypass_material.set_shader_param("_clouds_coverage", value)
 
-var clouds_absorption: float = 60.0 setget set_clouds_absorption
+var clouds_absorption: float = 7.3 setget set_clouds_absorption
 func set_clouds_absorption(value: float) -> void:
 	clouds_absorption = value 
 	_skypass_material.set_shader_param("_clouds_absorption", value)
 
-var clouds_noise_frequency: float = 2.7 setget set_clouds_noise_frequency
+var clouds_noise_frequency: float = 2.0 setget set_clouds_noise_frequency
 func set_clouds_noise_frequency(value: float) -> void:
 	clouds_noise_frequency = value
 	_skypass_material.set_shader_param("_clouds_noise_freq", value)
 
-var clouds_sky_tint_fade: float = 0.5 setget set_clouds_sky_tint_fade
+var clouds_sky_tint_fade: float = 0.0 setget set_clouds_sky_tint_fade
 func set_clouds_sky_tint_fade(value: float) -> void:
 	clouds_sky_tint_fade = value 
 	_skypass_material.set_shader_param("_clouds_sky_tint_fade", value)
@@ -541,12 +541,12 @@ func set_clouds_intensity(value: float) -> void:
 	clouds_intensity = value
 	_skypass_material.set_shader_param("_clouds_intensity", value)
 
-var clouds_size: float = 4.61 setget set_clouds_size
+var clouds_size: float = 0.075 setget set_clouds_size
 func set_clouds_size(value: float) -> void:
 	clouds_size = value
 	_skypass_material.set_shader_param("_clouds_size", value)
 
-var clouds_offset:= Vector3(-0.6, -0.3, -0.075) setget set_clouds_offset
+var clouds_offset:= Vector3(0.1, 0.254, -0.075) setget set_clouds_offset
 func set_clouds_offset(value: Vector3) -> void:
 	clouds_offset = value
 	_skypass_material.set_shader_param("_clouds_offset", value)
@@ -982,13 +982,13 @@ func _get_property_list() -> Array:
 	
 	# Clouds.
 	ret.push_back({name = "Clouds", type=TYPE_NIL,usage=PROPERTY_USAGE_GROUP, hint_string = "clouds_"})
-	ret.push_back({name = "clouds_thickness", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 0.03"})
+	ret.push_back({name = "clouds_thickness", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 10.0"})
 	ret.push_back({name = "clouds_coverage", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
-	ret.push_back({name = "clouds_absorption", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
-	ret.push_back({name = "clouds_noise_frequency", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
+	ret.push_back({name = "clouds_absorption", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 10.0"})
+	ret.push_back({name = "clouds_noise_frequency", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 4.0"})
 	ret.push_back({name = "clouds_sky_tint_fade", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_intensity", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
-	ret.push_back({name = "clouds_size", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 10.0"})
+	ret.push_back({name = "clouds_size", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_offset", type=TYPE_VECTOR3})
 	ret.push_back({name = "clouds_offset_speed", type=TYPE_REAL,  hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_enable_set_texture", type=TYPE_BOOL})
