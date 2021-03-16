@@ -75,9 +75,8 @@ uniform float _clouds_sky_tint_fade;
 uniform float _clouds_intensity;
 uniform float _clouds_size;
 uniform float _clouds_offset_speed;
-uniform vec3 _clouds_offset;
+uniform vec2 _clouds_offset;
 uniform sampler2D _clouds_texture;
-const int kCLOUDS_STEP = 8;
 
 // Common.
 // Math Constants.
@@ -110,17 +109,6 @@ vec3 contrastLevel(vec3 vec, float level){
 vec3 tonemapPhoto(vec3 color, float exposure, float level){
 	color.rgb *= exposure;
 	return mix(color.rgb, 1.0 - exp(-color.rgb), level);
-}
-
-vec3 tonemapACES(vec3 color, float exposure, float level){
-	color.rgb *= exposure;
-	const vec3  a = vec3(2.51);
-	const float b = 0.03;
-	const float c = 2.43;
-	const float d = 0.59;
-	const float e = 0.14;
-	vec3 ret = (color.rgb * (a * color.rgb + b)) / (color.rgb * (c * color.rgb + d) + e);
-	return mix(color.rgb, ret, level);
 }
 
 vec3 mul(mat3 mat, vec3 vec){
@@ -163,6 +151,7 @@ void opticalDepth(float y, out float sr, out float sm){
 	sm = y * kMIE_ZENITH_LENGTH;
 }
 
+// Paper based.
 void _opticalDepth(float y, out float sr, out float sm)
 {
 	y = max(0.0, y);
@@ -199,7 +188,7 @@ vec3 atmosphericScattering(float sr, float sm, vec2 mu, vec3 mult){
 	return (scatter * lcol) + nscatter;
 }
 
-// 2D Clouds.
+// Simple 2D clouds.
 float noiseClouds(vec2 coords, vec2 offset)
 {
 	float a = textureLod(_clouds_texture, coords.xy + offset.x, 0.0).r;
@@ -239,82 +228,13 @@ vec4 renderClouds(vec3 pos, float tm)
 	return vec4(vec3(density*sh) * _clouds_intensity, a);
 }
 
-
-
-/*
-//==============================================================================
-// Clouds based in Danil work.
-// MIT License.
-// See: https://github.com/danilw/godot-utils-and-other/tree/master/Dynamic%20sky%20and%20reflection.
-float noiseClouds(vec3 p){
-	vec3 pos = vec3(p * 0.01);
-	pos.z *= 256.0;
-	vec2 offset = vec2(0.317, 0.123);
-	vec4 uv= vec4(0.0);
-	uv.xy = pos.xy + offset * floor(pos.z);
-	uv.zw = uv.xy + offset;
-	float x1 = textureLod(_clouds_texture, uv.xy, 0.0).r;
-	float x2 = textureLod(_clouds_texture, uv.zw, 0.0).r;
-	return mix(x1, x2, fract(pos.z));
-}
-
-float cloudsFBM(vec3 p, float l){
-	float ret;
-	ret = 0.51749673 * noiseClouds(p);  
-	p *= l;
-	ret += 0.25584929 * noiseClouds(p); 
-	p *= l; 
-	ret += 0.12527603 * noiseClouds(p); 
-	p *= l;
-	ret += 0.06255931 * noiseClouds(p);
-	return ret;
-}
-
-
-float noiseCloudsFBM(vec3 p){
-	float freq = _clouds_noise_freq; //2.76434;
-	return cloudsFBM(p, freq);
-}
-
-float cloudsDensity(vec3 p, vec3 offset, float t){
-	vec3 pos = p * 0.0212242 + offset;
-	float dens = noiseCloudsFBM(pos);
-	float cov = 1.0 - _clouds_coverage;
-	dens *= smoothstep(cov, cov + t, dens);
-	return saturate(dens);
-}
-
-vec4 renderClouds(vec3 pos, float tm){
-	vec4 ret;
-	pos.xy = pos.xz / pos.y;
-	pos *= _clouds_size;
-	vec3 wind = _clouds_offset * (tm * _clouds_offset_speed);
-	
-	float marchStep = float(kCLOUDS_STEP) * _clouds_thickness;
-	vec3 dirStep = pos * marchStep;
-	pos *= _clouds_size;
-	
-	float t = 1.0; float a = 0.0;
-	for(int i = 0; i < kCLOUDS_STEP; i++){
-		float h = float(i) / float(kCLOUDS_STEP);
-		float density = cloudsDensity(pos, wind, h);
-		float sh = saturate(exp2(-_clouds_absorption * density * marchStep));
-		t *= sh;
-		ret += (t * (exp(h) * 0.571428571) * density * marchStep);
-		a += (1.0 - sh) * (1.0 - a);
-		pos += dirStep;
-	}
-	return vec4(ret.rgb * _clouds_intensity, a);
-}*/
-//------------------------------------------------------------------------------
-
 varying vec4 world_pos;
 varying vec4 moon_coords;
 varying vec3 deep_space_coords;
 varying vec4 angle_mult;
 
 void vertex(){
-	world_pos = (WORLD_MATRIX * vec4(VERTEX, 1.0));
+	world_pos = (WORLD_MATRIX * vec4(VERTEX, 1e-5));
 	moon_coords.xyz  = mul(_moon_matrix, VERTEX).xyz / _moon_size + 0.5;
 	moon_coords.w = dot(world_pos.xyz, _moon_direction); 
 	deep_space_coords.xyz = (_deep_space_matrix * VERTEX).xyz;
@@ -373,10 +293,9 @@ void fragment(){
 	clouds.a = saturate(clouds.a);
 	clouds.rgb *= mix(mix(vec3(1.0), _atm_horizon_light_tint.rgb, angle_mult.x), 
 		_atm_night_tint.rgb, angle_mult.w);
-	clouds.a = mix(0.0, clouds.a, horizonBlend);
-	//clouds.rgb *= miePhase(mu.x, _atm_sun_partial_mie_phase) * _atm_sun_mie_intensity * _atm_sun_mie_tint.rgb;
-	col.rgb = mix(col.rgb, clouds.rgb + mix(vec3(0.0), scatter, _clouds_sky_tint_fade), clouds.a);
 	
+	clouds.a = mix(0.0, clouds.a, horizonBlend);
+	col.rgb = mix(col.rgb, clouds.rgb + mix(vec3(0.0), scatter, _clouds_sky_tint_fade), clouds.a);
 	col.rgb = mix(col.rgb, _ground_color.rgb * scatter, saturate((-ray.y - _atm_params.z)*100.0));
 	col.rgb = tonemapPhoto(col.rgb, _color_correction_params.z, _color_correction_params.y);
 	col.rgb = contrastLevel(col.rgb, _color_correction_params.x);

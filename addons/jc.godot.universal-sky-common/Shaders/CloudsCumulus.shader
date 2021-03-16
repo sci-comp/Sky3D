@@ -1,3 +1,20 @@
+/*========================================================
+°                       Universal Sky.
+°                   ======================
+°
+°   Category: Sky.
+°   -----------------------------------------------------
+°   Description:
+°       Sky pass.
+°   -----------------------------------------------------
+°   Copyright:
+°   -----------------------------------------------------
+°               J. Cuellar 2020. MIT License.
+°                   See: LICENSE Archive.
+°   -----------------------------------------------------
+°   Clouds based in:
+°   https://github.com/danilw/godot-utils-and-other/tree/master/Dynamic%20sky%20and%20reflection.
+========================================================*/
 shader_type spatial;
 render_mode unshaded, blend_mix, depth_draw_never, cull_front, skip_vertex_transform;
 
@@ -39,30 +56,6 @@ vec3 saturateRGB(vec3 value){
 	return clamp(value.rgb, 0.0, 1.0);
 }
 
-vec3 mul(mat3 mat, vec3 vec){
-	vec3 ret;
-	ret.x = dot(mat[0].xyz, vec.xyz);
-	ret.y = dot(mat[1].xyz, vec.xyz);
-	ret.z = dot(mat[2].xyz, vec.xyz);
-	return ret;
-}
-
-vec2 equirectUV(vec3 norm){
-	vec2 ret;
-	ret.x = (atan(norm.x, norm.z) + kPI) * kINV_TAU;
-	ret.y = acos(norm.y) * kINV_PI;
-	return ret;
-}
-
-float random(vec2 uv){
-	float ret = dot(uv, vec2(12.9898, 78.233));
-	return fract(43758.5453 * sin(ret));
-}
-
-//==============================================================================
-// Clouds based in Danil work.
-// MIT License.
-// See: https://github.com/danilw/godot-utils-and-other/tree/master/Dynamic%20sky%20and%20reflection.
 float noiseClouds(vec3 p){
 	vec3 pos = vec3(p * 0.01);
 	pos.z *= 256.0;
@@ -87,9 +80,8 @@ float cloudsFBM(vec3 p, float l){
 	return ret;
 }
 
-
 float noiseCloudsFBM(vec3 p){
-	float freq = _clouds_noise_freq; //2.76434;
+	float freq = _clouds_noise_freq;
 	return cloudsFBM(p, freq);
 }
 
@@ -104,9 +96,7 @@ float cloudsDensity(vec3 p, vec3 offset, float t){
 vec4 renderClouds(vec3 pos, float tm){
 	vec4 ret;
 	pos.xy = pos.xz / pos.y;
-	//pos *= _clouds_size;
 	vec3 wind = _clouds_offset * (tm * _clouds_offset_speed);
-	
 	float marchStep = float(kCLOUDS_STEP) * _clouds_thickness;
 	vec3 dirStep = pos * marchStep;
 	pos *= _clouds_size;
@@ -124,7 +114,6 @@ vec4 renderClouds(vec3 pos, float tm){
 	return vec4(ret.rgb * _clouds_intensity, a);
 }
 
-
 varying vec4 world_pos;
 varying vec4 moon_coords;
 varying vec3 deep_space_coords;
@@ -140,7 +129,6 @@ void vertex(){
 }
 
 void fragment(){
-	//vec3 col = vec3(0.0);
 	vec3 ray = normalize(world_pos).xyz;
 	float horizonBlend = saturate((ray.y - 0.03) * 10.0);
 	vec4 clouds = renderClouds(ray, TIME);
@@ -152,5 +140,3 @@ void fragment(){
 	ALPHA = clouds.a;
 	DEPTH = 1.0;
 }
-
-

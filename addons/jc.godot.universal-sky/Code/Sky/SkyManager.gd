@@ -559,8 +559,8 @@ func set_clouds_size(value: float) -> void:
 	clouds_size = value
 	_skypass_material.set_shader_param("_clouds_size", value)
 
-var clouds_offset:= Vector3(0.1, 0.254, -0.075) setget set_clouds_offset
-func set_clouds_offset(value: Vector3) -> void:
+var clouds_offset:= Vector2(0.1, 0.254) setget set_clouds_offset
+func set_clouds_offset(value: Vector2) -> void:
 	clouds_offset = value
 	_skypass_material.set_shader_param("_clouds_offset", value)
 
@@ -1102,7 +1102,7 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "clouds_sky_tint_fade", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_intensity", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
 	ret.push_back({name = "clouds_size", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
-	ret.push_back({name = "clouds_offset", type=TYPE_VECTOR3})
+	ret.push_back({name = "clouds_offset", type=TYPE_VECTOR2})
 	ret.push_back({name = "clouds_offset_speed", type=TYPE_REAL,  hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_enable_set_texture", type=TYPE_BOOL})
 	
