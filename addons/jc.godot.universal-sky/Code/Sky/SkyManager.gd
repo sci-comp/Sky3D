@@ -111,6 +111,9 @@ func set_skydome_radius(value: float) -> void:
 	_sky_node.transform.basis.x = Vector3(value, 0.0, 0.0)
 	_sky_node.transform.basis.y = Vector3(0.0, value, 0.0)
 	_sky_node.transform.basis.z = Vector3(0.0, 0.0, value)
+	_clouds_cumulus_node.transform.basis.x = Vector3(value, 0.0, 0.0)
+	_clouds_cumulus_node.transform.basis.y = Vector3(0.0, value, 0.0)
+	_clouds_cumulus_node.transform.basis.z = Vector3(0.0, 0.0, value)
 
 var contrast_level: float = 0.0 setget set_contrast_level
 func set_contrast_level(value: float) -> void:
