@@ -20,6 +20,9 @@ class_name SkyManager extends Node
 var _SKYPASS_SHADER =\
 preload("res://addons/jc.godot.universal-sky-common/Shaders/Skypass.shader")
 
+var _PER_VERTEX_SKYPASS_SHADER =\
+preload("res://addons/jc.godot.universal-sky-common/Shaders/PerVertexSkypass.shader")
+
 var _SCATTER_FOG_PASS_SHADER =\
 preload("res://addons/jc.godot.universal-sky-common/Shaders/ScatterFogPass.shader")
 
@@ -375,7 +378,22 @@ func set_stars_scintillation_speed(value: float) -> void:
 	stars_scintillation_speed = value 
 	_skypass_material.set_shader_param("_stars_scintillation_speed", value)
 
-# Atmospheric Scattering
+# Atmospheric Scattering.
+
+var atm_quality: int = 0 setget set_atm_quality
+func set_atm_quality(value: int) -> void:
+	atm_quality = value
+	
+	if value == 0:
+		_skypass_material.shader = _SKYPASS_SHADER
+		_sky_mesh.radial_segments = 16
+		_sky_mesh.rings = 8
+	else:
+		_skypass_material.shader = _PER_VERTEX_SKYPASS_SHADER
+		_sky_mesh.radial_segments = 64
+		_sky_mesh.rings = 64
+		
+
 var atm_wavelenghts:= Vector3(680.0, 550.0, 440.0) setget set_atm_wavelenghts
 func set_atm_wavelenghts(value: Vector3) -> void:
 	atm_wavelenghts = value
@@ -777,9 +795,10 @@ func _init_properties() -> void:
 	set_enviro(enviro)
 
 func _init_resources() -> void:
-	_sky_mesh.radial_segments = 32
-	_sky_mesh.rings = 16
-	_skypass_material.shader = _SKYPASS_SHADER
+	#_sky_mesh.radial_segments = 32
+	#_sky_mesh.rings = 16
+	#_skypass_material.shader = _SKYPASS_SHADER
+	set_atm_quality(atm_quality)
 	_skypass_material.setup_local_to_scene()
 	_skypass_material.render_priority = sky_render_priority
 	
@@ -1066,6 +1085,7 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "stars_scintillation_speed", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 0.1"})
 	
 	ret.push_back({name = "Atmosphere", type=TYPE_NIL,usage=PROPERTY_USAGE_GROUP, hint_string = "atm_"})
+	ret.push_back({name = "atm_quality", type=TYPE_INT, hint=PROPERTY_HINT_ENUM, hint_string="PerPixel, PerVertex"})
 	ret.push_back({name = "atm_darkness", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "atm_wavelenghts", type=TYPE_VECTOR3})
 	ret.push_back({name = "atm_sun_intensity", type=TYPE_REAL})
