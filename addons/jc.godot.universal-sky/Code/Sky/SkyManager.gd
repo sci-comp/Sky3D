@@ -522,7 +522,7 @@ func set_fog_density(value: float) -> void:
 	fog_density = value
 	_fogpass_material.set_shader_param("_density", value)
 
-var fog_rayleigh_depth: float= 0.00071 setget set_fog_rayleigh_depth
+var fog_rayleigh_depth: float= 0.035 setget set_fog_rayleigh_depth
 func set_fog_rayleigh_depth(value: float) -> void:
 	fog_rayleigh_depth = value
 	_fogpass_material.set_shader_param("_rayleigh_depth", value)

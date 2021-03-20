@@ -12,10 +12,7 @@
 °                   See: LICENSE Archive.
 ========================================================*/
 shader_type spatial;
-render_mode blend_mix, 
-cull_disabled,
-//depth_draw_always, 
-unshaded;
+render_mode blend_mix, cull_disabled, unshaded;
 
 uniform float _density;
 uniform vec3 _sun_direction;
@@ -158,16 +155,17 @@ void vertex(){
 }
 
 void fragment(){
+	
 	float depthRaw = texture(DEPTH_TEXTURE, SCREEN_UV).r;
 	vec3 ndc = vec3(SCREEN_UV, depthRaw) * 2.0 - 1.0;
 	
 	vec4 view = INV_PROJECTION_MATRIX * vec4(ndc, 1.0);
-  	view.xyz /= view.w;
+	view.xyz /= view.w;
 	
 	vec3 ray = view.xyz;
 	ray = (camera * vec4(ray.xyz, 0.0)).xyz;
 	ray = normalize(ray);
-
+	
 	float linearDepth = -view.z;
 	float fogFactor = fogExp(linearDepth, _density);
 	
@@ -178,7 +176,9 @@ void fragment(){
 	vec3 tint = scatter;
 	vec4 fogColor = vec4(tint.rgb, 1.0) * fogFactor;
 	fogColor = vec4((fogColor.rgb), saturate(fogColor.a));
-	fogColor.a *= fogFactor * saturate(clamp(-ray.y + 0.5, 0.3, 1.0));
+	//fogColor.a = saturate(mix(0.0, fogColor.a, _atm_day_tint.a * fogColor.a));
+	fogColor.a *= saturate(clamp(-ray.y + 0.7, 0.3, 1.0));
+	
 	fogColor.rgb = tonemapPhoto(fogColor.rgb, _color_correction_params.z, _color_correction_params.y);
 	fogColor.rgb = contrastLevel(fogColor.rgb, _color_correction_params.x);
 	
