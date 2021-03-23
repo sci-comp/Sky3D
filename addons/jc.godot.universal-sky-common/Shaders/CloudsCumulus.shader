@@ -12,7 +12,7 @@
 °               J. Cuellar 2020. MIT License.
 °                   See: LICENSE Archive.
 °   -----------------------------------------------------
-°   Clouds based in:
+°   Clouds based:
 °   https://github.com/danilw/godot-utils-and-other/tree/master/Dynamic%20sky%20and%20reflection.
 ========================================================*/
 shader_type spatial;
@@ -30,10 +30,15 @@ uniform float _clouds_size;
 uniform float _clouds_offset_speed;
 uniform vec3 _clouds_offset;
 uniform sampler2D _clouds_texture;
-const int kCLOUDS_STEP = 8;
+const int kCLOUDS_STEP = 10;
+
+uniform vec3 _partial_mie_phase;
+uniform float _mie_intensity;
+uniform vec4 _atm_sun_mie_tint;
 
 uniform vec4 _atm_horizon_light_tint: hint_color;
 uniform vec4 _atm_night_tint: hint_color;
+uniform vec4 _atm_moon_mie_tint: hint_color;
 
 const float kPI          = 3.1415927f;
 const float kINV_PI      = 0.3183098f;
@@ -93,25 +98,55 @@ float cloudsDensity(vec3 p, vec3 offset, float t){
 	return saturate(dens);
 }
 
-vec4 renderClouds(vec3 pos, float tm){
-	vec4 ret;
-	pos.xy = pos.xz / pos.y;
-	vec3 wind = _clouds_offset * (tm * _clouds_offset_speed);
-	float marchStep = float(kCLOUDS_STEP) * _clouds_thickness;
-	vec3 dirStep = pos * marchStep;
-	pos *= _clouds_size;
+bool IntersectSphere(float r, vec3 origin, vec3 dir, out float t, out vec3 nrm)
+{
+	origin += vec3(0.0, 450.0, 0.0);
+	float a = dot(dir, dir);
+	float b = 2.0 * dot(origin, dir);
+	float c = dot(origin, origin) - r * r;
+	float d = b * b - 4.0 * a * c;
+	if(d < 0.0) return false;
+	d = sqrt(d);
+	a *= 2.0;
+	float t1 = 0.5 * (-b + d);
+	float t2 = 0.5 * (-b - d);
+	if(t1<0.0) t1 = t2;
+	if(t2 < 0.0) t2 = t1;
+	t1 = min(t1, t2);
+	if(t1 < 0.0) return false;
+	nrm = origin + t1 * dir;
+	t = t1;
 	
-	float t = 1.0; float a = 0.0;
-	for(int i = 0; i < kCLOUDS_STEP; i++){
-		float h = float(i) / float(kCLOUDS_STEP);
-		float density = cloudsDensity(pos, wind, h);
-		float sh = saturate(exp2(-_clouds_absorption * density * marchStep));
-		t *= sh;
-		ret += (t * (exp(h) * 0.571428571) * density * marchStep);
-		a += (1.0 - sh) * (1.0 - a);
-		pos += dirStep;
+	return true;
+}
+
+vec4 renderClouds2(vec3 ro, vec3 rd, float tm){
+	vec4 ret;
+	vec3 wind = _clouds_offset * (tm * _clouds_offset_speed);
+    vec3 n; float tt; float a = 0.0;
+    if(IntersectSphere(500, ro, rd, tt, n))
+	{
+		float marchStep = float(kCLOUDS_STEP) * _clouds_thickness;
+		vec3 dirStep = rd / rd.y * marchStep;
+		vec3 pos = n * _clouds_size;
+		float t = 1.0; 
+		for(int i = 0; i < kCLOUDS_STEP; i++)
+		{
+			float h = float(i) * 0.1; // / float(kCLOUDS_STEP);
+			float density = cloudsDensity(pos, wind, h);
+			float sh = saturate(exp(-_clouds_absorption * density * marchStep));
+			t *= sh;
+			ret += (t * (exp(h) * 0.571428571) * density * marchStep);
+			a += (1.0 - sh) * (1.0 - a);
+			pos += dirStep;
+		}
+		return vec4(ret.rgb * _clouds_intensity, a);
 	}
 	return vec4(ret.rgb * _clouds_intensity, a);
+}
+
+float miePhase(float mu, vec3 partial){
+	return kPI4 * (partial.x) * (pow(partial.y - partial.z * mu, -1.5));
 }
 
 varying vec4 world_pos;
@@ -131,12 +166,17 @@ void vertex(){
 void fragment(){
 	vec3 ray = normalize(world_pos).xyz;
 	float horizonBlend = saturate((ray.y - 0.03) * 10.0);
-	vec4 clouds = renderClouds(ray, TIME);
+	vec4 clouds = renderClouds2(vec3(0.0, 1.0, 0.0), ray, TIME);
 	clouds.a = saturate(clouds.a);
 	clouds.rgb *= mix(mix(vec3(1.0), _atm_horizon_light_tint.rgb, angle_mult.x), 
 		_atm_night_tint.rgb, angle_mult.w);
 	clouds.a = mix(0.0, clouds.a, horizonBlend);
-	ALBEDO = clouds.rgb;
+	
+	vec2 mu = vec2(dot(_sun_direction, ray), dot(_moon_direction, ray));
+	vec3 mph = ((miePhase(mu.x, _partial_mie_phase) * _atm_sun_mie_tint.rgb) +
+		miePhase(mu.y, _partial_mie_phase * _mie_intensity) * angle_mult.z  * _mie_intensity);
+	
+	ALBEDO = clouds.rgb * mph;
 	ALPHA = clouds.a;
 	DEPTH = 1.0;
 }

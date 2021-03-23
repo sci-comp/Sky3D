@@ -471,6 +471,7 @@ func set_atm_sun_mie_tint(value:Color)-> void:
 	var param = "_atm_sun_mie_tint"
 	_skypass_material.set_shader_param(param, value)
 	_fogpass_material.set_shader_param(param, value)
+	_clouds_cumulus_material.set_shader_param(param, value)
 
 var atm_sun_mie_intensity: float = 1.0 setget set_atm_sun_mie_intensity
 func set_atm_sun_mie_intensity(value: float) -> void:
@@ -493,6 +494,7 @@ func set_atm_moon_mie_tint(value:Color)-> void:
 	var param = "_atm_moon_mie_tint"
 	_skypass_material.set_shader_param(param, value)
 	_fogpass_material.set_shader_param(param, value)
+	_clouds_cumulus_material.set_shader_param(param, value)
 
 var atm_moon_mie_intensity: float = 0.7 setget set_atm_moon_mie_intensity
 func set_atm_moon_mie_intensity(value: float) -> void:
@@ -550,7 +552,7 @@ func set_clouds_thickness(value: float) -> void:
 	clouds_thickness = value
 	_skypass_material.set_shader_param("_clouds_thickness", value)
 
-var clouds_coverage: float = 0.524 setget set_clouds_coverage
+var clouds_coverage: float = 0.4 setget set_clouds_coverage
 func set_clouds_coverage(value: float) -> void:
 	clouds_coverage = value 
 	_skypass_material.set_shader_param("_clouds_coverage", value)
@@ -560,10 +562,6 @@ func set_clouds_absorption(value: float) -> void:
 	clouds_absorption = value 
 	_skypass_material.set_shader_param("_clouds_absorption", value)
 
-var clouds_noise_frequency: float = 0.525 setget set_clouds_noise_frequency
-func set_clouds_noise_frequency(value: float) -> void:
-	clouds_noise_frequency = value
-	_skypass_material.set_shader_param("_clouds_noise_freq", value)
 
 var clouds_sky_tint_fade: float = 0.0 setget set_clouds_sky_tint_fade
 func set_clouds_sky_tint_fade(value: float) -> void:
@@ -579,6 +577,11 @@ var clouds_size: float = 0.415 setget set_clouds_size
 func set_clouds_size(value: float) -> void:
 	clouds_size = value
 	_skypass_material.set_shader_param("_clouds_size", value)
+
+var clouds_uv:= Vector2(1.0, 1.0) setget set_clouds_uv
+func set_clouds_uv(value: Vector2) -> void:
+	clouds_uv = value 
+	_skypass_material.set_shader_param("_clouds_uv", value)
 
 var clouds_offset:= Vector2(0.1, 0.254) setget set_clouds_offset
 func set_clouds_offset(value: Vector2) -> void:
@@ -612,7 +615,7 @@ func set_clouds_cumulus_visible(value: bool) -> void:
 	assert(_clouds_cumulus_node != null)
 	_clouds_cumulus_node.visible = value
 
-var clouds_cumulus_thickness: float = 0.043 setget set_clouds_cumulus_thickness
+var clouds_cumulus_thickness: float = 0.032 setget set_clouds_cumulus_thickness
 func set_clouds_cumulus_thickness(value: float) -> void:
 	clouds_cumulus_thickness = value
 	_clouds_cumulus_material.set_shader_param("_clouds_thickness", value)
@@ -622,7 +625,7 @@ func set_clouds_cumulus_coverage(value: float) -> void:
 	clouds_cumulus_coverage = value 
 	_clouds_cumulus_material.set_shader_param("_clouds_coverage", value)
 
-var clouds_cumulus_absorption: float = 17.0 setget set_clouds_cumulus_absorption
+var clouds_cumulus_absorption: float = 6.0 setget set_clouds_cumulus_absorption
 func set_clouds_cumulus_absorption(value: float) -> void:
 	clouds_cumulus_absorption = value 
 	_clouds_cumulus_material.set_shader_param("_clouds_absorption", value)
@@ -632,12 +635,25 @@ func set_clouds_cumulus_noise_frequency(value: float) -> void:
 	clouds_cumulus_noise_frequency = value
 	_clouds_cumulus_material.set_shader_param("_clouds_noise_freq", value)
 
-var clouds_cumulus_intensity: float = 50.0 setget set_clouds_cumulus_intensity
+var clouds_cumulus_intensity: float = 1.0 setget set_clouds_cumulus_intensity
 func set_clouds_cumulus_intensity(value: float) -> void:
 	clouds_cumulus_intensity = value
 	_clouds_cumulus_material.set_shader_param("_clouds_intensity", value)
 
-var clouds_cumulus_size: float = 20.0 setget set_clouds_cumulus_size
+var clouds_cumulus_mie_intensity: float = 1.5 setget set_clouds_cumulus_mie_intensity
+func set_clouds_cumulus_mie_intensity(value: float) -> void:
+	clouds_cumulus_mie_intensity = value
+	_clouds_cumulus_material.set_shader_param("_mie_intensity", value)
+
+var clouds_cumulus_mie_anisotropy: float = 0.245 setget set_clouds_cumulus_mie_anisotropy
+func set_clouds_cumulus_mie_anisotropy(value: float) -> void:
+	clouds_cumulus_mie_anisotropy = value 
+	var partialMiePhase: Vector3 = AtmScatter.partial_mie_phase(value)
+	var param = "_partial_mie_phase"
+	_clouds_cumulus_material.set_shader_param(param, partialMiePhase)
+
+
+var clouds_cumulus_size: float = 0.4 setget set_clouds_cumulus_size
 func set_clouds_cumulus_size(value: float) -> void:
 	clouds_cumulus_size = value
 	_clouds_cumulus_material.set_shader_param("_clouds_size", value)
@@ -665,7 +681,6 @@ var clouds_cumulus_texture: Texture setget set_clouds_cumulus_texture
 func set_clouds_cumulus_texture(value: Texture) -> void:
 	clouds_cumulus_texture = value
 	_clouds_cumulus_material.set_shader_param("_clouds_texture", value)
-
 
 # Environment.
 var _enable_enviro: bool = false
@@ -772,10 +787,10 @@ func _init_properties() -> void:
 	set_clouds_thickness(clouds_thickness)
 	set_clouds_coverage(clouds_coverage)
 	set_clouds_absorption(clouds_absorption)
-	set_clouds_noise_frequency(clouds_noise_frequency)
 	set_clouds_sky_tint_fade(clouds_sky_tint_fade)
 	set_clouds_intensity(clouds_intensity)
 	set_clouds_size(clouds_size)
+	set_clouds_uv(clouds_uv)
 	set_clouds_offset(clouds_offset)
 	set_clouds_offset_speed(clouds_offset_speed)
 	set_clouds_enable_set_texture(clouds_enable_set_texture)
@@ -788,6 +803,8 @@ func _init_properties() -> void:
 	set_clouds_cumulus_absorption(clouds_cumulus_absorption)
 	set_clouds_cumulus_noise_frequency(clouds_cumulus_noise_frequency)
 	set_clouds_cumulus_intensity(clouds_cumulus_intensity)
+	set_clouds_cumulus_mie_intensity(clouds_cumulus_mie_intensity)
+	set_clouds_cumulus_mie_anisotropy(clouds_cumulus_mie_anisotropy)
 	set_clouds_cumulus_size(clouds_cumulus_size)
 	set_clouds_cumulus_offset(clouds_cumulus_offset)
 	set_clouds_cumulus_offset_speed(clouds_cumulus_offset_speed)
@@ -1121,10 +1138,10 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "clouds_thickness", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 10.0"})
 	ret.push_back({name = "clouds_coverage", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_absorption", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 10.0"})
-	ret.push_back({name = "clouds_noise_frequency", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 4.0"})
 	ret.push_back({name = "clouds_sky_tint_fade", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_intensity", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
 	ret.push_back({name = "clouds_size", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
+	ret.push_back({name = "clouds_uv", type=TYPE_VECTOR2})
 	ret.push_back({name = "clouds_offset", type=TYPE_VECTOR2})
 	ret.push_back({name = "clouds_offset_speed", type=TYPE_REAL,  hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_enable_set_texture", type=TYPE_BOOL})
@@ -1140,6 +1157,10 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "clouds_cumulus_thickness", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 0.1"})
 	ret.push_back({name = "clouds_cumulus_coverage", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 1.0"})
 	ret.push_back({name = "clouds_cumulus_absorption", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
+	
+	ret.push_back({name = "clouds_cumulus_mie_intensity", type=TYPE_REAL})
+	ret.push_back({name = "clouds_cumulus_mie_anisotropy", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 0.9999"})
+	
 	ret.push_back({name = "clouds_cumulus_noise_frequency", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 4.0"})
 	ret.push_back({name = "clouds_cumulus_intensity", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 100.0"})
 	ret.push_back({name = "clouds_cumulus_size", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 50.0"})

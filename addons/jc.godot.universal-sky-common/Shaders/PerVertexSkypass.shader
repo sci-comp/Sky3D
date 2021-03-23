@@ -70,10 +70,10 @@ const float kMIE_ZENITH_LENGTH = 1.25e3;
 uniform float _clouds_coverage;
 uniform float _clouds_thickness;
 uniform float _clouds_absorption;
-uniform float _clouds_noise_freq;
 uniform float _clouds_sky_tint_fade;
 uniform float _clouds_intensity;
 uniform float _clouds_size;
+uniform vec2 _clouds_uv;
 uniform float _clouds_offset_speed;
 uniform vec2 _clouds_offset;
 uniform sampler2D _clouds_texture;
@@ -191,27 +191,14 @@ vec3 atmosphericScattering(float sr, float sm, vec2 mu, vec3 mult){
 // Simple 2D clouds.
 float noiseClouds(vec2 coords, vec2 offset)
 {
-	float a = textureLod(_clouds_texture, coords.xy + offset.x, 0.0).r;
-	float b = textureLod(_clouds_texture, coords.xy + offset.y, 0.0).r;
+	float a = textureLod(_clouds_texture, coords.xy * _clouds_uv + offset.x, 0.0).r;
+	float b = textureLod(_clouds_texture, coords.xy * _clouds_uv + offset.y, 0.0).r;
 	return (a + b) * 0.5;
-}
-
-float cloudsFBM(vec2 p, vec2 offset){
-	float ret;
-	float l = _clouds_noise_freq;
-	ret = 0.51749673 * noiseClouds(p, offset);  
-	p *= l;
-	ret += 0.25584929 * noiseClouds(p, offset); 
-	p *= l; 
-	ret += 0.12527603 * noiseClouds(p, offset); 
-	p *= l;
-	ret += 0.06255931 * noiseClouds(p, offset);
-	return ret;
 }
 
 float cloudsDensity(vec2 p, vec2 offset)
 {
-	float d = cloudsFBM(p,offset);
+	float d = noiseClouds(p, offset);
 	float c = 1.0 - _clouds_coverage;
 	d = d - c;
 	return saturate(d);

@@ -53,24 +53,18 @@ roughness = 0.07
 metallic = 0.09
 metallic_specular = 1.0
 roughness = 0.06
-transmission_enabled = true
-transmission = Color( 0.968627, 0.6, 0.243137, 1 )
 
 [sub_resource type="SpatialMaterial" id=11]
 albedo_color = Color( 0.960784, 0.960784, 0.960784, 1 )
 metallic = 0.09
 metallic_specular = 1.0
 roughness = 0.06
-transmission_enabled = true
-transmission = Color( 0.243137, 0.576471, 0.968627, 1 )
 
 [sub_resource type="SpatialMaterial" id=12]
 albedo_color = Color( 0.960784, 0.960784, 0.960784, 1 )
 metallic = 0.09
 metallic_specular = 1.0
 roughness = 0.06
-transmission_enabled = true
-transmission = Color( 0.968627, 0.243137, 0.243137, 1 )
 
 [sub_resource type="SpatialMaterial" id=13]
 params_specular_mode = 4
