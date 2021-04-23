@@ -155,12 +155,16 @@ varying vec3 deep_space_coords;
 varying vec4 angle_mult;
 
 void vertex(){
-	world_pos = (WORLD_MATRIX * vec4(VERTEX, 1e-5));
+	vec4 vert = vec4(VERTEX, 0.0);
+	vec4 clip_pos = PROJECTION_MATRIX * inverse(CAMERA_MATRIX) * WORLD_MATRIX * vert;
+	POSITION = clip_pos;
+	POSITION.z = clip_pos.w; // Ignore far clip.
+	
+	world_pos = (WORLD_MATRIX * vert);
 	angle_mult.x = saturate(1.0 - _sun_direction.y);
 	angle_mult.y = saturate(_sun_direction.y + 0.45);
 	angle_mult.z = saturate(-_sun_direction.y + 0.30);
 	angle_mult.w = saturate(-_sun_direction.y + 0.60);
-	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1e-5)).xyz;
 }
 
 void fragment(){

@@ -954,7 +954,7 @@ func _set_moon_coords(azimuth: float, altitude: float) -> void:
 	
 	_skypass_material.set_shader_param(_MOON_DIR_PARAM, moon_direction)
 	_clouds_cumulus_material.set_shader_param(_MOON_DIR_PARAM, moon_direction)
-	_skypass_material.set_shader_param("_moon_matrix", _moon_transform.basis)
+	_skypass_material.set_shader_param("_moon_matrix", _moon_transform.basis.inverse())
 	_fogpass_material.set_shader_param(_MOON_DIR_PARAM, moon_direction)
 	_moonpass_material.set_shader_param(_SUN_DIR_PARAM, sun_direction)
 	

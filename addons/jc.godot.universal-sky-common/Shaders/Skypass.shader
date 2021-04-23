@@ -111,14 +111,6 @@ vec3 tonemapPhoto(vec3 color, float exposure, float level){
 	return mix(color.rgb, 1.0 - exp(-color.rgb), level);
 }
 
-vec3 mul(mat3 mat, vec3 vec){
-	vec3 ret;
-	ret.x = dot(mat[0].xyz, vec.xyz);
-	ret.y = dot(mat[1].xyz, vec.xyz);
-	ret.z = dot(mat[2].xyz, vec.xyz);
-	return ret;
-}
-
 vec2 equirectUV(vec3 norm){
 	vec2 ret;
 	ret.x = (atan(norm.x, norm.z) + kPI) * kINV_TAU;
@@ -221,15 +213,21 @@ varying vec3 deep_space_coords;
 varying vec4 angle_mult;
 
 void vertex(){
-	world_pos = (WORLD_MATRIX * vec4(VERTEX, 1e-5));
-	moon_coords.xyz  = mul(_moon_matrix, VERTEX).xyz / _moon_size + 0.5;
+	vec4 vert = vec4(VERTEX, 0.0);
+	
+	// mvp * vec4(vert, 0.0)
+	vec4 clip_pos = PROJECTION_MATRIX * inverse(CAMERA_MATRIX) * WORLD_MATRIX * vert;
+	POSITION = clip_pos;
+	POSITION.z = clip_pos.w; // Ignore far clip.
+	
+	world_pos = (WORLD_MATRIX * vert);
+	moon_coords.xyz  = ((_moon_matrix) * VERTEX).xyz / _moon_size + 0.5;
 	moon_coords.w = dot(world_pos.xyz, _moon_direction); 
 	deep_space_coords.xyz = (_deep_space_matrix * VERTEX).xyz;
 	angle_mult.x = saturate(1.0 - _sun_direction.y);
 	angle_mult.y = saturate(_sun_direction.y + 0.45);
 	angle_mult.z = saturate(-_sun_direction.y + 0.30);
 	angle_mult.w = saturate(-_sun_direction.y + 0.60);
-	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1e-5)).xyz;
 }
 
 void fragment(){
@@ -288,6 +286,7 @@ void fragment(){
 	col.rgb = contrastLevel(col.rgb, _color_correction_params.x);
 	
 	ALBEDO = col.rgb;
+	
 }
 
 

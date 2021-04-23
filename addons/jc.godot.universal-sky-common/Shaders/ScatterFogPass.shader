@@ -177,7 +177,7 @@ void fragment(){
 	vec4 fogColor = vec4(tint.rgb, 1.0) * fogFactor;
 	fogColor = vec4((fogColor.rgb), saturate(fogColor.a));
 	//fogColor.a = saturate(mix(0.0, fogColor.a, _atm_day_tint.a * fogColor.a));
-	fogColor.a *= saturate(clamp(-ray.y + 0.7, 0.3, 1.0));
+	fogColor.a *= saturate(clamp(-ray.y + 0.7, 0.5, 1.0));
 	
 	fogColor.rgb = tonemapPhoto(fogColor.rgb, _color_correction_params.z, _color_correction_params.y);
 	fogColor.rgb = contrastLevel(fogColor.rgb, _color_correction_params.x);

@@ -119,6 +119,15 @@ vec3 mul(mat3 mat, vec3 vec){
 	return ret;
 }
 
+vec4 mul44(mat4 mat, vec4 vec){
+	vec4 ret;
+	ret.x = dot(mat[0].xyzw, vec.xyzw);
+	ret.y = dot(mat[1].xyzw, vec.xyzw);
+	ret.z = dot(mat[2].xyzw, vec.xyzw);
+	ret.w = dot(mat[3].xyzw, vec.xyzw);
+	return ret;
+}
+
 vec2 equirectUV(vec3 norm){
 	vec2 ret;
 	ret.x = (atan(norm.x, norm.z) + kPI) * kINV_TAU;
@@ -220,24 +229,29 @@ varying vec4 moon_coords;
 varying vec3 deep_space_coords;
 varying vec4 angle_mult;
 varying vec3 vscatter;
+
 void vertex(){
-	world_pos = (WORLD_MATRIX * vec4(VERTEX, 1e-5));
-	moon_coords.xyz  = mul(_moon_matrix, VERTEX).xyz / _moon_size + 0.5;
+	vec4 vert = vec4(VERTEX, 0.0);
+	
+	// mvp * vec4(vert, 0.0)
+	vec4 clip_pos = PROJECTION_MATRIX * inverse(CAMERA_MATRIX) * WORLD_MATRIX * vert;
+	POSITION = clip_pos;
+	POSITION.z = clip_pos.w; // Ignore far clip.
+	
+	world_pos = (WORLD_MATRIX * vert);
+	moon_coords.xyz  = (_moon_matrix * VERTEX).xyz / _moon_size + 0.5;
 	moon_coords.w = dot(world_pos.xyz, _moon_direction); 
 	deep_space_coords.xyz = (_deep_space_matrix * VERTEX).xyz;
 	angle_mult.x = saturate(1.0 - _sun_direction.y);
 	angle_mult.y = saturate(_sun_direction.y + 0.45);
 	angle_mult.z = saturate(-_sun_direction.y + 0.30);
 	angle_mult.w = saturate(-_sun_direction.y + 0.60);
-
+	
 	// Atmospheric Scattering.
 	vec3 nrm = normalize(world_pos).xyz;
 	vec2 mu = vec2(dot(_sun_direction, nrm), dot(_moon_direction, nrm));
 	float sr; float sm; opticalDepth(nrm.y + _atm_params.z, sr, sm);
 	vscatter = atmosphericScattering(sr, sm, mu.xy, angle_mult.xyz);
-	
-
-	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1e-5)).xyz;
 }
 
 void fragment(){
