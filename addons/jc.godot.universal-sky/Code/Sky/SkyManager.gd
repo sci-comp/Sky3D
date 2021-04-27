@@ -665,7 +665,7 @@ func set_clouds_cumulus_offset(value: Vector3) -> void:
 
 var clouds_cumulus_offset_speed: float = 0.005 setget set_clouds_cumulus_offset_speed
 func set_clouds_cumulus_offset_speed(value: float) -> void:
-	clouds_offset_speed = value 
+	clouds_cumulus_offset_speed = value 
 	_clouds_cumulus_material.set_shader_param("_clouds_offset_speed", value)
 
 var clouds_cumulus_enable_set_texture: bool setget set_clouds_cumulus_enable_set_texture
