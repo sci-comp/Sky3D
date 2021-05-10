@@ -1,5 +1,0 @@
-# Universal Sky.
-
-> GDScript version.
-
-

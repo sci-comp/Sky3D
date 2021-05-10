@@ -1,0 +1,5 @@
+[gd_resource type="Environment" format=2]
+
+[resource]
+tonemap_mode = 3
+tonemap_white = 6.0
