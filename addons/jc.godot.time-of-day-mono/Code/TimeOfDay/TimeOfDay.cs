@@ -25,7 +25,8 @@ namespace JC.TimeOfDay
         Realictic
     }
 
-    public class OrbitalElements : Godot.Object // .l. godot .l. unmarshable error
+    [Tool]
+    public class OrbitalElements : Godot.Object  // .l. godot .l. unmarshallable error in struct.
     {
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace JC.TimeOfDay
         /// Mean anomaly </summary>
         public float M;
 
-      /*  public OrbitalElements(float _N, float _i, float _w, float _a, float _e, float _M)
+       /*public OrbitalElements(float _N, float _i, float _w, float _a, float _e, float _M)
         {
             this.N = _N;
             this.i = _i;
@@ -198,7 +199,8 @@ namespace JC.TimeOfDay
         public bool IsBeginOfTime => _Year == 1 && _Month == 1 && _Day == 1;
         public bool IsEndOfTime => _Year == 9999 && _Month == 12 && _Day == 31;
 
-        public DateTime DateTimeOs{ get; private set; }
+        //public DateTime DateTimeOs{ get; private set; } // .l. godot .l. unmarshallable error.
+        public Godot.Collections.Dictionary DateTimeOs{ get; private set; }
 
         [Signal]
         public delegate void TotalHoursChanged(float value);
@@ -384,11 +386,18 @@ namespace JC.TimeOfDay
 
     void GetDateTimeOs()
     {
-        DateTimeOs = DateTime.Now;
-        SetTime(DateTimeOs.Hour, DateTimeOs.Minute, DateTimeOs.Second);
-        Day   = DateTimeOs.Day;
-        Month = DateTimeOs.Month;
-        Year  = DateTimeOs.Year;
+        DateTimeOs = OS.GetDatetime();
+
+        int h = (int)DateTimeOs["hour"];
+        int m = (int)DateTimeOs["minute"];
+        int s = (int)DateTimeOs["second"];
+        SetTime(h, m, s);
+
+        Day   = (int)DateTimeOs["day"];
+        Month = (int)DateTimeOs["month"];
+        Year  = (int)DateTimeOs["year"];
+
+        GD.Print(_TotalHours);
     }
 
     void RepeatFullCycle()
@@ -619,94 +628,7 @@ namespace JC.TimeOfDay
 
         void ComputeRealisticMoonCoords()
         {
-            /*
-_set_latitude_rad(); _set_total_hours_utc(); _set_time_scale()
-	_set_oblecl()
-	
-	# Get orbital elements.
-	_sun_orbital_elements.get_orbital_elements(0, _time_scale) 
-	_sun_orbital_elements.M = SkyMath.rev(_sun_orbital_elements.M)
-	
-	# Mean Anomaly in radians.
-	var MRad: float = SkyMath.DEG_2_RAD * _sun_orbital_elements.M
-	
-	# Eccentric anomaly.
-	#E = M + (180/pi) * e * sin(M) * (1 + e * cos(M))
-	var E: float = _sun_orbital_elements.M + SkyMath.RAD_2_DEG * _sun_orbital_elements.e * sin(MRad) * (1 + _sun_orbital_elements.e * cos(MRad))
-	
-	var ERad = SkyMath.DEG_2_RAD * E
-	
-	# Rectangular coordinates.
-	# Rectangular coordinates of the sun in the plane of the ecliptic.
-	var xv: float = cos(ERad) - _sun_orbital_elements.e
-	var yv: float = sin(ERad) * sqrt(1 - _sun_orbital_elements.e * _sun_orbital_elements.e)
-	
-	# Convert to distance and true anomaly(r = radians, v = degrees).
-	var r: float = sqrt(xv * xv + yv * yv)
-	var v: float = SkyMath.RAD_2_DEG * atan2(yv, xv)
-	_sun_distance = r # Set sun distance.
-
-	# True longitude.
-	var lonSun: float = v + _sun_orbital_elements.w
-	lonSun = SkyMath.rev(lonSun) # Normalize.
-	var lonSunRad: float = SkyMath.DEG_2_RAD * lonSun # To radians.
-	_true_sun_longitude = lonSunRad # Set sun longitude
-	
-	# Ecliptic and Ecuatorial coords.
-	# Ecliptic rectangular coordinates
-	var xs: float = r * cos(lonSunRad)
-	var ys: float = r * sin(lonSunRad)
-	
-	# Ecliptic rectangular coordinates rotate these to equatorial coordinates
-	var oblecCos: float = cos(_oblecl)
-	var oblecSin: float = sin(_oblecl)
-	var xe: float = xs
-	var ye: float = ys * oblecCos - 0.0 * oblecSin
-	var ze: float = ys * oblecSin + 0.0 * oblecCos
-
-	# ascension and declination.
-	var RA: float = SkyMath.RAD_2_DEG * atan2(ye, xe) / 15 # Right ascension.
-	
-	# Decl =  atan2( zequat, sqrt( xequat*xequat + yequat*yequat) )
-	var decl = atan2(ze, sqrt(xe * xe + ye * ye)) # Declination.
-	
-	# Mean longitude.
-	var L: float = _sun_orbital_elements.w + _sun_orbital_elements.M
-	L = SkyMath.rev(L)
-	
-	# Set mean sun longitude.
-	_mean_sun_longitude = L
-	
-	# Sideral time.
-	var GMST0 = ((L/15) + 12)
-	
-	_sideral_time = GMST0 + _total_hours_utc + longitude / 15 # + 15 / 15
-	_local_sideral_time =  SkyMath.DEG_2_RAD * _sideral_time * 15
-	
-	# Hour angle.
-	var HA: float = (_sideral_time - RA) * 15
-	
-	# Hour angle in radians.
-	var HARAD: float = SkyMath.DEG_2_RAD * HA
-	
-	# Hour angle and declination in rectangular coords.
-	# HA anf Decl in rectangular coordinates.
-	var declCos: float = cos(decl)
-	var x: float = cos(HARAD) * declCos # X Axis points to the celestial equator in the south.
-	var y: float = sin(HARAD) * declCos # Y axis points to the horizon in the west.
-	var z: float = sin(decl) # Z axis points to the north celestial pole.
-	
-	# Rotate the rectangualar coordinates system along of the Y axis.
-	var sinLat: float = sin(latitude * SkyMath.DEG_2_RAD)
-	var cosLat: float = cos(latitude * SkyMath.DEG_2_RAD)
-	var xhor: float = x * sinLat - z * cosLat
-	var yhor: float = y
-	var zhor: float = x * cosLat + z * sinLat
-	
-	# Return azimtuh and altitude.
-	_sun_coords.x = atan2(yhor, xhor) + PI
-	_sun_coords.y =(PI * 0.5) - asin(zhor) # atan2(zhor, sqrt(xhor * xhor + yhor * yhor)) 
-    */
+ 
         }
 
         #endregion

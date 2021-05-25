@@ -13,9 +13,8 @@
 environment = ExtResource( 1 )
 
 [node name="SunLight" type="DirectionalLight" parent="WorldEnvironment"]
-transform = Transform( 0, -0.984576, -0.174958, -0.920959, -0.0681742, 0.38365, -0.38966, 0.161129, -0.906754, -0.174958, 0.38365, -0.906754 )
-light_color = Color( 0.990061, 0.675047, 0.588538, 1 )
-light_energy = 0.63365
+transform = Transform( 0, -0.998694, -0.0510918, -0.265139, -0.0492632, 0.962951, -0.96421, 0.0135464, -0.264792, -0.0510916, 0.962951, -0.264792 )
+light_color = Color( 0.984314, 0.843137, 0.788235, 1 )
 shadow_enabled = true
 
 [node name="MoonLight" type="DirectionalLight" parent="WorldEnvironment"]
@@ -48,7 +47,7 @@ Exposure = 1.3
 GroundColor = Color( 0.3, 0.3, 0.3, 1 )
 SkyLayers = 4
 SkyRenderPriority = -128
-SunAltitude = -67.44
+SunAltitude = -15.645
 SunAzimuth = 10.921
 SunDiskColor = Color( 0.996094, 0.541334, 0.140076, 1 )
 SunDiskIntensity = 2.0
@@ -129,7 +128,7 @@ script = ExtResource( 3 )
 DomePath = NodePath("../Skydome")
 SystemSync = false
 TotalCycleInMinutes = 15.0
-TotalHours = 16.496
+TotalHours = 13.043
 Day = 12
 Month = 2
 Year = 2021
