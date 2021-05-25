@@ -334,7 +334,7 @@ namespace JC.TimeOfDay
             {
                 _AtmLevelParams = value;
                 _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmLevelParamsP, value);
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmLevelParamsP, value);
+                //_Resources.FogMaterial.SetShaderParam(SkyConst.kAtmLevelParamsP, value);
             }
         }
 
@@ -467,6 +467,17 @@ namespace JC.TimeOfDay
                     throw new Exception("Fog instance not found");
                 
                 _FogInstance.Visible = value;
+            }
+        }
+
+        private Vector3 _FogAtmLevelParams = new Vector3(1.0f, 0.0f, 0.0f);
+        public Vector3 FogAtmLevelParams 
+        {
+            get => _FogAtmLevelParams;
+            set
+            {
+                _FogAtmLevelParams = value;
+                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmLevelParamsP, value);
             }
         }
 

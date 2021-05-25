@@ -527,6 +527,13 @@ namespace JC.TimeOfDay
             };
             ret.Add(pFogVisible);
 
+            PropElement pFogAtmLevelParam = new PropElement
+            {
+                {"name", "FogAtmLevelParams"},
+                {"type", Variant.Type.Vector3}
+            };
+            ret.Add(pFogAtmLevelParam);
+
             PropElement pFogDensity = new PropElement 
             {
                 {"name", "FogDensity"},

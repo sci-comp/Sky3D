@@ -13,7 +13,7 @@
 environment = ExtResource( 1 )
 
 [node name="SunLight" type="DirectionalLight" parent="WorldEnvironment"]
-transform = Transform( 0, -0.998694, -0.0510918, -0.265139, -0.0492632, 0.962951, -0.96421, 0.0135464, -0.264792, -0.0510916, 0.962951, -0.264792 )
+transform = Transform( 0, -0.999797, -0.0201554, -0.10448, -0.0200451, 0.994325, -0.994527, 0.00210584, -0.104459, -0.0201553, 0.994325, -0.104459 )
 light_color = Color( 0.984314, 0.843137, 0.788235, 1 )
 shadow_enabled = true
 
@@ -47,7 +47,7 @@ Exposure = 1.3
 GroundColor = Color( 0.3, 0.3, 0.3, 1 )
 SkyLayers = 4
 SkyRenderPriority = -128
-SunAltitude = -15.645
+SunAltitude = -6.107
 SunAzimuth = 10.921
 SunDiskColor = Color( 0.996094, 0.541334, 0.140076, 1 )
 SunDiskIntensity = 2.0
@@ -91,8 +91,9 @@ AtmMoonMieTint = Color( 0.137255, 0.184314, 0.290196, 1 )
 AtmMoonMieIntensity = 0.7
 AtmMoonMieAnisotropy = 0.8
 FogVisible = true
-FogDensity = 0.00015
-FogRayleighDepth = 0.0031
+FogAtmLevelParams = Vector3( 1, 0, 0 )
+FogDensity = 0.000196984
+FogRayleighDepth = 0.00395115
 FogMieDepth = 0.0001
 FogLayers = 524288
 FogRenderPriority = 123
