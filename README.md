@@ -1,4 +1,4 @@
-# Universal Sky
+# Time Of Day
 ------------------------------------
 
 Dynamic skydome and ToD plugin for godot engine.
@@ -7,7 +7,7 @@ Dynamic skydome and ToD plugin for godot engine.
 
 
 ## Status:
-> Refactoring -> Beta3.
+> Beta3 WIP.
 ------------------------------------
 
 ## Reflections:
@@ -20,6 +20,10 @@ Dynamic skydome and ToD plugin for godot engine.
 
 ## Feedback is welcome.
 ------------------------------------
+
+## Donwload beta2 GDScript
+
+> git clone --single-branch --branch Beta2 https://github.com/7leodev/UniversalSky.git
 
 ## Install:
 - Clone or download the repository. 
