@@ -628,10 +628,137 @@ namespace JC.TimeOfDay
 
         void ComputeRealisticMoonCoords()
         {
- 
+
+            #region Orbital Elements 
+
+            _MoonOrbitalElements.GetOrbitalElements(1, TimeScale);
+            _MoonOrbitalElements.N = TOD_Math.Rev(_MoonOrbitalElements.N);
+            _MoonOrbitalElements.w = TOD_Math.Rev(_MoonOrbitalElements.w);
+            _MoonOrbitalElements.M = TOD_Math.Rev(_MoonOrbitalElements.M);
+
+            float NRAD = TOD_Math.kDegToRad * _MoonOrbitalElements.N;
+            float IRAD = TOD_Math.kDegToRad * _MoonOrbitalElements.i;
+            float MRAD = TOD_Math.kDegToRad * _MoonOrbitalElements.M;
+
+            #endregion
+
+            #region Eccentric Anomaly
+
+            float E = _MoonOrbitalElements.M + TOD_Math.kRadToDeg * _MoonOrbitalElements.e * Mathf.Sin(MRAD) * 
+                (1 + _SunOrbitalElements.e * Mathf.Cos(MRAD));
+            
+            float ERad = TOD_Math.kDegToRad * E;
+
+            #endregion
+
+            #region Rectangular Coords and True Anomaly
+
+            // Rectangular coordinates of the sun in the plane of the ecliptic.
+            float xv = _MoonOrbitalElements.a * (Mathf.Cos(ERad) - _MoonOrbitalElements.e);
+            float yv = _MoonOrbitalElements.a * (Mathf.Sin(ERad) * Mathf.Sqrt(1 - _MoonOrbitalElements.e * 
+                _MoonOrbitalElements.e)) * Mathf.Sin(ERad);
+
+            // Convert to distance and true anomaly(r = radians, v = degrees)
+            float r = Mathf.Sqrt(xv * xv + yv * yv);
+            float v = TOD_Math.kRadToDeg * Mathf.Atan2(yv, xv);
+            v = TOD_Math.Rev(v);
+
+            float l = TOD_Math.kDegToRad * v + _MoonOrbitalElements.w;
+
+            float cosL = Mathf.Cos(l);
+            float sinL = Mathf.Sin(l);
+            float cosNRad = Mathf.Cos(NRAD);
+            float sinNRad = Mathf.Sin(NRAD);
+            float cosIRad = Mathf.Cos(IRAD);
+
+            float xeclip = r * (cosNRad * cosL - sinNRad * sinL * cosIRad);
+            float yeclip = r * (sinNRad * cosL + cosNRad * sinL * cosIRad);
+            float zeclip = r * (sinL * Mathf.Sin(IRAD));
+
+            #endregion
+
+            #region Geocentric coords
+
+            // Geocentric position for the moon and Heliocentric position for the planets
+            float lonecl = TOD_Math.kRadToDeg * Mathf.Atan2(yeclip, xeclip);
+            lonecl = TOD_Math.Rev(lonecl);
+
+            float latecl = TOD_Math.kRadToDeg * Mathf.Atan2(zeclip, Mathf.Sqrt(xeclip * xeclip + yeclip * yeclip));
+
+            // Get true sun longitude
+            float lonsun = _TrueSunLongitude;
+
+            // Ecliptic lingitude and latitude in radians.
+            float loneclRad = TOD_Math.kDegToRad * lonecl;
+            float lateclRad = TOD_Math.kDegToRad * latecl;
+
+            float nr = 1.0f;
+            float xh = nr * Mathf.Cos(loneclRad) * Mathf.Cos(lateclRad);
+            float yh = nr * Mathf.Sin(loneclRad) * Mathf.Cos(lateclRad);
+            float zh = nr * Mathf.Sin(lateclRad);
+
+            // Geocentric position.
+            float xs = 0.0f;
+            float ys = 0.0f;
+
+            // Convert the geocentric position to heliocentric position.
+            float xg = xh + xs;
+            float yg = yh + ys;
+            float zg = zh;
+
+            #endregion
+
+            #region Ecuatorial Coords
+
+            // Convert xg, yg in equatorial coordinates.
+            float obleclCos = Mathf.Cos(Oblecl);
+            float obleclSin = Mathf.Sin(Oblecl);
+
+            float xe = xg;
+            float ye = yg * obleclCos - zg * obleclSin;
+            float ze = yg * obleclSin + zg * obleclCos;
+
+            // Right Ascention.
+            float RA = TOD_Math.kRadToDeg * Mathf.Atan2(ye, xe);
+            RA = TOD_Math.Rev(RA);
+
+            // Declination
+            float decl = TOD_Math.kRadToDeg * Mathf.Atan2(ze, Mathf.Sqrt(xe * xe + ye * ye));
+            float declRad = TOD_Math.kDegToRad * decl;
+            #endregion 
+
+            #region Sideral Time and Hour Angle
+
+            // Hour Angle
+            float HA = ((_SideralTime * 15) - RA);
+            HA = TOD_Math.Rev(HA);
+            float HARad = TOD_Math.kDegToRad * HA;
+
+            // HA y Decl in rectangular coordinates.
+            float declCos = Mathf.Cos(declRad);
+            float xr = Mathf.Cos(HARad) * declCos;
+            float yr = Mathf.Sin(HARad) * declCos;
+            float zr = Mathf.Sin(declRad);
+
+            // Rotate the rectangualar coordinates system along of the Y axis(radians).
+            float sinLat = Mathf.Sin(LatitudeRad);
+            float cosLat = Mathf.Cos(LatitudeRad);
+
+            float xhor = xr * sinLat - zr * cosLat;
+            float yhor = yr;
+            float zhor = xr * cosLat + zr * sinLat;
+
+            #endregion
+
+            #region Azimuth and Altitude
+
+            _MoonCoords.x = Mathf.Atan2(yhor, xhor) + Mathf.Pi;
+            _MoonCoords.y = (Mathf.Pi * 0.5f) - Mathf.Atan2(zhor, Mathf.Sqrt(xhor * xhor + yhor * yhor)); // Mathf.Asin(zhor)
+
+            #endregion
         }
 
-        #endregion
+    #endregion
 
     #region Properties 
 
