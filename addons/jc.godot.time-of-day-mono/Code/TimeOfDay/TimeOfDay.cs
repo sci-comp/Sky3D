@@ -396,8 +396,6 @@ namespace JC.TimeOfDay
         Day   = (int)DateTimeOs["day"];
         Month = (int)DateTimeOs["month"];
         Year  = (int)DateTimeOs["year"];
-
-        GD.Print(_TotalHours);
     }
 
     void RepeatFullCycle()

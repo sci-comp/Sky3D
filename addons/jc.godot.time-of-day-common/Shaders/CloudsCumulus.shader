@@ -12,8 +12,8 @@
 °               J. Cuellar 2020. MIT License.
 °                   See: LICENSE Archive.
 °   -----------------------------------------------------
-°   Clouds based:
-°   https://github.com/danilw/godot-utils-and-other/tree/master/Dynamic%20sky%20and%20reflection.
+°   This shader is based on DanilS clouds shader with MIT License
+°   See: https://github.com/danilw/godot-utils-and-other/tree/master/Dynamic%20sky%20and%20reflection.
 ========================================================*/
 shader_type spatial;
 render_mode unshaded, blend_mix, depth_draw_never, cull_front, skip_vertex_transform;

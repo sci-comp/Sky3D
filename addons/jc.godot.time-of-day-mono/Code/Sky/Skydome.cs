@@ -1349,6 +1349,7 @@ namespace JC.TimeOfDay
             AtmMoonMieAnisotropy = AtmMoonMieAnisotropy;
 
             FogVisible = FogVisible;
+            FogAtmLevelParams = FogAtmLevelParams;
             FogDensity = FogDensity;
             FogRayleighDepth = FogRayleighDepth;
             FogMieDepth = FogMieDepth;

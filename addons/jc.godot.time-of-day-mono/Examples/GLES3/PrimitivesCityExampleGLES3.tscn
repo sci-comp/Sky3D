@@ -8,6 +8,7 @@
 [node name="Main" type="Spatial"]
 
 [node name="PrimitivesCity" parent="." instance=ExtResource( 2 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource( 1 )
@@ -25,7 +26,7 @@ light_energy = 0.0
 shadow_enabled = true
 
 [node name="MainCamera" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.825803, -0.563959, 0, 0.563959, 0.825803, -0.613327, 1.93227, 6.56337 )
+transform = Transform( 0.0135226, 0.0597346, 0.998123, 0.00809374, 0.998175, -0.0598473, -0.999876, 0.00888784, 0.0130144, 10.1699, 2.75546, -0.0224502 )
 far = 2500.0
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
@@ -65,7 +66,7 @@ MoonResolution = 2
 MoonLightPath = NodePath("../WorldEnvironment/MoonLight")
 MoonLightColor = Color( 0.572549, 0.776471, 0.956863, 1 )
 MoonLightEnergy = 0.3
-DeepSpaceEuler = Vector3( -0.752, -2.56, 0 )
+DeepSpaceEuler = Vector3( -0.752, -2.56, -2.04035e-08 )
 BackgroundColor = Color( 0.709804, 0.709804, 0.709804, 0.854902 )
 SetBackgroundTexture = false
 StarsFieldColor = Color( 1, 1, 1, 1 )
