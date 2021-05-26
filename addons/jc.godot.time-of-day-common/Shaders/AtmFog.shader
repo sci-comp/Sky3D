@@ -135,9 +135,9 @@ vec3 atmosphericScattering(float sr, float sm, vec2 mu, vec3 mult, float depth){
 	scatter = mix(scatter, scatter * (1.0 - extcFactor), _atm_darkness);
 	
 	vec3 lcol = mix(_atm_day_tint.rgb, _atm_horizon_light_tint.rgb, mult.x);
-	vec3 nscatter = (1.0 - extcFactor) * _atm_night_tint.rgb;
+	vec3 nscatter = (1.0 - extcFactor) * _atm_night_tint.rgb * saturate(depth * _fog_rayleigh_depth);
 	nscatter += miePhase(mu.y, _atm_moon_partial_mie_phase) * 
-		_atm_moon_mie_tint.rgb * _atm_moon_mie_intensity * 0.005;
+		_atm_moon_mie_tint.rgb * _atm_moon_mie_intensity * 0.005 * saturate(depth * _fog_mie_depth);
 	
 	return (scatter * lcol) + nscatter;
 }

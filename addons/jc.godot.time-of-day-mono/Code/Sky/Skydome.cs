@@ -304,6 +304,17 @@ namespace JC.TimeOfDay
             }
         }
 
+        public float FogAtmNightIntensity 
+        {
+            get 
+            {
+                if(!AtmEnableMoonScatterMode)
+                    return TOD_Math.Saturate(-SunDirection.y + 0.70f);
+                                
+                return TOD_Math.Saturate(MoonDirection.y) * AtmMoonPhasesMult;
+            }
+        }
+
         public float AtmMoonPhasesMult 
         {
             get 
@@ -492,7 +503,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _FogRayleighDepth = 0.0031f;
+        private float _FogRayleighDepth = 0.116f;
         public float FogRayleighDepth
         {
             get => _FogRayleighDepth;
@@ -1644,7 +1655,7 @@ namespace JC.TimeOfDay
         {
             Color tint = _AtmNightTint * AtmNightIntensity;
             _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmNightTintP, tint);
-            _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmNightTintP, tint);
+            _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmNightTintP, _AtmNightTint * FogAtmNightIntensity);
 
             AtmMoonMieIntensity = AtmMoonMieIntensity;
         }
