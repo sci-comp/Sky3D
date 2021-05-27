@@ -36,8 +36,25 @@ extents = Vector3( 10000, 10000, 10000 )
 cull_mask = 4
 interior_ambient_energy = 0.0
 __meta__ = {
+"_edit_lock_": true,
 "_editor_description_": "my config = 128 * 1"
 }
+
+[node name="TimeOfDay" type="Node" parent="."]
+script = ExtResource( 3 )
+DomePath = NodePath("../Skydome")
+SystemSync = false
+TotalCycleInMinutes = 0.2
+TotalHours = 14.041
+Day = 21
+Month = 2
+Year = 2021
+CelestialsCalculations = 1
+ComputeMoonCoords = false
+Latitude = 0.0
+Longitude = 0.0
+UTC = 0.0
+CelestialsUpdateTime = null
 
 [node name="Skydome" type="Node" parent="."]
 script = ExtResource( 4 )
@@ -124,19 +141,3 @@ CloudsCumulusOffset = Vector3( 0.171, 0.256, 0.1 )
 CloudsCumulusOffsetSpeed = 0.145
 SetCloudsCumulusTexture = false
 Enviro = ExtResource( 1 )
-
-[node name="TimeOfDay" type="Node" parent="."]
-script = ExtResource( 3 )
-DomePath = NodePath("../Skydome")
-SystemSync = false
-TotalCycleInMinutes = 0.2
-TotalHours = 14.041
-Day = 21
-Month = 2
-Year = 2021
-CelestialsCalculations = 1
-ComputeMoonCoords = false
-Latitude = 0.0
-Longitude = 0.0
-UTC = 0.0
-CelestialsUpdateTime = null

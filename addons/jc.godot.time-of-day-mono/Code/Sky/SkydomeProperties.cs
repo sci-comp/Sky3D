@@ -280,88 +280,88 @@ namespace JC.TimeOfDay
 
         #region DeepSpace 
 
-        PropElement pDeepSpaceGroup = new PropElement 
-        { 
-            {"name", "DeepSpace"}, 
-            {"type", Variant.Type.Nil}, 
-            {"usage", PropertyUsageFlags.Group}
-        };
-        ret.Add(pDeepSpaceGroup);
-
-        PropElement pDeepSpaceEuler = new PropElement
-        {
-            {"name", "DeepSpaceEuler"},
-            {"type", Variant.Type.Vector3}
-        };
-        ret.Add(pDeepSpaceEuler);
-
-        PropElement pBackgroundColor = new PropElement
-        {
-            {"name", "BackgroundColor"},
-            {"type", Variant.Type.Color}
-        };
-        ret.Add(pBackgroundColor);
-
-        PropElement pSetBackgroundTexture = new PropElement
-        {
-            {"name", "SetBackgroundTexture"},
-            {"type", Variant.Type.Bool}
-        };
-        ret.Add(pSetBackgroundTexture);
-
-        if(_SetBackgroundTexture)
-        {
-            PropElement pBackgroundTexture = new PropElement
-            {
-                {"name", "BackgroundTexture"},
-                {"type", Variant.Type.Object},
-                {"hint", PropertyHint.File},
-                {"hint_string", "Texture"}
+            PropElement pDeepSpaceGroup = new PropElement 
+            { 
+                {"name", "DeepSpace"}, 
+                {"type", Variant.Type.Nil}, 
+                {"usage", PropertyUsageFlags.Group}
             };
-            ret.Add(pBackgroundTexture);
-        }
+            ret.Add(pDeepSpaceGroup);
 
-        PropElement pStarsFieldColor = new PropElement
-        {
-            {"name", "StarsFieldColor"},
-            {"type", Variant.Type.Color}
-        };
-        ret.Add(pStarsFieldColor);
-
-        PropElement pSetStarsFieldTexture = new PropElement
-        {
-            {"name", "SetStarsFieldTexture"},
-            {"type", Variant.Type.Bool}
-        };
-        ret.Add(pSetStarsFieldTexture);
-
-        if(_SetStarsFieldTexture)
-        {
-            PropElement pStarsFieldTexture = new PropElement
+            PropElement pDeepSpaceEuler = new PropElement
             {
-                {"name", "StarsFieldTexture"},
-                {"type", Variant.Type.Object},
-                {"hint", PropertyHint.File},
-                {"hint_string", "Texture"}
+                {"name", "DeepSpaceEuler"},
+                {"type", Variant.Type.Vector3}
             };
-            ret.Add(pStarsFieldTexture);
-        }
+            ret.Add(pDeepSpaceEuler);
 
-        PropElement pStarsFieldScintillation = new PropElement
-        {
-            {"name", "StarsScintillation"},
-            {"type", Variant.Type.Real},
-            {"hint", PropertyHint.Range},
-            {"hint_string", "0.0, 1.0"}
-        };
-        ret.Add(pStarsFieldScintillation);
+            PropElement pBackgroundColor = new PropElement
+            {
+                {"name", "BackgroundColor"},
+                {"type", Variant.Type.Color}
+            };
+            ret.Add(pBackgroundColor);
 
-        PropElement pStarsFieldScintillationSpeed = new PropElement 
-        {
-            {"name", "StarsScintillationSpeed"},
-            {"type", Variant.Type.Real}
-        };
-        ret.Add(pStarsFieldScintillationSpeed);
+            PropElement pSetBackgroundTexture = new PropElement
+            {
+                {"name", "SetBackgroundTexture"},
+                {"type", Variant.Type.Bool}
+            };
+            ret.Add(pSetBackgroundTexture);
+
+            if(_SetBackgroundTexture)
+            {
+                PropElement pBackgroundTexture = new PropElement
+                {
+                    {"name", "BackgroundTexture"},
+                    {"type", Variant.Type.Object},
+                    {"hint", PropertyHint.File},
+                    {"hint_string", "Texture"}
+                };
+                ret.Add(pBackgroundTexture);
+            }
+
+            PropElement pStarsFieldColor = new PropElement
+            {
+                {"name", "StarsFieldColor"},
+                {"type", Variant.Type.Color}
+            };
+            ret.Add(pStarsFieldColor);
+
+            PropElement pSetStarsFieldTexture = new PropElement
+            {
+                {"name", "SetStarsFieldTexture"},
+                {"type", Variant.Type.Bool}
+            };
+            ret.Add(pSetStarsFieldTexture);
+
+            if(_SetStarsFieldTexture)
+            {
+                PropElement pStarsFieldTexture = new PropElement
+                {
+                    {"name", "StarsFieldTexture"},
+                    {"type", Variant.Type.Object},
+                    {"hint", PropertyHint.File},
+                    {"hint_string", "Texture"}
+                };
+                ret.Add(pStarsFieldTexture);
+            }
+
+            PropElement pStarsFieldScintillation = new PropElement
+            {
+                {"name", "StarsScintillation"},
+                {"type", Variant.Type.Real},
+                {"hint", PropertyHint.Range},
+                {"hint_string", "0.0, 1.0"}
+            };
+            ret.Add(pStarsFieldScintillation);
+
+            PropElement pStarsFieldScintillationSpeed = new PropElement 
+            {
+                {"name", "StarsScintillationSpeed"},
+                {"type", Variant.Type.Real}
+            };
+            ret.Add(pStarsFieldScintillationSpeed);
 
         #endregion
 
@@ -834,7 +834,6 @@ namespace JC.TimeOfDay
             ret.Add(pEnviro);
 
         #endregion
-
 
             return ret;
         }

@@ -716,8 +716,6 @@ namespace JC.TimeOfDay
 
                 _SunLightReady = _SunLightNode != null ? true: false;
 
-                //SetSunLightColor(_SunLightColor, _SunHorizonLightColor);
-                //SetSunLightEnergy();
                 SetSunCoords();
             }
         }
@@ -764,8 +762,6 @@ namespace JC.TimeOfDay
                 
                 _MoonLightReady = _MoonLightNode != null ? true: false;
                 
-                //MoonLightColor = MoonLightColor;
-                //SetMoonLightEnergy();
                 SetMoonCoords();
             }
         }
@@ -1456,13 +1452,13 @@ namespace JC.TimeOfDay
        
                 _MoonInstance = _Resources.MoonRender.Instance() as Viewport;
                 this.AddChild(_MoonInstance);
-
                 //_MoonInstance.Owner = this.GetTree().EditedSceneRoot;
             }
 
             // Fog.
             _FogInstance = this.GetOrCreate<MeshInstance>(this, SkyConst.kFogInstance, false);
 
+            // Clouds.
             _CloudsCumulusInstance = this.GetOrCreate<MeshInstance>(this, SkyConst.kCloudsCInstance, false);
             
             SetupInstances();
@@ -1563,7 +1559,6 @@ namespace JC.TimeOfDay
             _Resources.FogMaterial.SetShaderParam(SkyConst.kSunDirP, SunDirection);
             _Resources.MoonMaterial.SetShaderParam(SkyConst.kSunDirP, SunDirection);
             _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kSunDirP, SunDirection);
-
 
             if(_SunLightReady)
             {

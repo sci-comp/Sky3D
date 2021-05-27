@@ -26,7 +26,7 @@ namespace JC.TimeOfDay
     }
 
     [Tool]
-    public class OrbitalElements : Godot.Object  // .l. godot .l. unmarshallable error in struct.
+    public class OrbitalElements : Godot.Object  //  unmarshallable error in struct.
     {
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace JC.TimeOfDay
         public bool IsBeginOfTime => _Year == 1 && _Month == 1 && _Day == 1;
         public bool IsEndOfTime => _Year == 9999 && _Month == 12 && _Day == 31;
 
-        //public DateTime DateTimeOs{ get; private set; } // .l. godot .l. unmarshallable error.
+        //public DateTime DateTimeOs{ get; private set; } //  unmarshallable error.
         public Godot.Collections.Dictionary DateTimeOs{ get; private set; }
 
         [Signal]
@@ -927,10 +927,8 @@ namespace JC.TimeOfDay
 
         #endregion
 
-
             return ret;
         }
-
 
     #endregion
 
