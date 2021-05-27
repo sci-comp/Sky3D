@@ -58,25 +58,5 @@ namespace JC.TimeOfDay
             return node;
         }
 
-        public static void SetNewScale(this MeshInstance target, Vector3 value)
-        {
-            Transform tmp = target.Transform;
-            tmp.basis = new Basis
-            {
-                x = new Vector3(value.x, 0.0f, 0.0f),
-                y = new Vector3(0.0f, value.y, 0.0f),
-                z = new Vector3(0.0f, 0.0f, value.z)
-            };
-            target.Transform = tmp;
-            GD.Print(tmp.basis);
-        }
-
-        public static void SetPosition(this Spatial target, Vector3 value)
-        {
-            Transform tmp = target.Transform;
-            tmp.origin = value;
-            target.Transform = tmp;
-        }
-
     }
 }

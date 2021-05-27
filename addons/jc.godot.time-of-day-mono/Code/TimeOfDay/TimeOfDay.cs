@@ -516,8 +516,6 @@ namespace JC.TimeOfDay
             _SunOrbitalElements.GetOrbitalElements(0, TimeScale);
             _SunOrbitalElements.M = TOD_Math.Rev(_SunOrbitalElements.M);
 
-            GD.Print(_SunOrbitalElements.M);
-
             // Mean anomaly in radiants.
             float MRad = TOD_Math.kDegToRad * _SunOrbitalElements.M;
 
