@@ -73,7 +73,4 @@ static func to_orbit(theta: float, pi: float, radius: float = 1.0) -> Vector3:
 	ret.y = cosTheta
 	ret.z = sinTheta * cosPI
 	return ret * radius
-
-"""
-
-"""
+	

@@ -363,10 +363,141 @@ func __compute_realistic_sun_coords() -> void:
 	
 
 func __compute_realistic_moon_coords() -> void:
-	pass
+	## Orbital Elements.
+	__moon_orbital_elements.get_orbital_elements(1, __get_time_scale())
+	__moon_orbital_elements.N = TOD_Math.rev(__moon_orbital_elements.N)
+	__moon_orbital_elements.w = TOD_Math.rev(__moon_orbital_elements.w)
+	__moon_orbital_elements.M = TOD_Math.rev(__moon_orbital_elements.M)
+	
+	var NRad: float = TOD_Math.DEG_TO_RAD * __moon_orbital_elements.N
+	var IRad: float = TOD_Math.DEG_TO_RAD * __moon_orbital_elements.i
+	var MRad: float = TOD_Math.DEG_TO_RAD * __moon_orbital_elements.M
+	
+	## Eccentric anomaly.
+	var E: float = __moon_orbital_elements.M + TOD_Math.RAD_TO_DEG * __moon_orbital_elements.e * sin(MRad) *\
+		(1 + __sun_orbital_elements.e * cos(MRad))
+	
+	var ERad = TOD_Math.DEG_TO_RAD * E
+	
+	## Rectangular coords and true anomaly
+	# Rectangular coordinates of the sun in the plane of the ecliptic
+	var xv: float = __moon_orbital_elements.a * (cos(ERad) - __moon_orbital_elements.e)
+	var yv: float = __moon_orbital_elements.a * (sin(ERad) * sqrt(1 - __moon_orbital_elements.e * \
+		__moon_orbital_elements.e)) * sin(ERad)
+		
+	# Convert to distance and true anomaly(r = radians, v = degrees)
+	var r: float = sqrt(xv * xv + yv * yv)
+	var v: float = TOD_Math.RAD_TO_DEG * atan2(yv, xv)
+	v = TOD_Math.rev(v)
+	
+	var l: float = TOD_Math.DEG_TO_RAD * v + __moon_orbital_elements.w
+	
+	var cosL: float = cos(l)
+	var sinL: float = sin(l)
+	var cosNRad: float = cos(NRad)
+	var sinNRad: float = sin(NRad)
+	var cosIRad: float = cos(IRad)
+	
+	var xeclip: float = r * (cosNRad * cosL - sinNRad * sinL * cosIRad)
+	var yeclip: float = r * (sinNRad * cosL + cosNRad * sinL * cosIRad)
+	var zeclip: float = r * (sinL * sin(IRad))
+	
+	## Geocentric coords.
+	# Geocentric position for the moon and Heliocentric position for the planets
+	var lonecl: float = TOD_Math.RAD_TO_DEG * atan2(yeclip, xeclip)
+	lonecl = TOD_Math.rev(lonecl)
+	
+	var latecl: float = TOD_Math.RAD_TO_DEG * atan2(zeclip, sqrt(xeclip * xeclip + yeclip * yeclip))
+	
+	# Get true sun longitude.
+	var lonsun: float = __true_sun_longitude
+	
+	# Ecliptic longitude and latitude in radians
+	var loneclRad: float = TOD_Math.DEG_TO_RAD * lonecl
+	var lateclRad: float = TOD_Math.DEG_TO_RAD * latecl
+	
+	var nr: float = 1.0
+	var xh: float = nr * cos(loneclRad) * cos(lateclRad)
+	var yh: float = nr * sin(loneclRad) * cos(lateclRad)
+	var zh: float = nr * sin(lateclRad)
+	
+	# Geocentric coords.
+	var xs: float = 0.0
+	var ys: float = 0.0
+	
+	# Convert the geocentric position to heliocentric position.
+	var xg: float = xh + xs
+	var yg: float = yh + ys
+	var zg: float = zh
+	
+	## Ecuatorial coords.
+	# Cobert xg, yg un equatorial coords.
+	var obleclCos: float = cos(__get_oblecl())
+	var obleclSin: float = sin(__get_oblecl())
+	
+	var xe: float = xg 
+	var ye: float = yg * obleclCos - zg * obleclSin
+	var ze: float = yg * obleclSin + zg * obleclCos
+	
+	# Right ascention.
+	var RA: float = TOD_Math.RAD_TO_DEG * atan2(ye, xe)
+	RA = TOD_Math.rev(RA)
+	
+	# Declination.
+	var decl: float = TOD_Math.RAD_TO_DEG * atan2(ze, sqrt(xe * xe + ye * ye))
+	var declRad: float = TOD_Math.DEG_TO_RAD * decl
+	
+	## Sideral time and hour angle.
+	# Hour angle.
+	var HA: float = ((__sideral_time * 15) - RA)
+	HA = TOD_Math.rev(HA)
+	var HARAD: float = TOD_Math.DEG_TO_RAD * HA
+	
+	# HA y Decl in rectangular coordinates.
+	var declCos: float = cos(declRad)
+	var xr: float = cos(HARAD) * declCos
+	var yr: float = sin(HARAD) * declCos
+	var zr: float = sin(declRad)
+	
+	# Rotate the rectangualar coordinates system along of the Y axis(radians).
+	var sinLat: float = sin(__get_latitude_rad())
+	var cosLat: float = cos(__get_latitude_rad())
+	
+	var xhor: float = xr * sinLat - zr * cosLat
+	var yhor: float = yr 
+	var zhor: float = xr * cosLat + zr * sinLat
+	
+	## Azimuth and altitude
+	__moon_coords.x = atan2(yhor, xhor) + PI
+	__moon_coords.y = (PI *0.5) - atan2(zhor, sqrt(xhor * xhor + yhor * yhor)) # Mathf.Asin(zhor)
 
-"""
 
-"""
+func _get_property_list() -> Array:
+	var ret: Array 
+	ret.push_back({name = "Time Of Day", type=TYPE_NIL, usage=PROPERTY_USAGE_CATEGORY})
+	
+	ret.push_back({name = "Target", type=TYPE_NIL, usage=PROPERTY_USAGE_GROUP})
+	ret.push_back({name = "dome_path", type=TYPE_NODE_PATH})
+	
+	ret.push_back({name = "DateTime", type=TYPE_NIL, usage=PROPERTY_USAGE_GROUP})
+	ret.push_back({name = "system_sync", type=TYPE_BOOL})
+		
+	ret.push_back({name = "total_cycle_in_minutes", type=TYPE_REAL})
+	ret.push_back({name = "total_hours", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 24.0"})
+	ret.push_back({name = "day", type=TYPE_INT, hint=PROPERTY_HINT_RANGE, hint_string="0, 31"})
+	ret.push_back({name = "month", type=TYPE_INT, hint=PROPERTY_HINT_RANGE, hint_string="0, 12"})
+	ret.push_back({name = "year", type=TYPE_INT, hint=PROPERTY_HINT_RANGE, hint_string="-9999, 9999"})
 
-
+	ret.push_back({name = "Planetary And Location", type=TYPE_NIL, usage=PROPERTY_USAGE_GROUP})
+	ret.push_back({name = "celestial_calculations", type=TYPE_INT, hint=PROPERTY_HINT_ENUM, hint_string="Simple, Realistic"})
+	ret.push_back({name = "compute_moon_coords", type=TYPE_BOOL})
+		
+	if celestials_calculations == 0 && compute_moon_coords:
+		ret.push_back({name = "moon_coords_offset", type=TYPE_VECTOR2})
+		
+	ret.push_back({name = "latitude", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="-90.0, 90.0"})
+	ret.push_back({name = "longitude", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="-180.0, 180.0"})
+	ret.push_back({name = "utc", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="-12.0, 12.0"})
+	ret.push_back({name = "celestials_update_time", type=TYPE_REAL})
+	
+	return ret
