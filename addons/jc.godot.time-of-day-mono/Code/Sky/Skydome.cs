@@ -481,7 +481,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private Vector3 _FogAtmLevelParams = new Vector3(1.0f, 0.0f, 0.0f);
+        private Vector3 _FogAtmLevelParams = new Vector3(1.0f, 0.0f, -1.0f); // z = -1.0 for down tintend.
         public Vector3 FogAtmLevelParams 
         {
             get => _FogAtmLevelParams;
@@ -522,6 +522,17 @@ namespace JC.TimeOfDay
             {
                 _FogMieDepth = value;
                 _Resources.FogMaterial.SetShaderParam(SkyConst.kFogMieDepthP, value);
+            }
+        }
+
+        private float _FogFalloff = 3.0f;
+        public float FogFalloff
+        {
+            get => _FogFalloff;
+            set 
+            {
+                _FogFalloff = value;
+                _Resources.FogMaterial.SetShaderParam(SkyConst.kFogFallof, value);
             }
         }
 
@@ -1360,6 +1371,7 @@ namespace JC.TimeOfDay
             FogDensity = FogDensity;
             FogRayleighDepth = FogRayleighDepth;
             FogMieDepth = FogMieDepth;
+            FogFalloff = FogFalloff;
             FogLayers = FogLayers;
             FogRenderPriority = FogRenderPriority;
 

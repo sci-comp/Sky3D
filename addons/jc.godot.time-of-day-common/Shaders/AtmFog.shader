@@ -19,7 +19,7 @@ uniform vec2 _color_correction_params;
 uniform float _fog_density;
 uniform float _fog_rayleigh_depth;
 uniform float _fog_mie_depth;
-
+uniform float _fog_falloff;
 uniform vec3 _sun_direction;
 uniform vec3 _moon_direction;
 
@@ -148,6 +148,11 @@ float fogExp(float depth, float density){
 	return 1.0 - saturate(exp2(-depth * density));
 }
 
+float fogFalloff(float y, float zeroLevel, float falloff)
+{
+	return saturate(exp(-(y + zeroLevel) * falloff));
+}
+
 vec3 computeViewDir(mat4 p, vec2 uv, float depth){
 	vec3 ndc = vec3(uv * 2.0 - 1.0, depth);
 	vec4 view = p * vec4(ndc, 1.0);
@@ -185,6 +190,7 @@ void fragment(){
 	
 	float linearDepth = -view.z;
 	float fogFactor = fogExp(linearDepth, _fog_density);
+	fogFactor *= fogFalloff(worldPos.y, 0.0, _fog_falloff);
 	
 	vec2 mu = vec2(dot(_sun_direction, worldPos), dot(_moon_direction, worldPos));
 	float sr; float sm; simpleOpticalDepth(worldPos.y + _atm_level_params.z, sr, sm);

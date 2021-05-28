@@ -561,6 +561,15 @@ namespace JC.TimeOfDay
             };
             ret.Add(pFogMieDepth);
 
+            PropElement pFogFalloff = new PropElement
+            {
+                {"name", "FogFalloff"},
+                {"type", Variant.Type.Real},
+                {"hint", PropertyHint.Range},
+                {"hint_string", "0.0, 3.0"}
+            };
+            ret.Add(pFogFalloff);
+
             PropElement pFogLayers = new PropElement 
             {
                 {"name", "FogLayers"},
