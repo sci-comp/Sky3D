@@ -184,6 +184,6 @@ void fragment(){
 		_clouds_night_color.rgb, angle_mult.w);
 	clouds.a = mix(0.0, clouds.a, horizonBlend);
 	ALBEDO = clouds.rgb;
-	ALPHA = clouds.a;
+	ALPHA = clouds.a * clouds.a * clouds.a;
 	DEPTH = 1.0;
 }

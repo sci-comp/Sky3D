@@ -1074,7 +1074,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private Color _CloudsCumulusHorizonLightColor = new Color(0.717647f, 0.415686f, 0.337255f, 1.0f);
+        private Color _CloudsCumulusHorizonLightColor = new Color(0.886275f, 0.709804f, 0.596078f, 1.0f);
         public Color CloudsCumulusHorizonLightColor 
         {
             get => _CloudsCumulusHorizonLightColor;
@@ -1096,7 +1096,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusThickness = 0.03f;
+        private float _CloudsCumulusThickness = 0.04f;
         public float CloudsCumulusThickness 
         {
             get => _CloudsCumulusThickness;
@@ -1107,7 +1107,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusCoverage = 0.545f;
+        private float _CloudsCumulusCoverage = 0.54f;
         public float CloudsCumulusCoverage 
         {
             get => _CloudsCumulusCoverage;
@@ -1176,7 +1176,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusSize = 0.41f;
+        private float _CloudsCumulusSize = 0.5f;
         public float CloudsCumulusSize 
         {
             get => _CloudsCumulusSize;
