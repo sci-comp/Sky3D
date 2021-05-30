@@ -527,12 +527,12 @@ namespace JC.TimeOfDay
             };
             ret.Add(pFogVisible);
 
-            PropElement pFogAtmLevelParam = new PropElement
+            PropElement pFogAtmLevelParamOffset = new PropElement
             {
-                {"name", "FogAtmLevelParams"},
+                {"name", "FogAtmLevelParamsOffset"},
                 {"type", Variant.Type.Vector3}
             };
-            ret.Add(pFogAtmLevelParam);
+            ret.Add(pFogAtmLevelParamOffset);
 
             PropElement pFogDensity = new PropElement 
             {
@@ -566,7 +566,7 @@ namespace JC.TimeOfDay
                 {"name", "FogFalloff"},
                 {"type", Variant.Type.Real},
                 {"hint", PropertyHint.Range},
-                {"hint_string", "0.0, 3.0"}
+                {"hint_string", "0.0, 10.0"}
             };
             ret.Add(pFogFalloff);
 

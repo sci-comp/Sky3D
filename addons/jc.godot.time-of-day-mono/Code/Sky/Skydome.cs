@@ -345,7 +345,7 @@ namespace JC.TimeOfDay
             {
                 _AtmLevelParams = value;
                 _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmLevelParamsP, value);
-                //_Resources.FogMaterial.SetShaderParam(SkyConst.kAtmLevelParamsP, value);
+                FogAtmLevelParamsOffset = FogAtmLevelParamsOffset;
             }
         }
 
@@ -481,14 +481,14 @@ namespace JC.TimeOfDay
             }
         }
 
-        private Vector3 _FogAtmLevelParams = new Vector3(1.0f, 0.0f, -1.0f); // z = -1.0 for down tintend.
-        public Vector3 FogAtmLevelParams 
+        private Vector3 _FogAtmLevelParamsOffset = new Vector3(0.0f, 0.0f, -1.0f); // z = -1.0 for down tintend.
+        public Vector3 FogAtmLevelParamsOffset
         {
-            get => _FogAtmLevelParams;
+            get => _FogAtmLevelParamsOffset;
             set
             {
-                _FogAtmLevelParams = value;
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmLevelParamsP, value);
+                _FogAtmLevelParamsOffset = value;
+                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmLevelParamsP, _AtmLevelParams + value);
             }
         }
 
@@ -1367,7 +1367,7 @@ namespace JC.TimeOfDay
             AtmMoonMieAnisotropy = AtmMoonMieAnisotropy;
 
             FogVisible = FogVisible;
-            FogAtmLevelParams = FogAtmLevelParams;
+            FogAtmLevelParamsOffset = FogAtmLevelParamsOffset;
             FogDensity = FogDensity;
             FogRayleighDepth = FogRayleighDepth;
             FogMieDepth = FogMieDepth;
