@@ -1574,6 +1574,7 @@ namespace JC.TimeOfDay
 
             if(_SunLightReady)
             {
+                //if(_SunLightNode.LightEnergy > 0.0 && (Mathf.Abs(_SunAltitude) < 90.0f))
                 if(_SunLightNode.LightEnergy > 0.0)
                     _SunLightNode.Transform = _SunTransform;
             }
@@ -1626,6 +1627,7 @@ namespace JC.TimeOfDay
 
             if(_MoonLightReady)
             {
+                //if(_MoonLightNode.LightEnergy > 0.0f && (Mathf.Abs(_MoonAltitude) < 90.0f))  
                 if(_MoonLightNode.LightEnergy > 0.0f)
                     _MoonLightNode.Transform = _MoonTransform;
             }
@@ -1677,14 +1679,14 @@ namespace JC.TimeOfDay
         private void SetDayState(float v, float threshold = 1.80f)
         {
             if(Mathf.Abs(v) > threshold)
-                EmitSignal(nameof(IsDay), true);
-            else 
                 EmitSignal(nameof(IsDay), false);
+            else 
+                EmitSignal(nameof(IsDay), true);
             
             EvaluateLightEnable();
         }
 
-        private void EvaluateLightEnable()
+        /*private void EvaluateLightEnable()
         {
             if(!_SunLightReady)
                 return;
@@ -1693,6 +1695,22 @@ namespace JC.TimeOfDay
             
             if(_MoonLightReady)
                 _MoonLightNode.Visible = !_SunLightNode.Visible;
+        }*/
+
+        bool _LightEnable;
+        private void EvaluateLightEnable()
+        {
+
+            if(_SunLightReady)
+            {
+                _LightEnable = _SunLightNode.LightEnergy > 0.0 ? true : false;
+                _SunLightNode.Visible = _LightEnable;
+            }
+
+            if(_MoonLightReady) 
+            {
+                _MoonLightNode.Visible = !_LightEnable;
+            }
         }
 
         private void SetSunLightColor(Color col, Color horizonCol)

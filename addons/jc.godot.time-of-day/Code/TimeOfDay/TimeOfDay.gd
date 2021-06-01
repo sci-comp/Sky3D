@@ -1,3 +1,4 @@
+tool
 class_name TimeOfDay extends Node
 """========================================================
 °                         TimeOfDay.
@@ -247,27 +248,26 @@ func __check_cycle() -> void:
 func __set_celestial_coords() -> void:
 	if not __dome_found:
 		return
-		
-		match celestials_calculations:
-			CelestialCalculationsMode.Simple:
-				__compute_simple_sun_coords()
-				__dome.sun_altitude = __sun_coords.y
-				__dome.sun_altitude = __sun_coords.x
-				if compute_moon_coords:
-					__compute_simple_moon_coords()
-					__dome.moon_altitude = __moon_coords.y
-					__dome.moon_azimuth = __moon_coords.x
+
+	match celestials_calculations:
+		CelestialCalculationsMode.Simple:
+			__compute_simple_sun_coords()
+			__dome.sun_altitude = __sun_coords.y
+			__dome.sun_azimuth = __sun_coords.x
+			if compute_moon_coords:
+				__compute_simple_moon_coords()
+				__dome.moon_altitude = __moon_coords.y
+				__dome.moon_azimuth = __moon_coords.x
 			
-			CelestialCalculationsMode.Realistic:
-				__compute_realistic_sun_coords()
-				__dome.sun_altitude = __sun_coords.y * TOD_Math.RAD_TO_DEG
-				__dome.sun_azimuth = __sun_coords.x * TOD_Math.RAD_TO_DEG
-				if compute_moon_coords:
-					__compute_realistic_moon_coords()
-					__dome.moon_altitude = __moon_coords.y * TOD_Math.RAD_TO_DEG
-					__dome.moon_azimuth = __moon_coords.x * TOD_Math.RAD_TO_DEG
+		CelestialCalculationsMode.Realistic:
+			__compute_realistic_sun_coords()
+			__dome.sun_altitude = __sun_coords.y * TOD_Math.RAD_TO_DEG
+			__dome.sun_azimuth = __sun_coords.x * TOD_Math.RAD_TO_DEG
+			if compute_moon_coords:
+				__compute_realistic_moon_coords()
+				__dome.moon_altitude = __moon_coords.y * TOD_Math.RAD_TO_DEG
+				__dome.moon_azimuth = __moon_coords.x * TOD_Math.RAD_TO_DEG
 					
-	
 
 func __compute_simple_sun_coords() -> void:
 	var altitude = (__get_total_hours_utc() + (TOD_Math.DEG_TO_RAD * longitude)) * (360/24)
@@ -489,7 +489,7 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "year", type=TYPE_INT, hint=PROPERTY_HINT_RANGE, hint_string="-9999, 9999"})
 
 	ret.push_back({name = "Planetary And Location", type=TYPE_NIL, usage=PROPERTY_USAGE_GROUP})
-	ret.push_back({name = "celestial_calculations", type=TYPE_INT, hint=PROPERTY_HINT_ENUM, hint_string="Simple, Realistic"})
+	ret.push_back({name = "celestials_calculations", type=TYPE_INT, hint=PROPERTY_HINT_ENUM, hint_string="Simple, Realistic"})
 	ret.push_back({name = "compute_moon_coords", type=TYPE_BOOL})
 		
 	if celestials_calculations == 0 && compute_moon_coords:

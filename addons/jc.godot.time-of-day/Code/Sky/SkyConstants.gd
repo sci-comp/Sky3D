@@ -36,8 +36,8 @@ const NOISE_TEX:= "_noise_tex"
 ## Atmosphere
 const ATM_DARKNESS_P:= "_atm_darkness"
 const ATM_BETA_RAY_P:= "_atm_beta_ray"
-const ATm_SUN_INTENSITY_P:= "_atm_sun_intensity"
-const ATm_DAY_TINT_P:= "_atm_day_tint"
+const ATM_SUN_INTENSITY_P:= "_atm_sun_intensity"
+const ATM_DAY_TINT_P:= "_atm_day_tint"
 const ATM_HORIZON_LIGHT_TINT_P:= "_atm_horizon_light_tint"
 
 const ATM_NIGHT_TINT_P:= "_atm_night_tint"
@@ -49,20 +49,20 @@ const ATM_SUN_MIE_TINT_P:= "_atm_sun_mie_tint"
 const ATM_SUN_MIE_INTENSITY_P:= "_atm_sun_mie_intensity"
 const ATM_SUN_PARTIAL_MIE_PHASE_P:= "_atm_sun_partial_mie_phase"
 
-const ATM_MOON_MIE_TINT_P:= "_atm_moon_mie_tine"
+const ATM_MOON_MIE_TINT_P:= "_atm_moon_mie_tint"
 const ATM_MOON_MIE_INTENSITY_P:= "_atm_moon_mie_intensity"
 const ATM_MOON_PARTIAL_MIE_PHASE_P:= "_atm_moon_partial_mie_phase"
 
 ## Fog
-const ATM_FOG_DENSITY_P:= "_fpg_density"
+const ATM_FOG_DENSITY_P:= "_fog_density"
 const ATM_FOG_RAYLEIGH_DEPTH_P:= "_fog_rayleigh_depth"
 const ATM_FOG_MIE_DEPTH_P:= "_fog_mie_depth"
 const ATM_FOG_FALLOFF:= "_fog_falloff"
 
 ## Near Space.
 const SUN_DISK_COLOR_P:= "_sun_disk_color"
-const SUN_DISK_INTENSITY:= "_sun_disk_intensity"
-const SUN_DISK_SIZE:= "_sun_disk_size"
+const SUN_DISK_INTENSITY_P:= "_sun_disk_intensity"
+const SUN_DISK_SIZE_P:= "_sun_disk_size"
 const MOON_COLOR_P:= "_moon_color"
 const MOON_SIZE_P:= "_moon_size"
 const MOON_TEXTURE_P:= "_moon_texture"
