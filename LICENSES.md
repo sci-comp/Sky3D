@@ -1,7 +1,7 @@
 # Licences.
 --------------------------------------
 
-- [GDScript source](/addons/jc.godot.universal-sky/LICENSE)
-- C# source
-- [Shaders source](/addons/jc.godot.universal-sky-common/Shaders/LICENSE)
-- [Third party assets](/addons/jc.godot.universal-sky-common/Credits.md)
+- [GDScript source](/addons/jc.godot.time-of-day/LICENSE)
+- [C# source](/addons/jc.godot.time-of-day-mono/LICENSE)
+- [Shaders source](/addons/jc.godot.time-of-day-common/Shaders/LICENSE)
+- [Third party assets](/addons/jc.godot.time-of-day-common/Credits.md)
