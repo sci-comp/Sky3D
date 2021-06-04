@@ -63,6 +63,14 @@ vec3 saturateRGB(vec3 value){
 	return clamp(value.rgb, 0.0, 1.0);
 }
 
+float pow3(float real){
+	return real * real * real;
+}
+
+float pow3Lerp(float real, float t){
+	return mix(real, pow3(real), t);
+}
+
 float noiseClouds(vec3 p){
 	vec3 pos = vec3(p * 0.01);
 	pos.z *= 256.0;
@@ -87,14 +95,14 @@ float cloudsFBM(vec3 p, float l){
 	return ret;
 }
 
-float noiseCloudsFBM(vec3 p){
-	float freq = _clouds_noise_freq;
+float noiseCloudsFBM(vec3 p, float freq){
 	return cloudsFBM(p, freq);
 }
 
 float cloudsDensity(vec3 p, vec3 offset, float t){
 	vec3 pos = p * 0.0212242 + offset;
-	float dens = noiseCloudsFBM(pos);
+	float dens = noiseCloudsFBM(pos, _clouds_noise_freq);
+	dens += noiseCloudsFBM(pos+vec3(0.1, .05, 7.0), 2.7) * 0.5;
 	float cov = 1.0 - _clouds_coverage;
 	dens *= smoothstep(cov, cov + t, dens);
 	return saturate(dens);
@@ -140,16 +148,17 @@ vec4 renderClouds2(vec3 ro, vec3 rd, float tm, float am){
 		miePhase(mu.y, _clouds_partial_mie_phase) * am);
 		
 		vec4 t = vec4(1.0);
-		t.rgb *= mph.rgb * _clouds_mie_intensity; 
-		
 		for(int i = 0; i < kCLOUDS_STEP; i++)
 		{
 			float h = float(i) * 0.1; // / float(kCLOUDS_STEP);
+			
 			float density = cloudsDensity(pos, wind, h);
 			float sh = saturate(exp(-_clouds_absorption * density * marchStep));
 			t *= sh;
 			ret += (t * (exp(h) * 0.571428571) * density * marchStep);
-			a += (1.0 - sh);
+			
+			a += (1.0 - sh) * (1.0 - a);
+			t.rgb += saturateRGB( t .rgb * mph.rgb * _clouds_mie_intensity);
 			pos += dirStep;
 		}
 		return vec4(ret.rgb * _clouds_intensity, a);
@@ -184,6 +193,6 @@ void fragment(){
 		_clouds_night_color.rgb, angle_mult.w);
 	clouds.a = mix(0.0, clouds.a, horizonBlend);
 	ALBEDO = clouds.rgb;
-	ALPHA = clouds.a * clouds.a * clouds.a;
+	ALPHA = pow3(clouds.a);
 	DEPTH = 1.0;
 }

@@ -554,44 +554,44 @@ func set_clouds_cumulus_night_color(value: Color) -> void:
 	clouds_cumulus_night_color = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_NIGHT_COLOR, value)
 
-var clouds_cumulus_thickness: float = 0.04 setget set_clouds_cumulus_thickness
+var clouds_cumulus_thickness: float = 0.055 setget set_clouds_cumulus_thickness
 func set_clouds_cumulus_thickness(value: float) -> void:
 	clouds_cumulus_thickness = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_THICKNESS, value)
 
-var clouds_cumulus_coverage: float = 0.54 setget set_clouds_cumulus_coverage
+var clouds_cumulus_coverage: float = 0.378 setget set_clouds_cumulus_coverage
 func set_clouds_cumulus_coverage(value: float) -> void:
 	clouds_cumulus_coverage = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_COVERAGE, value)
 
-var clouds_cumulus_absorption: float = 7.5 setget set_clouds_cumulus_absorption
+var clouds_cumulus_absorption: float = 2.0 setget set_clouds_cumulus_absorption
 func set_clouds_cumulus_absorption(value: float) -> void:
 	clouds_cumulus_absorption = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_ABSORPTION, value)
 
-var clouds_cumulus_intensity: float = 2.5 setget set_clouds_cumulus_intensity
+var clouds_cumulus_intensity: float = 3.0 setget set_clouds_cumulus_intensity
 func set_clouds_cumulus_intensity(value: float) -> void:
 	clouds_cumulus_intensity = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_INTENSITY, value)
 
-var clouds_cumulus_mie_intensity: float = 1.0 setget set_clouds_cumulus_mie_intensity
+var clouds_cumulus_mie_intensity: float = 0.031 setget set_clouds_cumulus_mie_intensity
 func set_clouds_cumulus_mie_intensity(value: float) -> void:
 	clouds_cumulus_mie_intensity = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_MIE_INTENSITY, value)
 
-var clouds_cumulus_mie_anisotropy: float = 0.315 setget set_clouds_cumulus_mie_anisotropy
+var clouds_cumulus_mie_anisotropy: float = 0.206 setget set_clouds_cumulus_mie_anisotropy
 func set_clouds_cumulus_mie_anisotropy(value: float) -> void:
 	clouds_cumulus_mie_anisotropy = value
 	var partial = ScatterLib.get_partial_mie_phase(value)
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_PARTIAL_MIE_PHASE, partial)
 
 
-var clouds_cumulus_noise_freq: float = 2.7 setget set_clouds_cumulus_noise_freq
+var clouds_cumulus_noise_freq: float = 2.514 setget set_clouds_cumulus_noise_freq
 func set_clouds_cumulus_noise_freq(value: float) -> void:
 	clouds_cumulus_noise_freq = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_NOISE_FREQ, value)
 
-var clouds_cumulus_size: float = 0.5 setget set_clouds_cumulus_size
+var clouds_cumulus_size: float = 0.896 setget set_clouds_cumulus_size
 func set_clouds_cumulus_size(value: float) -> void:
 	clouds_cumulus_size = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_SIZE, value)

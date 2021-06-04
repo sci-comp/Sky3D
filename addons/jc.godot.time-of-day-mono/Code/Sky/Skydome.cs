@@ -1096,7 +1096,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusThickness = 0.04f;
+        private float _CloudsCumulusThickness = 0.055f;
         public float CloudsCumulusThickness 
         {
             get => _CloudsCumulusThickness;
@@ -1107,7 +1107,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusCoverage = 0.54f;
+        private float _CloudsCumulusCoverage = 0.378f;
         public float CloudsCumulusCoverage 
         {
             get => _CloudsCumulusCoverage;
@@ -1118,7 +1118,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusAbsorption = 7.5f;
+        private float _CloudsCumulusAbsorption = 2.0f;
         public float CloudsCumulusAbsorption 
         {
             get => _CloudsCumulusAbsorption;
@@ -1129,7 +1129,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusIntensity = 2.5f;
+        private float _CloudsCumulusIntensity = 3.0f;
         public float CloudsCumulusIntensity 
         {
             get => _CloudsCumulusIntensity;
@@ -1140,7 +1140,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusMieIntensity = 1.0f;
+        private float _CloudsCumulusMieIntensity = 0.031f;
         public float CloudsCumulusMieIntensity
         {
             get => _CloudsCumulusMieIntensity;
@@ -1151,7 +1151,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusMieAnisotropy = 0.315f;
+        private float _CloudsCumulusMieAnisotropy = 0.206f;
         public float CloudsCumulusMieAnisotropy
         {
             get => _CloudsCumulusMieAnisotropy;
@@ -1165,7 +1165,7 @@ namespace JC.TimeOfDay
         }
 
 
-        private float _CloudsCumulusNoiseFreq = 2.7f;
+        private float _CloudsCumulusNoiseFreq = 2.514f;
         public float CloudsCumulusNoiseFreq 
         {
             get => _CloudsCumulusNoiseFreq;
@@ -1176,7 +1176,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusSize = 0.5f;
+        private float _CloudsCumulusSize = 0.896f;
         public float CloudsCumulusSize 
         {
             get => _CloudsCumulusSize;
