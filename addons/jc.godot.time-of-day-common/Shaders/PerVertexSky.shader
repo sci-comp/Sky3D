@@ -117,10 +117,12 @@ vec2 equirectUV(vec3 norm){
 	return ret;
 }
 
+/*
 float random(vec2 uv){
 	float ret = dot(uv, vec2(12.9898, 78.233));
 	return fract(43758.5453 * sin(ret));
 }
+*/
 
 float disk(vec3 norm, vec3 coords, lowp float size){
 	float dist = length(norm - coords);
@@ -189,23 +191,20 @@ vec3 atmosphericScattering(float sr, float sm, vec2 mu, vec3 mult){
 
 // Clouds.
 //------------------------------------------------------------------------------
-float noiseClouds(vec2 coords, vec2 offset)
-{
+float noiseClouds(vec2 coords, vec2 offset){
 	float a = textureLod(_clouds_texture, coords.xy * _clouds_uv + offset.x, 0.0).r;
 	float b = textureLod(_clouds_texture, coords.xy * _clouds_uv + offset.y, 0.0).r;
 	return ((a + b) * 0.5);
 }
 
-float cloudsDensity(vec2 p, vec2 offset)
-{
+float cloudsDensity(vec2 p, vec2 offset){
 	float d = noiseClouds(p, offset);
 	float c = 1.0 - _clouds_coverage;
 	d = d - c;
 	return saturate(d);
 }
 
-vec4 renderClouds(vec3 pos, float tm)
-{
+vec4 renderClouds(vec3 pos, float tm){
 	pos.xy = pos.xz / pos.y;
 	pos *= _clouds_size;
 	vec2 wind = _clouds_offset.xy * (tm * _clouds_offset_speed);

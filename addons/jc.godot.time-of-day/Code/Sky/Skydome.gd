@@ -969,7 +969,7 @@ func __set_beta_ray() -> void:
 func __set_beta_mie() -> void:
 	var bm = ScatterLib.compute_beta_mie(atm_mie, atm_turbidity)
 	__resources.sky_material.set_shader_param(SkyConst.ATM_BETA_MIE_P, bm)
-	__resources.sky_material.set_shader_param(SkyConst.ATM_BETA_MIE_P, bm)
+	__resources.fog_material.set_shader_param(SkyConst.ATM_BETA_MIE_P, bm)
 
 func __set_night_intensity() -> void:
 	var tint: Color = atm_night_tint * atm_night_intensity()

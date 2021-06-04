@@ -1,5 +1,5 @@
-class_name SkydomeResources extends Resource 
 tool
+class_name SkydomeResources extends Resource 
 """========================================================
 °                         TimeOfDay.
 °                   ======================
@@ -55,7 +55,7 @@ enum SkyShaderQuality{
 ## Sky
 
 func __change_skydome_mesh_quality(quality: int) -> void:
-	if quality == 0:
+	if quality == SkydomeMeshQuality.Low:
 		_skydome_mesh.radial_segments = 16
 		_skydome_mesh.rings = 8
 	else:
@@ -63,7 +63,7 @@ func __change_skydome_mesh_quality(quality: int) -> void:
 		_skydome_mesh.rings = 64
 	
 func __set_sky_quality(quality: int) -> void:
-	if quality == 0:
+	if quality == SkyShaderQuality.PerPixel:
 		sky_material.shader = _sky_shader
 		__change_skydome_mesh_quality(SkydomeMeshQuality.Low)
 	else:

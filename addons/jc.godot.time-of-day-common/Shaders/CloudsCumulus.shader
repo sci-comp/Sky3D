@@ -116,13 +116,16 @@ bool IntersectSphere(float r, vec3 origin, vec3 dir, out float t, out vec3 nrm)
 	float c = dot(origin, origin) - r * r;
 	float d = b * b - 4.0 * a * c;
 	if(d < 0.0) return false;
+	
 	d = sqrt(d);
 	a *= 2.0;
 	float t1 = 0.5 * (-b + d);
 	float t2 = 0.5 * (-b - d);
+	
 	if(t1<0.0) t1 = t2;
 	if(t2 < 0.0) t2 = t1;
 	t1 = min(t1, t2);
+
 	if(t1 < 0.0) return false;
 	nrm = origin + t1 * dir;
 	t = t1;
@@ -187,11 +190,13 @@ void vertex(){
 void fragment(){
 	vec3 ray = normalize(world_pos).xyz;
 	float horizonBlend = saturate((ray.y) * 7.0);
+	
 	vec4 clouds = renderClouds2(vec3(0.0, 0.0, 0.0), ray, TIME, angle_mult.z);
 	clouds.a = saturate(clouds.a);
 	clouds.rgb *= mix(mix(_clouds_day_color.rgb, _clouds_horizon_light_color.rgb, angle_mult.x), 
 		_clouds_night_color.rgb, angle_mult.w);
 	clouds.a = mix(0.0, clouds.a, horizonBlend);
+	
 	ALBEDO = clouds.rgb;
 	ALPHA = pow3(clouds.a);
 	DEPTH = 1.0;

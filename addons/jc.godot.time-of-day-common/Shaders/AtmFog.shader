@@ -148,24 +148,24 @@ float fogExp(float depth, float density){
 	return 1.0 - saturate(exp2(-depth * density));
 }
 
-float fogFalloff(float y, float zeroLevel, float falloff)
-{
+float fogFalloff(float y, float zeroLevel, float falloff){
 	return saturate(exp(-(y + zeroLevel) * falloff));
 }
 
-vec3 computeViewDir(mat4 p, vec2 uv, float depth){
+void computeCoords(vec2 uv, float depth, mat4 camMat, mat4 invProjMat, 
+	out vec3 viewDir, out vec3 worldPos){
+		
 	vec3 ndc = vec3(uv * 2.0 - 1.0, depth);
-	vec4 view = p * vec4(ndc, 1.0);
-	view.xyz = view.xyz/view.w;
-	return view.xyz;
-}
-
-vec3 computeWorldPos(vec2 uv, float depth, mat4 camMat, mat4 projMat){
-	vec3 ndc = vec3(uv * 2.0 - 1.0, depth);
-	vec4 wDir = camMat * projMat * vec4(ndc, 1.0);
-	vec3 wPos = wDir.xyz / wDir.w;
-	wPos -= (camMat * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-	return wPos;
+	
+	// ViewDir
+	vec4 view = invProjMat * vec4(ndc, 1.0);
+	viewDir = view.xyz / view.w;
+	
+	// worldPos.
+	view = camMat * view;
+	view.xyz /= view.w;
+	view.xyz -= (camMat * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+	worldPos = view.xyz;
 }
 
 // Varyings
@@ -184,8 +184,9 @@ void vertex(){
 
 void fragment(){
 	float depthRaw = texture(DEPTH_TEXTURE, SCREEN_UV).r;
-	vec3 view = computeViewDir(INV_PROJECTION_MATRIX, SCREEN_UV, depthRaw);
-	vec3 worldPos = computeWorldPos(SCREEN_UV, depthRaw, camera_matrix, INV_PROJECTION_MATRIX);
+	
+	vec3 view; vec3 worldPos; 
+	computeCoords(SCREEN_UV, depthRaw, camera_matrix, INV_PROJECTION_MATRIX, view, worldPos);
 	worldPos = normalize(worldPos);
 	
 	float linearDepth = -view.z;
@@ -202,6 +203,6 @@ void fragment(){
 	fogColor.rgb = tonemapPhoto(fogColor.rgb, _color_correction_params.y, _color_correction_params.x);
 	
 	ALBEDO = fogColor.rgb;
-	//ALPHA = (depthRaw) < 0.999999999999 ? fogColor.a: 0.0;
 	ALPHA = fogColor.a;
+	//ALPHA = (depthRaw) < 0.999999999999 ? fogColor.a: 0.0; // Exclude sky.
 }
