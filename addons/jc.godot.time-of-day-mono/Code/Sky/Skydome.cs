@@ -503,6 +503,28 @@ namespace JC.TimeOfDay
             }
         }
 
+        private float _FogStart = 0.0f;
+        public float FogStart 
+        {
+            get => _FogStart;
+            set 
+            {
+                _FogStart = value;
+                _Resources.FogMaterial.SetShaderParam(SkyConst.kFogStart, value);
+            }
+        }
+
+        private float _FogEnd = 1000.0f;
+        public float FogEnd 
+        {
+            get => _FogEnd;
+            set 
+            {
+                _FogEnd = value;
+                _Resources.FogMaterial.SetShaderParam(SkyConst.kFogEnd, value);
+            }
+        }
+
         private float _FogRayleighDepth = 0.116f;
         public float FogRayleighDepth
         {
@@ -1372,6 +1394,8 @@ namespace JC.TimeOfDay
             FogRayleighDepth = FogRayleighDepth;
             FogMieDepth = FogMieDepth;
             FogFalloff = FogFalloff;
+            FogStart = FogStart;
+            FogEnd = FogEnd;
             FogLayers = FogLayers;
             FogRenderPriority = FogRenderPriority;
 

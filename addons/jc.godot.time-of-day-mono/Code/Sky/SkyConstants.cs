@@ -78,6 +78,8 @@ namespace JC.TimeOfDay
         public static readonly String kFogRayleighDepthP = "_fog_rayleigh_depth";
         public static readonly String kFogMieDepthP = "_fog_mie_depth";
         public static readonly String kFogFallof = "_fog_falloff";
+        public static readonly String kFogStart = "_fog_start";
+        public static readonly String kFogEnd = "_fog_end";
     
     #endregion
 

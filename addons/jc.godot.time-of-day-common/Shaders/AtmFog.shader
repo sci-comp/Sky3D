@@ -20,6 +20,8 @@ uniform float _fog_density;
 uniform float _fog_rayleigh_depth;
 uniform float _fog_mie_depth;
 uniform float _fog_falloff;
+uniform float _fog_start;
+uniform float _fog_end;
 uniform vec3 _sun_direction;
 uniform vec3 _moon_direction;
 
@@ -152,6 +154,12 @@ float fogFalloff(float y, float zeroLevel, float falloff){
 	return saturate(exp(-(y + zeroLevel) * falloff));
 }
 
+float fogDistance(float depth){
+	float d = depth;
+	d = (_fog_end - d) / (_fog_end - _fog_start);
+	return saturate(1.0 - d);
+}
+
 void computeCoords(vec2 uv, float depth, mat4 camMat, mat4 invProjMat, 
 	out vec3 viewDir, out vec3 worldPos){
 		
@@ -192,6 +200,7 @@ void fragment(){
 	float linearDepth = -view.z;
 	float fogFactor = fogExp(linearDepth, _fog_density);
 	fogFactor *= fogFalloff(worldPos.y, 0.0, _fog_falloff);
+	fogFactor *= fogDistance(linearDepth);
 	
 	vec2 mu = vec2(dot(_sun_direction, worldPos), dot(_moon_direction, worldPos));
 	float sr; float sm; simpleOpticalDepth(worldPos.y + _atm_level_params.z, sr, sm);

@@ -262,6 +262,16 @@ func set_fog_density(value: float) -> void:
 	fog_density = value
 	__resources.fog_material.set_shader_param(SkyConst.ATM_FOG_DENSITY_P, value)
 
+var fog_start: float = 0.0 setget set_fog_start
+func set_fog_start(value: float) -> void:
+	fog_start = value
+	__resources.fog_material.set_shader_param(SkyConst.ATM_FOG_START, value)
+
+var fog_end: float = 1000 setget set_fog_end
+func set_fog_end(value: float) -> void:
+	fog_end = value
+	__resources.fog_material.set_shader_param(SkyConst.ATM_FOG_END, value)
+
 var fog_rayleigh_depth: float = 0.116 setget set_fog_rayleigh_depth
 func set_fog_rayleigh_depth(value: float) -> void:
 	fog_rayleigh_depth = value
@@ -719,6 +729,8 @@ func __init_properties() -> void:
 	set_fog_rayleigh_depth(fog_rayleigh_depth)
 	set_fog_mie_depth(fog_mie_depth)
 	set_fog_falloff(fog_falloff)
+	set_fog_start(fog_start)
+	set_fog_end(fog_end)
 	set_fog_layers(fog_layers)
 	set_fog_render_priority(fog_render_priority)
 	
@@ -1117,6 +1129,8 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "fog_rayleigh_depth", type = TYPE_REAL, hint = PROPERTY_HINT_EXP_EASING, hint_string = "0.0, 1.0"})
 	ret.push_back({name = "fog_mie_depth", type = TYPE_REAL, hint = PROPERTY_HINT_EXP_EASING, hint_string = "0.0, 1.0"})
 	ret.push_back({name = "fog_falloff", type = TYPE_REAL, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 10.0"})
+	ret.push_back({name = "fog_start", type = TYPE_REAL, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 5000.0"})
+	ret.push_back({name = "fog_end", type = TYPE_REAL, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 5000.0"})
 	ret.push_back({name = "fog_layers", type = TYPE_INT, hint = PROPERTY_HINT_LAYERS_3D_RENDER})
 	ret.push_back({name = "fog_render_priority", type = TYPE_INT})
 	

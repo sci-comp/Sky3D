@@ -570,6 +570,24 @@ namespace JC.TimeOfDay
             };
             ret.Add(pFogFalloff);
 
+            PropElement pFogStart = new PropElement
+            {
+                {"name", "FogStart"},
+                {"type", Variant.Type.Real},
+                {"hint", PropertyHint.Range},
+                {"hint_string", "0.0, 5000.0"}
+            };
+            ret.Add(pFogStart);
+
+            PropElement pFogEnd = new PropElement
+            {
+                {"name", "FogEnd"},
+                {"type", Variant.Type.Real},
+                {"hint", PropertyHint.Range},
+                {"hint_string", "0.0, 5000.0"}
+            };
+            ret.Add(pFogEnd);
+
             PropElement pFogLayers = new PropElement 
             {
                 {"name", "FogLayers"},

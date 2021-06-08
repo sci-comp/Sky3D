@@ -58,6 +58,8 @@ const ATM_FOG_DENSITY_P:= "_fog_density"
 const ATM_FOG_RAYLEIGH_DEPTH_P:= "_fog_rayleigh_depth"
 const ATM_FOG_MIE_DEPTH_P:= "_fog_mie_depth"
 const ATM_FOG_FALLOFF:= "_fog_falloff"
+const ATM_FOG_START:= "_fog_start"
+const ATM_FOG_END:= "_fog_end"
 
 ## Near Space.
 const SUN_DISK_COLOR_P:= "_sun_disk_color"
