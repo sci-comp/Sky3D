@@ -212,7 +212,7 @@ namespace JC.TimeOfDay
 
         #region Atmosphere.
         
-        private SkyShaderQuality _AtmQuality = SkyShaderQuality.PerPixel;
+        private SkyShaderQuality _AtmQuality = SkyShaderQuality.PerVertex;
         public SkyShaderQuality AtmQuality 
         { 
             get => _AtmQuality;
