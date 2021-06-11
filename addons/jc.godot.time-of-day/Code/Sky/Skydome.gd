@@ -342,7 +342,7 @@ func set_moon_texture(value: Texture) -> void:
 	__resources.moon_material.set_shader_param(SkyConst.TEXTURE_P, value)
 
 enum MoonResolution{
-	R64, R128, R256, R1024,
+	R64, R128, R256, R512, R1024,
 }
 
 var moon_resolution: int = MoonResolution.R256 setget set_moon_resolution
@@ -490,7 +490,7 @@ func set_clouds_coverage(value: float) -> void:
 	clouds_coverage = value
 	__resources.sky_material.set_shader_param(SkyConst.CLOUDS_COVERAGE, value)
 
-var clouds_absorption: float = 5.0 setget set_clouds_absorption
+var clouds_absorption: float = 2.0 setget set_clouds_absorption
 func set_clouds_absorption(value: float) -> void:
 	clouds_absorption = value
 	__resources.sky_material.set_shader_param(SkyConst.CLOUDS_ABSORPTION, value)
@@ -1101,7 +1101,7 @@ func _get_property_list() -> Array:
 	
 	# Atmosphere.
 	ret.push_back({name = "Atmosphere", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP, hint_string = "atm_"})
-	ret.push_back({name = "atm_quality", type = TYPE_INT, usage = PROPERTY_HINT_ENUM, hint_string = "PerPixel, PerVertex"})
+	ret.push_back({name = "atm_quality", type = TYPE_INT, hint = PROPERTY_HINT_ENUM, hint_string = "PerPixel,PerVertex"})
 	ret.push_back({name = "atm_wavelenghts", type = TYPE_VECTOR3})
 	ret.push_back({name = "atm_darkness", type = TYPE_REAL, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
 	ret.push_back({name = "atm_sun_instensity", type = TYPE_REAL})

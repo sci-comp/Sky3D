@@ -1140,7 +1140,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusAbsorption = 4.0f;
+        private float _CloudsCumulusAbsorption = 2.0f;
         public float CloudsCumulusAbsorption 
         {
             get => _CloudsCumulusAbsorption;

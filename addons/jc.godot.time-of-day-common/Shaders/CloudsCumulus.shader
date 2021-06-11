@@ -103,10 +103,13 @@ float remap(float value, float fromMin, float fromMax, float toMin, float toMax)
 float cloudsDensity(vec3 p, vec3 offset, float t){
 	vec3 pos = p * 0.0212242 + offset;
 	float dens = noiseCloudsFBM(pos, _clouds_noise_freq);
+	dens += dens;
 	
-	float cov = 1.0 - _clouds_coverage;
-	cov = smoothstep(0.0, (cov * 2.0) + t, dens);
+	float cov = 1.0-_clouds_coverage;
+	cov = smoothstep(0.00, (cov * 3.5) + t, dens);
+	dens *= cov;
 	dens = remap(dens, 1.0-cov, 1.0, 0.0, 1.0); 
+	
 	return saturate(dens);
 }
 
