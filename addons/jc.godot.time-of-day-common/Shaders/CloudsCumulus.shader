@@ -194,7 +194,7 @@ void vertex(){
 
 void fragment(){
 	vec3 ray = normalize(world_pos).xyz;
-	float horizonBlend = saturate((ray.y) * 7.0);
+	float horizonBlend = saturate((ray.y+0.1) * 3.0);
 	
 	vec4 clouds = renderClouds2(vec3(0.0, 0.0, 0.0), ray, TIME, angle_mult.z);
 	clouds.a = saturate(clouds.a);
