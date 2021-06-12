@@ -948,7 +948,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCoverage = 0.487f;
+        private float _CloudsCoverage = 0.5f;
         public float CloudsCoverage 
         {
             get => _CloudsCoverage;
@@ -959,7 +959,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsAbsorption = 5.0f;
+        private float _CloudsAbsorption = 2.0f;
         public float CloudsAbsorption 
         {
             get => _CloudsAbsorption;
@@ -1003,7 +1003,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private Vector2 _CloudsUV = new Vector2(0.051f, 0.107f);
+        private Vector2 _CloudsUV = new Vector2(0.16f, 0.11f);
         public Vector2 CloudsUV 
         {
             get => _CloudsUV;
@@ -1014,7 +1014,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private Vector2 _CloudsOffset = new Vector2(0.208f, 0.175f);
+        private Vector2 _CloudsOffset = new Vector2(0.21f, 0.175f);
         public Vector2 CloudsOffset 
         {
             get => _CloudsOffset;
@@ -1140,7 +1140,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusAbsorption = 2.0f;
+        private float _CloudsCumulusAbsorption = 3.5f;
         public float CloudsCumulusAbsorption 
         {
             get => _CloudsCumulusAbsorption;

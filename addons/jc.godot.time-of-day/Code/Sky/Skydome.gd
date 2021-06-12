@@ -485,7 +485,7 @@ func set_clouds_thickness(value: float) -> void:
 	clouds_thickness = value
 	__resources.sky_material.set_shader_param(SkyConst.CLOUDS_THICKNESS, value)
 
-var clouds_coverage: float = 0.487 setget set_clouds_coverage
+var clouds_coverage: float = 0.5 setget set_clouds_coverage
 func set_clouds_coverage(value: float) -> void:
 	clouds_coverage = value
 	__resources.sky_material.set_shader_param(SkyConst.CLOUDS_COVERAGE, value)
@@ -510,12 +510,12 @@ func set_clouds_size(value: float) -> void:
 	clouds_size = value
 	__resources.sky_material.set_shader_param(SkyConst.CLOUDS_SIZE, value)
 
-var clouds_uv:= Vector2(0.051, 0.107) setget set_clouds_uv
+var clouds_uv:= Vector2(0.16, 0.11) setget set_clouds_uv
 func set_clouds_uv(value: Vector2) -> void:
 	clouds_uv = value
 	__resources.sky_material.set_shader_param(SkyConst.CLOUDS_UV, value)
 
-var clouds_offset:= Vector2(0.208, 0.175) setget set_clouds_offset
+var clouds_offset:= Vector2(0.21, 0.175) setget set_clouds_offset
 func set_clouds_offset(value: Vector2) -> void:
 	clouds_offset = value
 	__resources.sky_material.set_shader_param(SkyConst.CLOUDS_OFFSET, value)
@@ -574,7 +574,7 @@ func set_clouds_cumulus_coverage(value: float) -> void:
 	clouds_cumulus_coverage = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_COVERAGE, value)
 
-var clouds_cumulus_absorption: float = 4.0 setget set_clouds_cumulus_absorption
+var clouds_cumulus_absorption: float = 3.5 setget set_clouds_cumulus_absorption
 func set_clouds_cumulus_absorption(value: float) -> void:
 	clouds_cumulus_absorption = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_ABSORPTION, value)

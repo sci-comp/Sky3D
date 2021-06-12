@@ -200,7 +200,7 @@ float cloudsDensity(vec2 p, vec2 offset){
 	float d = noiseClouds(p, offset);
 	float c = 1.0 - _clouds_coverage;
 	d = d - c;
-	d += d;
+	//d += d;
 	return saturate(d);
 }
 

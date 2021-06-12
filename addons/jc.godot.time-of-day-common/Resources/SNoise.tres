@@ -3,7 +3,7 @@
 [sub_resource type="OpenSimplexNoise" id=1]
 octaves = 9
 period = 75.1
-persistence = 0.317
+persistence = 0.585
 lacunarity = 2.5
 
 [resource]
