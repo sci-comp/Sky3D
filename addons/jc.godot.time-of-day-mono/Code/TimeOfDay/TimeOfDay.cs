@@ -22,7 +22,7 @@ namespace JC.TimeOfDay
     public enum CelestialCalculationMode
     {
         Simple = 0,
-        Realictic
+        Realistic
     }
 
     [Tool]
@@ -506,7 +506,7 @@ namespace JC.TimeOfDay
 
                 break;
 
-                case CelestialCalculationMode.Realictic:
+                case CelestialCalculationMode.Realistic:
 
                     ComputeRealisticSunCoords();
                     _Dome.SunAltitude = _SunCoords.y * TOD_Math.kRadToDeg;
