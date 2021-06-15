@@ -10,7 +10,7 @@ Dynamic skydome and ToD plugin for godot engine.
 > RC1-Dev.
 ------------------------------------
 
-## Donwload beta3:
+## Download beta3:
 > git clone --single-branch --branch beta3 https://github.com/7leodev/TimeOfDay.git
 
 ## Reflections:
