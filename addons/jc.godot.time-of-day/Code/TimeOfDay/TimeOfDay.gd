@@ -133,6 +133,12 @@ func set_compute_moon_coords(value: bool) -> void:
 	
 	property_list_changed_notify()
 
+var compute_deep_space_coords: bool = false setget set_compute_deep_space_coords
+func set_compute_deep_space_coords(value: bool) -> void:
+	compute_deep_space_coords = value
+	if Engine.editor_hint:
+		__set_celestial_coords()
+
 var moon_coords_offset := Vector2(0.0, 0.0) setget set_moon_coords_offset
 func set_moon_coords_offset(value: Vector2) -> void:
 	moon_coords_offset = value
@@ -259,6 +265,11 @@ func __set_celestial_coords() -> void:
 				__dome.moon_altitude = __moon_coords.y
 				__dome.moon_azimuth = __moon_coords.x
 			
+			if compute_deep_space_coords:
+				var x = Quat(Vector3( (90 + latitude) * TOD_Math.DEG_TO_RAD, 0.0, 0.0))
+				var y = Quat(Vector3(0.0, 0.0, __sun_coords.y * TOD_Math.DEG_TO_RAD))
+				__dome.deep_space_quat = x * y
+		
 		CelestialCalculationsMode.Realistic:
 			__compute_realistic_sun_coords()
 			__dome.sun_altitude = __sun_coords.y * TOD_Math.RAD_TO_DEG
@@ -267,7 +278,11 @@ func __set_celestial_coords() -> void:
 				__compute_realistic_moon_coords()
 				__dome.moon_altitude = __moon_coords.y * TOD_Math.RAD_TO_DEG
 				__dome.moon_azimuth = __moon_coords.x * TOD_Math.RAD_TO_DEG
-					
+			
+			if compute_deep_space_coords:
+				var x = Quat(Vector3( (90 + latitude) * TOD_Math.DEG_TO_RAD, 0.0, 0.0) )
+				var y = Quat(Vector3(0.0, 0.0,  (180.0 - __local_sideral_time * TOD_Math.RAD_TO_DEG) * TOD_Math.DEG_TO_RAD)) 
+				__dome.deep_space_quat = x * y
 
 func __compute_simple_sun_coords() -> void:
 	var altitude = (__get_total_hours_utc() + (TOD_Math.DEG_TO_RAD * longitude)) * (360/24)
@@ -491,10 +506,11 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "Planetary And Location", type=TYPE_NIL, usage=PROPERTY_USAGE_GROUP})
 	ret.push_back({name = "celestials_calculations", type=TYPE_INT, hint=PROPERTY_HINT_ENUM, hint_string="Simple, Realistic"})
 	ret.push_back({name = "compute_moon_coords", type=TYPE_BOOL})
-		
+
 	if celestials_calculations == 0 && compute_moon_coords:
 		ret.push_back({name = "moon_coords_offset", type=TYPE_VECTOR2})
 		
+	ret.push_back({name = "compute_deep_space_coords", type=TYPE_BOOL})
 	ret.push_back({name = "latitude", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="-90.0, 90.0"})
 	ret.push_back({name = "longitude", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="-180.0, 180.0"})
 	ret.push_back({name = "utc", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="-12.0, 12.0"})

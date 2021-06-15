@@ -292,6 +292,19 @@ namespace JC.TimeOfDay
             }
         }
 
+        bool _ComputeDeepSpaceCoords = false;
+        public bool ComputeDeepSpaceCoords 
+        {
+            get => _ComputeDeepSpaceCoords;
+            set 
+            {
+                _ComputeDeepSpaceCoords = value;
+
+                if(Engine.EditorHint)
+                    SetCelestialCoords();
+            }
+        }
+
         Vector2 _MoonCoordsOffset = Vector2.Zero;
         public Vector2 MoonCoordsOffset
         {
@@ -476,6 +489,21 @@ namespace JC.TimeOfDay
                         _Dome.MoonAzimuth = _MoonCoords.x;
                     }
 
+                    if(_ComputeDeepSpaceCoords)
+                    {
+                        Vector3 vx;
+                        vx.x = (90.0f + _Latitude) * TOD_Math.kDegToRad;
+                        vx.y = 0.0f;
+                        vx.z = 0.0f;
+
+                        Vector3 vy;
+                        vy.x = 0.0f;
+                        vy.y = 0.0f;
+                        vy.z = _SunCoords.y * TOD_Math.kDegToRad;
+
+                        _Dome.DeepSpaceQuat = new Quat(vx) * new Quat(vy);
+                    }
+
                 break;
 
                 case CelestialCalculationMode.Realictic:
@@ -488,6 +516,21 @@ namespace JC.TimeOfDay
                         ComputeRealisticMoonCoords();
                         _Dome.MoonAltitude = _MoonCoords.y * TOD_Math.kRadToDeg;
                         _Dome.MoonAzimuth = _MoonCoords.x * TOD_Math.kRadToDeg;
+                    }
+
+                    if(_ComputeDeepSpaceCoords)
+                    {
+                        Vector3 vx;
+                        vx.x = (90.0f + _Latitude) * TOD_Math.kDegToRad;
+                        vx.y = 0.0f;
+                        vx.z = 0.0f;
+
+                        Vector3 vy;
+                        vy.x = 0.0f;
+                        vy.y = 0.0f;
+                        vy.z = (180.0f - _LocalSideralTime * TOD_Math.kRadToDeg) * TOD_Math.kDegToRad;
+
+                        _Dome.DeepSpaceQuat = new Quat(vx) * new Quat(vy);
                     }
 
                 break;
@@ -887,6 +930,13 @@ namespace JC.TimeOfDay
                 };
                 ret.Add(pMoonOffset);
             }
+
+            PropElement pComputeDeepSpaceCoords = new PropElement
+            {
+                {"name", "ComputeDeepSpaceCoords"},
+                {"type", Variant.Type.Bool}
+            };
+            ret.Add(pComputeDeepSpaceCoords);
 
             PropElement pLatitude = new PropElement
             {
