@@ -18,6 +18,14 @@ Dynamic skydome and ToD plugin for godot engine.
 > Currently I do not accept pull request.
 ------------------------------------
 
+## Limitations: 
+- You can only get reflections with a reflection probe.
+- The reflection probe can produce artifacts if the intensity of the sun is very high. 
+- The sky model and clouds does not have support for altitude variation. 
+
+## Future:
+- Currently it is experimental, for godot 4 I will improve the design and the plugin in general. 
+
 ## Feedback is welcome.
 ------------------------------------
 
