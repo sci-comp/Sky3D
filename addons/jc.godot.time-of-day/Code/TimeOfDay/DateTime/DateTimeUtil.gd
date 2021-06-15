@@ -10,7 +10,7 @@ class_name DateTimeUtil
 °   -----------------------------------------------------
 °   Copyright:
 °               J. Cuellar 2021. MIT License.
-°                   See: LICENSE Archive.
+°                   See: LICENSE File.
 ========================================================"""
 const TOTAL_HOURS: int = 24
 

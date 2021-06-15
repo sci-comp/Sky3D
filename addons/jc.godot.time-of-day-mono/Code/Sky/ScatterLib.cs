@@ -9,7 +9,7 @@
 °   -----------------------------------------------------
 °   Copyright:
 °               J. Cuellar 2021. MIT License.
-°                   See: LICENSE Archive.
+°                   See: LICENSE File.
 ========================================================*/
 using Godot;
 using System;
@@ -21,7 +21,7 @@ namespace JC.TimeOfDay
         /*===============================================
         ° References:
         ° - Preetham and Hoffman Paper:
-        ° See: 
+        ° See: https://developer.amd.com/wordpress/media/2012/10/ATI-LightScattering.pdf
         ===============================================*/
 
         /// <summary> 

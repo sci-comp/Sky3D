@@ -10,13 +10,13 @@ class_name ScatterLib
 °   -----------------------------------------------------
 °   Copyright:
 °               J. Cuellar 2021. MIT License.
-°                   See: LICENSE Archive.
+°                   See: LICENSE File.
 ========================================================"""
 
 """===============================================
 ° References:
 ° - Preetham and Hoffman Paper:
-° See: 
+° See: https://developer.amd.com/wordpress/media/2012/10/ATI-LightScattering.pdf
 ==============================================="""
 const n: float = 1.0003 # Index of the air refraction
 const n2: float = 1.00060009 # Index of the air refraction ˆ 2

@@ -10,7 +10,7 @@
 °   Copyright:
 °   -----------------------------------------------------
 °               J. Cuellar 2020. MIT License.
-°                   See: LICENSE Archive.
+°                   See: LICENSE File.
 °   -----------------------------------------------------
 °   This shader is based on DanilS clouds shader with MIT License
 °   See: https://github.com/danilw/godot-utils-and-other/tree/master/Dynamic%20sky%20and%20reflection.
@@ -95,8 +95,7 @@ float noiseCloudsFBM(vec3 p, float freq){
 	return cloudsFBM(p, freq);
 }
 
-float remap(float value, float fromMin, float fromMax, float toMin, float toMax)
-{
+float remap(float value, float fromMin, float fromMax, float toMin, float toMax){
 	return toMin + (value - fromMin) * (toMax - toMin) / (fromMax - fromMin);
 }
 
@@ -130,7 +129,7 @@ bool IntersectSphere(float r, vec3 origin, vec3 dir, out float t, out vec3 nrm)
 	if(t1<0.0) t1 = t2;
 	if(t2 < 0.0) t2 = t1;
 	t1 = min(t1, t2);
-
+	
 	if(t1 < 0.0) return false;
 	nrm = origin + t1 * dir;
 	t = t1;
@@ -141,6 +140,7 @@ bool IntersectSphere(float r, vec3 origin, vec3 dir, out float t, out vec3 nrm)
 float miePhase(float mu, vec3 partial){
 	return kPI4 * (partial.x) * (pow(partial.y - partial.z * mu, -1.5));
 }
+
 vec4 renderClouds2(vec3 ro, vec3 rd, float tm, float am){
 	vec4 ret;
 	vec3 wind = _clouds_offset * (tm * _clouds_offset_speed);

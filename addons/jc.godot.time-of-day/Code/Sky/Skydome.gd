@@ -11,7 +11,7 @@ class_name Skydome extends Node
 °   -----------------------------------------------------
 °   Copyright:
 °               J. Cuellar 2021. MIT License.
-°                   See: LICENSE Archive.
+°                   See: LICENSE File.
 ========================================================"""
 ## Properties.
 var __init_properties_ok: bool = false
@@ -142,7 +142,7 @@ func set_atm_sun_intensity(value: float) -> void:
 	__resources.sky_material.set_shader_param(SkyConst.ATM_SUN_INTENSITY_P, value)
 	__resources.fog_material.set_shader_param(SkyConst.ATM_SUN_INTENSITY_P, value)
 
-var atm_day_tint:= Color(0.784314, 0.85492, 0.988235) setget set_atm_day_tint
+var atm_day_tint:= Color(0.807843, 0.909804, 1.0) setget set_atm_day_tint
 func set_atm_day_tint(value: Color) -> void:
 	atm_day_tint = value
 	__resources.sky_material.set_shader_param(SkyConst.ATM_DAY_TINT_P, value)
@@ -569,15 +569,20 @@ func set_clouds_cumulus_thickness(value: float) -> void:
 	clouds_cumulus_thickness = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_THICKNESS, value)
 
-var clouds_cumulus_coverage: float = 0.6 setget set_clouds_cumulus_coverage
+var clouds_cumulus_coverage: float = 0.45 setget set_clouds_cumulus_coverage
 func set_clouds_cumulus_coverage(value: float) -> void:
 	clouds_cumulus_coverage = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_COVERAGE, value)
 
-var clouds_cumulus_absorption: float = 3.5 setget set_clouds_cumulus_absorption
+var clouds_cumulus_absorption: float = 3.0 setget set_clouds_cumulus_absorption
 func set_clouds_cumulus_absorption(value: float) -> void:
 	clouds_cumulus_absorption = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_ABSORPTION, value)
+
+var clouds_cumulus_noise_freq: float = 2.7 setget set_clouds_cumulus_noise_freq
+func set_clouds_cumulus_noise_freq(value: float) -> void:
+	clouds_cumulus_noise_freq = value
+	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_NOISE_FREQ, value)
 
 var clouds_cumulus_intensity: float = 1.0 setget set_clouds_cumulus_intensity
 func set_clouds_cumulus_intensity(value: float) -> void:
@@ -596,12 +601,7 @@ func set_clouds_cumulus_mie_anisotropy(value: float) -> void:
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_PARTIAL_MIE_PHASE, partial)
 
 
-var clouds_cumulus_noise_freq: float = 2.514 setget set_clouds_cumulus_noise_freq
-func set_clouds_cumulus_noise_freq(value: float) -> void:
-	clouds_cumulus_noise_freq = value
-	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_NOISE_FREQ, value)
-
-var clouds_cumulus_size: float = 0.896 setget set_clouds_cumulus_size
+var clouds_cumulus_size: float = 0.5 setget set_clouds_cumulus_size
 func set_clouds_cumulus_size(value: float) -> void:
 	clouds_cumulus_size = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_SIZE, value)

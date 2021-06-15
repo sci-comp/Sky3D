@@ -11,7 +11,7 @@ class_name TimeOfDay extends Node
 °   -----------------------------------------------------
 °   Copyright:
 °               J. Cuellar 2021. MIT License.
-°                   See: LICENSE Archive.
+°                   See: LICENSE File.
 ========================================================"""
 
 # Target

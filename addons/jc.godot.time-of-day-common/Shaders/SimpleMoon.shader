@@ -9,7 +9,7 @@
 °   -----------------------------------------------------
 °   Copyright:
 °               J. Cuellar 2021. MIT License.
-°                   See: LICENSE Archive.
+°                   See: LICENSE File.
 ========================================================*/
 shader_type spatial;
 render_mode unshaded;

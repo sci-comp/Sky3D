@@ -10,7 +10,7 @@ tool extends EditorPlugin
 °   -----------------------------------------------------
 °   Copyright:
 °               J. Cuellar 2021. MIT License.
-°                   See: LICENSE Archive.
+°                   See: LICENSE File.
 ========================================================"""
 const __skydome_script: Script = preload("res://addons/jc.godot.time-of-day/Code/Sky/Skydome.gd")
 const __skydome_icon: Texture = preload("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Gizmos/SkyIcon.png")

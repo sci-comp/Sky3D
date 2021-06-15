@@ -10,7 +10,7 @@ class_name OrbitalElements
 °   -----------------------------------------------------
 °   Copyright:
 °               J. Cuellar 2021. MIT License.
-°                   See: LICENSE Archive.
+°                   See: LICENSE File.
 ========================================================"""
 var N: float # Longitude of the ascending node.
 var i: float # The Inclination to the ecliptic.

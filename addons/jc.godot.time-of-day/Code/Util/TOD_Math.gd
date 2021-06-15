@@ -10,7 +10,7 @@ class_name TOD_Math
 °   -----------------------------------------------------
 °   Copyright:
 °               J. Cuellar 2021. MIT License.
-°                   See: LICENSE Archive.
+°                   See: LICENSE File.
 ========================================================"""
 const RAD_TO_DEG: float = 57.2957795
 const DEG_TO_RAD: float = 0.0174533

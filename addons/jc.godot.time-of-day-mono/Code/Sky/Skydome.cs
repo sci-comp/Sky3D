@@ -9,7 +9,7 @@
 °   -----------------------------------------------------
 °   Copyright:
 °               J. Cuellar 2021. MIT License.
-°                   See: LICENSE Archive.
+°                   See: LICENSE File.
 ========================================================*/
 using Godot;
 using System;
@@ -258,7 +258,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private Color _AtmDayTint = new Color(0.784314f, 0.85492f, 0.988235f);
+        private Color _AtmDayTint = new Color(0.807843f, 0.909804f, 1.0f, 1.0f);
         public Color AtmDayTint 
         {
             get => _AtmDayTint;
@@ -1129,7 +1129,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusCoverage = 0.6f;
+        private float _CloudsCumulusCoverage = 0.45f;
         public float CloudsCumulusCoverage 
         {
             get => _CloudsCumulusCoverage;
@@ -1148,6 +1148,17 @@ namespace JC.TimeOfDay
             {
                 _CloudsCumulusAbsorption = value;
                 _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsAbsorption, value);
+            }
+        }
+
+        private float _CloudsCumulusNoiseFreq = 2.7f;
+        public float CloudsCumulusNoiseFreq 
+        {
+            get => _CloudsCumulusNoiseFreq;
+            set 
+            {
+                _CloudsCumulusNoiseFreq = value;
+                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsNoiseFreq, value);
             }
         }
 
@@ -1186,19 +1197,7 @@ namespace JC.TimeOfDay
             }
         }
 
-
-        private float _CloudsCumulusNoiseFreq = 2.514f;
-        public float CloudsCumulusNoiseFreq 
-        {
-            get => _CloudsCumulusNoiseFreq;
-            set 
-            {
-                _CloudsCumulusNoiseFreq = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsNoiseFreq, value);
-            }
-        }
-
-        private float _CloudsCumulusSize = 0.896f;
+        private float _CloudsCumulusSize = 0.5f;
         public float CloudsCumulusSize 
         {
             get => _CloudsCumulusSize;
