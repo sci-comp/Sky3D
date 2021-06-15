@@ -7,7 +7,7 @@ Dynamic skydome and ToD plugin for godot engine.
 
 
 ## Status:
-> Beta3.
+> RC1-Dev.
 ------------------------------------
 
 ## Donwload beta3:
