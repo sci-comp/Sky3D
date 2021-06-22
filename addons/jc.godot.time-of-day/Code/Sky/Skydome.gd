@@ -564,17 +564,17 @@ func set_clouds_cumulus_night_color(value: Color) -> void:
 	clouds_cumulus_night_color = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_NIGHT_COLOR, value)
 
-var clouds_cumulus_thickness: float = 0.055 setget set_clouds_cumulus_thickness
+var clouds_cumulus_thickness: float = 0.03 setget set_clouds_cumulus_thickness
 func set_clouds_cumulus_thickness(value: float) -> void:
 	clouds_cumulus_thickness = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_THICKNESS, value)
 
-var clouds_cumulus_coverage: float = 0.45 setget set_clouds_cumulus_coverage
+var clouds_cumulus_coverage: float = 0.55 setget set_clouds_cumulus_coverage
 func set_clouds_cumulus_coverage(value: float) -> void:
 	clouds_cumulus_coverage = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_COVERAGE, value)
 
-var clouds_cumulus_absorption: float = 3.0 setget set_clouds_cumulus_absorption
+var clouds_cumulus_absorption: float = 2.0 setget set_clouds_cumulus_absorption
 func set_clouds_cumulus_absorption(value: float) -> void:
 	clouds_cumulus_absorption = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_ABSORPTION, value)
