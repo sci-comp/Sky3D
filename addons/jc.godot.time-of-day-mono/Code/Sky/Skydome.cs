@@ -1602,7 +1602,7 @@ namespace JC.TimeOfDay
                     _SunLightNode.Transform = _SunTransform;
             }
 
-            _SunLightAltitudeMult = TOD_Math.Saturate(SunDirection.y + 0.25f);
+            _SunLightAltitudeMult = TOD_Math.Saturate(SunDirection.y);
 
             SetNightIntensity();
             SetSunLightColor(_SunLightColor, _SunHorizonLightColor);
@@ -1655,7 +1655,7 @@ namespace JC.TimeOfDay
                     _MoonLightNode.Transform = _MoonTransform;
             }
 
-            _MoonLightAltitudeMult = TOD_Math.Saturate(MoonDirection.y + 0.30f);
+            _MoonLightAltitudeMult = TOD_Math.Saturate(MoonDirection.y);
 
             SetNightIntensity();
             MoonLightColor = MoonLightColor;

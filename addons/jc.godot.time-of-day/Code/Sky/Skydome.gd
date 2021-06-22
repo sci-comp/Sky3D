@@ -920,7 +920,7 @@ func __set_sun_coords() -> void:
 		if __sun_light_node.light_energy > 0.0:
 			__sun_light_node.transform = __sun_transform
 	
-	__sun_light_altitude_mult = TOD_Math.saturate(sun_direction().y + 0.25)
+	__sun_light_altitude_mult = TOD_Math.saturate(sun_direction().y)
 	
 	__set_night_intensity()
 	__set_sun_light_color(sun_light_color, sun_horizon_light_color)
@@ -963,7 +963,7 @@ func __set_moon_coords() -> void:
 		if __moon_light_node.light_energy > 0.0:
 			__moon_light_node.transform = __moon_transform
 	
-	__moon_light_altitude_mult = TOD_Math.saturate(moon_direction().y + 0.30)
+	__moon_light_altitude_mult = TOD_Math.saturate(moon_direction().y)
 	
 	__set_night_intensity()
 	set_moon_light_color(moon_light_color)
