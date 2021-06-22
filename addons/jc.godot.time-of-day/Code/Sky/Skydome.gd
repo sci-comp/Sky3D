@@ -1046,7 +1046,7 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "Global", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
 	ret.push_back({name = "sky_visible", type = TYPE_BOOL})
 	ret.push_back({name = "dome_radius", type = TYPE_REAL})
-	ret.push_back({name = "tonemap_level", type = TYPE_REAL, hint = PROPERTY_HINT_RANGE, hint_string = "0.0. 1.0"})
+	ret.push_back({name = "tonemap_level", type = TYPE_REAL, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
 	ret.push_back({name = "exposure", type = TYPE_REAL})
 	ret.push_back({name = "ground_color", type = TYPE_COLOR})
 	ret.push_back({name = "sky_layers", type = TYPE_INT, hint = PROPERTY_HINT_LAYERS_3D_RENDER})
