@@ -1075,7 +1075,7 @@ func _get_property_list() -> Array:
 	if enable_set_moon_texture:
 		ret.push_back({name = "moon_texture", type = TYPE_OBJECT, hint = PROPERTY_HINT_FILE, hint_string = "Texture"})
 	
-	ret.push_back({name = "moon_resolution", type = TYPE_INT, hint = PROPERTY_HINT_ENUM, hint_string = "64, 128, 512, 1024"})
+	ret.push_back({name = "moon_resolution", type = TYPE_INT, hint = PROPERTY_HINT_ENUM, hint_string = "64, 128, 256, 512, 1024"})
 	ret.push_back({name = "moon_light_path", type = TYPE_NODE_PATH})
 	
 	ret.push_back({name = "moon_light_color", type = TYPE_COLOR})
