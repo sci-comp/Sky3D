@@ -274,7 +274,7 @@ namespace JC.TimeOfDay
         }
 
         // Celestials.
-        public float CelestialUpdateTime{ get; set; } = 0.0f;
+        public float CelestialsUpdateTime{ get; set; } = 0.0f;
         float _CelestialUpdateTimer = 0.0f;
 
         bool _ComputeMoonCoords = false;
@@ -375,9 +375,11 @@ namespace JC.TimeOfDay
             }
 
             _CelestialUpdateTimer += delta;
-            if(_CelestialUpdateTimer > CelestialUpdateTime)
+            if(_CelestialUpdateTimer > CelestialsUpdateTime)
+            {
                 SetCelestialCoords();
                 _CelestialUpdateTimer = 0.0f;
+            }
         }
 
 
