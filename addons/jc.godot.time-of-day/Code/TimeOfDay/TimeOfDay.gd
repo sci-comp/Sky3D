@@ -104,7 +104,7 @@ func set_celestials_calculations(value: int) -> void:
 	
 	property_list_changed_notify()
 
-var latitude: float = 42.0 setget set_latitude
+var latitude: float = 0.0 setget set_latitude
 func set_latitude(value: float) -> void:
 	latitude = value
 	if Engine.editor_hint:

@@ -234,7 +234,7 @@ namespace JC.TimeOfDay
         }
 
         // Location.
-        float _Latitude = 42.0f;
+        float _Latitude = 0.0f;
         public float Latitude 
         {
             get => _Latitude;
