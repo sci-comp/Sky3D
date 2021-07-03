@@ -57,6 +57,5 @@ namespace JC.TimeOfDay
                         
             return node;
         }
-
     }
 }

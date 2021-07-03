@@ -71,7 +71,6 @@ func set_sky_render_priority(value: int) -> void:
 	__resources.setup_sky_render_priority(value)
 	__resources.setup_clouds_cumulus_priority(value + 1)
 
-
 # Sun Coords.
 var sun_azimuth: float = 0.0 setget set_sun_azimuth
 func set_sun_azimuth(value: float) -> void:
@@ -94,7 +93,6 @@ func sun_direction() -> Vector3:
 
 signal sun_direction_changed(value)
 signal sun_transform_changed(value)
-
 
 # Moon Coords.
 var moon_azimuth: float = 5.0 setget set_moon_azimuth
@@ -330,7 +328,6 @@ func set_moon_size(value: float) -> void:
 var enable_set_moon_texture = false setget set_enable_set_moon_texture
 func set_enable_set_moon_texture(value: bool) -> void:
 	enable_set_moon_texture = value
-	
 	if not value:
 		set_moon_texture(__resources._moon_texture)
 	
@@ -350,8 +347,8 @@ func set_moon_resolution(value: int) -> void:
 	moon_resolution = value
 	if not __init_properties_ok:
 		return
-	assert(__moon_instance != null, "Moon instance not found")
 	
+	assert(__moon_instance != null, "Moon instance not found")
 	match value:
 		MoonResolution.R64: __moon_instance.size = Vector2.ONE * 64
 		MoonResolution.R128: __moon_instance.size = Vector2.ONE * 128
@@ -528,7 +525,6 @@ func set_clouds_offset_speed(value: float) -> void:
 var set_clouds_texture: bool = false setget set_set_clouds_texture
 func set_set_clouds_texture(value: bool) -> void:
 	set_clouds_texture = value
-	
 	if not value:
 		set_clouds_texture(__resources._clouds_texture)
 	
@@ -542,7 +538,6 @@ func set_clouds_texture(value: Texture) -> void:
 var clouds_cumulus_visible: bool = true setget set_clouds_cumulus_visible
 func set_clouds_cumulus_visible(value: bool) -> void:
 	clouds_cumulus_visible = value
-	
 	if not __init_properties_ok:
 		return
 	
@@ -868,7 +863,6 @@ func __setup_instances() -> void:
 	__setup_mesh_instance(__fog_instance, __resources._full_screen_quad, __resources.fog_material, Vector3.ZERO)
 	
 	assert(__clouds_cumulus_instance != null, "Clouds cumulus instance not found")
-	
 	__setup_mesh_instance(__clouds_cumulus_instance, __resources._clouds_cumulus_mesh, __resources.clouds_cumulus_material, SkyConst.DEFAULT_POSITION)
 
 func __setup_mesh_instance(target: MeshInstance, mesh: Mesh, mat: Material, origin: Vector3) -> void:
@@ -894,7 +888,6 @@ func __set_sun_coords() -> void:
 		return
 	
 	assert(__sky_instance != null, "Sky instance not found")
-	
 	var azimuth: float = sun_azimuth * TOD_Math.DEG_TO_RAD
 	var altitude: float = sun_altitude * TOD_Math.DEG_TO_RAD
 	
@@ -934,7 +927,6 @@ func __set_moon_coords() -> void:
 		return
 	
 	assert(__sky_instance != null, "Sky instance not found")
-	
 	var azimuth: float = moon_azimuth * TOD_Math.DEG_TO_RAD
 	var altitude: float = moon_altitude * TOD_Math.DEG_TO_RAD
 	
@@ -987,7 +979,7 @@ func __set_night_intensity() -> void:
 	var tint: Color = atm_night_tint * atm_night_intensity()
 	__resources.sky_material.set_shader_param(SkyConst.ATM_NIGHT_TINT_P, tint)
 	__resources.fog_material.set_shader_param(SkyConst.ATM_NIGHT_TINT_P, atm_night_tint * fog_atm_night_intensity())
-		
+	
 	set_atm_moon_mie_intensity(atm_moon_mie_intensity)
 
 ## Lighting
@@ -1035,6 +1027,7 @@ func __update_enviro() -> void:
 	
 	var colA = TOD_Math.plerp_color(atm_day_tint * 0.5, atm_horizon_light_tint, a)
 	var colB = TOD_Math.plerp_color(colA, atm_night_tint * atm_night_intensity(), b)
+	
 	enviro.ambient_light_color = colB
 
 
@@ -1170,6 +1163,7 @@ func _get_property_list() -> Array:
 	
 	if set_clouds_cumulus_texture:
 		ret.push_back({name = "clouds_cumulus_texture", type = TYPE_OBJECT, hint = PROPERTY_HINT_FILE, hint_string = "Texture"})
+	
 	# Lighting
 	ret.push_back({name = "Lighting", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
 	ret.push_back({name = "enviro", type = TYPE_OBJECT, hint = PROPERTY_HINT_RESOURCE_TYPE, hint_string = "Resource"})

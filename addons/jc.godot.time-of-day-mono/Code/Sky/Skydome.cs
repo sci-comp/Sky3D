@@ -1278,7 +1278,6 @@ namespace JC.TimeOfDay
             }
         }
 
-
         #endregion
 
     #endregion

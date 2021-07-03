@@ -28,7 +28,6 @@ func set_dome_path(value: NodePath) -> void:
 	__dome_found = false if __dome == null else true
 	__set_celestial_coords()
 
-
 # DateTime
 #----------------------------------------------------------
 var system_sync: bool = false

@@ -111,7 +111,6 @@ namespace JC.TimeOfDay
 
                 SetCelestialCoords();
             }
-
         }
 
         #endregion
@@ -382,9 +381,7 @@ namespace JC.TimeOfDay
             }
         }
 
-
     #endregion
-
 
     #region DateTime
 
@@ -471,7 +468,6 @@ namespace JC.TimeOfDay
 
     #region Planetary
 
-
         void SetCelestialCoords()
         {
             if(!_DomeFound)
@@ -537,7 +533,6 @@ namespace JC.TimeOfDay
 
                 break;
             }
-   
         }
 
         void ComputeSimpleSunCoords()
