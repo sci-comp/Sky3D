@@ -554,7 +554,7 @@ func set_clouds_cumulus_day_color(value: Color) -> void:
 	clouds_cumulus_day_color = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_DAY_COLOR, value)
 
-var clouds_cumulus_horizon_light_color:= Color(0.886275, 0.709804, 0.596078, 1.0) setget set_clouds_cumulus_horizon_light_color
+var clouds_cumulus_horizon_light_color:= Color(1.0, 0.333333, 0.152941, 1.0) setget set_clouds_cumulus_horizon_light_color
 func set_clouds_cumulus_horizon_light_color(value: Color) -> void:
 	clouds_cumulus_horizon_light_color = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_HORIZON_LIGHT_COLOR, value)

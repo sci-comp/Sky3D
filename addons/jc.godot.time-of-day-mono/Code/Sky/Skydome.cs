@@ -1096,7 +1096,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private Color _CloudsCumulusHorizonLightColor = new Color(0.886275f, 0.709804f, 0.596078f, 1.0f);
+        private Color _CloudsCumulusHorizonLightColor = new Color(1.0f, 0.333333f, 0.152941f, 1.0f);
         public Color CloudsCumulusHorizonLightColor 
         {
             get => _CloudsCumulusHorizonLightColor;
