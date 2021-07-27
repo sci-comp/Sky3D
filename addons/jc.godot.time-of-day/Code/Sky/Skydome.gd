@@ -811,7 +811,7 @@ func __init_properties() -> void:
 
 func __build_dome() -> void:
 	# Sky.
-	__sky_instance = get_node_or_null(SkyConst.MOON_INSTANCE)
+	__sky_instance = get_node_or_null(SkyConst.SKY_INSTANCE)
 	if __sky_instance == null:
 		__sky_instance = MeshInstance.new()
 		__sky_instance.name = SkyConst.SKY_INSTANCE

@@ -15,7 +15,8 @@ environment = ExtResource( 1 )
 
 [node name="SunLight" type="DirectionalLight" parent="WorldEnvironment"]
 transform = Transform( 0, -0.9818, -0.189918, -0.250681, -0.183854, 0.950451, -0.96807, 0.0476087, -0.246118, -0.189918, 0.950451, -0.246118 )
-light_color = Color( 0.984314, 0.788235, 0.788235, 1 )
+light_color = Color( 0.985091, 0.768221, 0.761226, 1 )
+light_energy = 0.950451
 shadow_enabled = true
 
 [node name="MoonLight" type="DirectionalLight" parent="WorldEnvironment"]

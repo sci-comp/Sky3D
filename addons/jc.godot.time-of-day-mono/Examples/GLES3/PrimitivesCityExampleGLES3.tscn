@@ -15,7 +15,8 @@ environment = ExtResource( 1 )
 
 [node name="SunLight" type="DirectionalLight" parent="WorldEnvironment"]
 transform = Transform( 0, -0.957631, -0.287999, -0.202156, -0.282052, 0.937859, -0.979353, 0.0582207, -0.193591, -0.287998, 0.937859, -0.193591 )
-light_color = Color( 0.984314, 0.843137, 0.788235, 1 )
+light_color = Color( 0.985289, 0.814625, 0.754362, 1 )
+light_energy = 0.937859
 shadow_enabled = true
 
 [node name="MoonLight" type="DirectionalLight" parent="WorldEnvironment"]
@@ -55,7 +56,7 @@ ComputeDeepSpaceCoords = true
 Latitude = 0.0
 Longitude = 0.0
 UTC = 0.0
-CelestialsUpdateTime = null
+CelestialsUpdateTime = 0.0
 
 [node name="Skydome" type="Node" parent="."]
 script = ExtResource( 4 )
