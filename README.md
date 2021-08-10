@@ -7,7 +7,7 @@ Dynamic skydome and ToD plugin for godot engine.
 
 
 ## Status:
-> 1.0.0
+> 1.0.1
 ------------------------------------
 
 ## Reflections:
@@ -33,5 +33,5 @@ Dynamic skydome and ToD plugin for godot engine.
 - Clone or download the repository. 
 - Create a folder called addons in your project. 
 - Download the repository and copy and paste the folders "jc.godot.universal-sky-common" and "jc.godot.time-of-day" or "jc.godot.time-of-day-mono" into that folder. 
-- Build the project in the mono version.
+- Build the solution in the mono version.
 - Go to Project -> Project Settings -> Plugins and activate the plugin. 

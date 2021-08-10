@@ -67,7 +67,7 @@ config/icon="res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/G
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/jc.godot.time-of-day/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/jc.godot.time-of-day-mono/plugin.cfg" )
 
 [physics]
 
