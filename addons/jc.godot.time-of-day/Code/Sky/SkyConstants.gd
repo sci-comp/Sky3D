@@ -32,6 +32,7 @@ const TEXTURE_P:= "_texture"
 const COLOR_CORRECTION_P:= "_color_correction_params"
 const GROUND_COLOR_P:= "_ground_color"
 const NOISE_TEX:= "_noise_tex"
+const HORIZON_LEVEL = "_horizon_level"
 
 ## Atmosphere
 const ATM_DARKNESS_P:= "_atm_darkness"

@@ -46,6 +46,7 @@ namespace JC.TimeOfDay
         public static readonly String kColorCorrectionP = "_color_correction_params";
         public static readonly String kGroundColorP = "_ground_color";
         public static readonly String kNoiseTex = "_noise_tex";
+        public static readonly String kHorizonLevel = "_horizon_level";
 
     #endregion
 

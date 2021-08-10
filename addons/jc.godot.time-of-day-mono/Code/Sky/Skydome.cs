@@ -134,6 +134,17 @@ namespace JC.TimeOfDay
             }
         }
 
+        private float _HorizonLevel = 0.0f;
+        public float HorizonLevel
+        {
+            get => _HorizonLevel;
+            set 
+            {
+                _HorizonLevel = value;
+                _Resources.SkyMaterial.SetShaderParam(SkyConst.kHorizonLevel, value);
+            }
+        }
+
         #endregion
 
         #region Sun Coords. 

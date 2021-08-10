@@ -71,6 +71,11 @@ func set_sky_render_priority(value: int) -> void:
 	__resources.setup_sky_render_priority(value)
 	__resources.setup_clouds_cumulus_priority(value + 1)
 
+var horizon_level: float = 0.0 setget set_horizon_level
+func set_horizon_level(value: float) -> void:
+	horizon_level = value
+	__resources.sky_material.set_shader_param(SkyConst.HORIZON_LEVEL, value)
+
 # Sun Coords.
 var sun_azimuth: float = 0.0 setget set_sun_azimuth
 func set_sun_azimuth(value: float) -> void:
@@ -1044,6 +1049,7 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "ground_color", type = TYPE_COLOR})
 	ret.push_back({name = "sky_layers", type = TYPE_INT, hint = PROPERTY_HINT_LAYERS_3D_RENDER})
 	ret.push_back({name = "sky_render_priority", type = TYPE_INT, hint = PROPERTY_HINT_RANGE, hint_string = "-128, 127"})
+	ret.push_back({name = "horizon_level", type = TYPE_REAL})
 	
 	# Sun.
 	ret.push_back({name = "Sun", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})

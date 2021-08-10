@@ -17,6 +17,7 @@ render_mode unshaded, depth_draw_never, cull_front, skip_vertex_transform;
 // Color correction
 uniform vec2 _color_correction_params;
 uniform vec4 _ground_color: hint_color;
+uniform float _horizon_level;
 
 // uniforms.
 uniform vec3 _sun_direction;
@@ -238,16 +239,18 @@ void vertex(){
 	angle_mult.w = saturate(-_sun_direction.y + 0.60);
 	
 	// Atmosphere.
-	vec3 worldPos = normalize(world_pos).xyz;
+	vec3 worldPos = normalize(vec3(world_pos.x, world_pos.y , world_pos.z)).xyz;
 	vec2 mu = vec2(dot(_sun_direction, worldPos), dot(_moon_direction, worldPos));
 	float sr, sm;
-	simpleOpticalDepth(worldPos.y + _atm_level_params.z, sr, sm);
+	simpleOpticalDepth(worldPos.y + _atm_level_params.z + _horizon_level, sr, sm);
 	scatter = atmosphericScattering(sr, sm, mu.xy, angle_mult.xyz);
 }
 
 void fragment(){
 	vec3 col = vec3(0.0);
 	vec3 worldPos = normalize(world_pos).xyz;
+	vec3 cloudsPos = worldPos;
+	worldPos.y += _horizon_level;
 	float horizonBlend = saturate((worldPos.y - 0.03) * 3.0);
 	col.rgb += scatter.rgb;
 	
@@ -286,7 +289,7 @@ void fragment(){
 	col.rgb += deepSpace.rgb * horizonBlend;
 	
 	// Clouds.
-	vec4 clouds = renderClouds(worldPos, TIME);
+	vec4 clouds = renderClouds(cloudsPos, TIME);
 	clouds.a = saturate(clouds.a);
 	clouds.rgb *= mix(mix(vec3(1.0), _atm_horizon_light_tint.rgb, angle_mult.x), 
 		_atm_night_tint.rgb, angle_mult.w);

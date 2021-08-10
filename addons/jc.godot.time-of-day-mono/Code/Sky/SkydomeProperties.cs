@@ -98,6 +98,13 @@ namespace JC.TimeOfDay
             };
             ret.Add(pSkyRenderPriority);
 
+            PropElement pHorizonLevel = new PropElement
+            {
+                {"name", "HorizonLevel"},
+                {"type", Variant.Type.Real}
+            };
+            ret.Add(pHorizonLevel);
+
         #endregion
 
         #region Sun
