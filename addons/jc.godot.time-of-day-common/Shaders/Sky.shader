@@ -243,7 +243,6 @@ void fragment(){
 	vec3 worldPos = normalize(world_pos).xyz;
 	vec3 cloudsPos = worldPos;
 	
-	
 	// Atmosphere.
 	vec2 mu = vec2(dot(_sun_direction, worldPos), dot(_moon_direction, worldPos));
 	float sr, sm;

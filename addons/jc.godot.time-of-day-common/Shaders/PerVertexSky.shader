@@ -239,7 +239,7 @@ void vertex(){
 	angle_mult.w = saturate(-_sun_direction.y + 0.60);
 	
 	// Atmosphere.
-	vec3 worldPos = normalize(vec3(world_pos.x, world_pos.y , world_pos.z)).xyz;
+	vec3 worldPos = normalize(world_pos).xyz;
 	vec2 mu = vec2(dot(_sun_direction, worldPos), dot(_moon_direction, worldPos));
 	float sr, sm;
 	simpleOpticalDepth(worldPos.y + _atm_level_params.z + _horizon_level, sr, sm);
