@@ -48,6 +48,10 @@ namespace JC.TimeOfDay
                 node.Name   = name;
                 parent.AddChild(node); 
             }
+            else
+            {
+                return node;
+            }
                     
             if(show)
                 node.Owner = parent.GetTree().EditedSceneRoot;
