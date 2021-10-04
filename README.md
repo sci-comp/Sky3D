@@ -1,6 +1,10 @@
 # Time Of Day
 ------------------------------------
 
+# Support Me:
+[Patreon](https://www.patreon.com/JayC7)
+------------------------------------
+
 Dynamic skydome and ToD plugin for godot engine.
 ------------------------------------
 ![Screenshot](https://raw.githubusercontent.com/7leodev/UniversalSky/main/Screenshots/Screenshot0.jpg)
