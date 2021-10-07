@@ -1,7 +1,7 @@
 # Time Of Day
 ------------------------------------
 
-## Support Me: [Patreon](https://www.patreon.com/JayC7)
+## New Repo(for v2.0): [Link](https://github.com/Jay7c/jc.time-of-day)
 ------------------------------------
 
 Dynamic skydome and ToD plugin for godot engine.
