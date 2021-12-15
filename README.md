@@ -1,6 +1,9 @@
 # Time Of Day
 ------------------------------------
 
+## New Repo(for v2.0): [Link](https://github.com/Jay7c/jc.time-of-day)
+------------------------------------
+
 Dynamic skydome and ToD plugin for godot engine.
 ------------------------------------
 ![Screenshot](https://raw.githubusercontent.com/7leodev/UniversalSky/main/Screenshots/Screenshot0.jpg)
