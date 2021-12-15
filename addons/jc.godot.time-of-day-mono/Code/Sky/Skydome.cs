@@ -1129,7 +1129,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private float _CloudsCumulusThickness = 0.03f;
+        private float _CloudsCumulusThickness = 0.0243f;
         public float CloudsCumulusThickness 
         {
             get => _CloudsCumulusThickness;

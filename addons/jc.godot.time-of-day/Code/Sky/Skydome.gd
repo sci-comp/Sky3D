@@ -310,9 +310,9 @@ func set_sun_disk_color(value: Color) -> void:
 	sun_disk_color = value
 	__resources.sky_material.set_shader_param(SkyConst.SUN_DISK_COLOR_P, value)
 
-var sun_disk_instensity: float = 2.0 setget set_sun_disk_intensity
+var sun_disk_intensity: float = 2.0 setget set_sun_disk_intensity
 func set_sun_disk_intensity(value: float) -> void:
-	sun_disk_instensity = value
+	sun_disk_intensity = value
 	__resources.sky_material.set_shader_param(SkyConst.SUN_DISK_INTENSITY_P, value)
 
 var sun_disk_size: float = 0.015 setget set_sun_disk_size
@@ -564,7 +564,7 @@ func set_clouds_cumulus_night_color(value: Color) -> void:
 	clouds_cumulus_night_color = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_NIGHT_COLOR, value)
 
-var clouds_cumulus_thickness: float = 0.03 setget set_clouds_cumulus_thickness
+var clouds_cumulus_thickness: float = 0.0243 setget set_clouds_cumulus_thickness
 func set_clouds_cumulus_thickness(value: float) -> void:
 	clouds_cumulus_thickness = value
 	__resources.clouds_cumulus_material.set_shader_param(SkyConst.CLOUDS_THICKNESS, value)
@@ -736,7 +736,7 @@ func __init_properties() -> void:
 	
 	# Near space.
 	set_sun_disk_color(sun_disk_color)
-	set_sun_disk_intensity(sun_disk_instensity)
+	set_sun_disk_intensity(sun_disk_intensity)
 	set_sun_disk_size(sun_disk_size)
 	
 	set_moon_color(moon_color)
@@ -1056,7 +1056,7 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "sun_altitude", type = TYPE_REAL, hint = PROPERTY_HINT_RANGE, hint_string = "-180.0, 180.0"})
 	ret.push_back({name = "sun_azimuth", type = TYPE_REAL, hint = PROPERTY_HINT_RANGE, hint_string = "-180.0, 180.0"})
 	ret.push_back({name = "sun_disk_color", type = TYPE_COLOR})
-	ret.push_back({name = "sun_disk_instensity", type = TYPE_REAL, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 2.0"}) # Clamped 2.0 for prevent reflection probe artifacts.
+	ret.push_back({name = "sun_disk_intensity", type = TYPE_REAL, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 2.0"}) # Clamped 2.0 for prevent reflection probe artifacts.
 	ret.push_back({name = "sun_disk_size", type = TYPE_REAL, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 0.5"})
 	ret.push_back({name = "sun_light_path", type = TYPE_NODE_PATH})
 	ret.push_back({name = "sun_light_color", type = TYPE_COLOR})
