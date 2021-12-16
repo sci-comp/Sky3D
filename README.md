@@ -1,5 +1,6 @@
 # Time Of Day
 ------------------------------------
+## Buy in Itch.io for support this plugin: [Link](https://jaykuellar.itch.io/godot-time-of-day-plugin)
 
 ## New Repo(for v2.0): [Link](https://github.com/Jay7c/jc.time-of-day)
 ------------------------------------
