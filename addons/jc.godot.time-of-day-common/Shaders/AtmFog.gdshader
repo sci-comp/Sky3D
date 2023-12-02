@@ -27,9 +27,9 @@ uniform vec3 _moon_direction;
 
 uniform float _atm_darkness;
 uniform float _atm_sun_intensity;
-uniform vec4 _atm_day_tint: hint_color;
-uniform vec4 _atm_horizon_light_tint: hint_color;
-uniform vec4 _atm_night_tint: hint_color;
+uniform vec4 _atm_day_tint: source_color;
+uniform vec4 _atm_horizon_light_tint: source_color;
+uniform vec4 _atm_night_tint: source_color;
 uniform vec3 _atm_level_params;
 uniform float _atm_thickness;
 
@@ -37,12 +37,15 @@ uniform vec3 _atm_beta_ray;
 uniform vec3 _atm_beta_mie;
 
 uniform vec3 _atm_sun_partial_mie_phase;
-uniform vec4 _atm_sun_mie_tint: hint_color;
+uniform vec4 _atm_sun_mie_tint: source_color;
 uniform float _atm_sun_mie_intensity;
 
 uniform vec3 _atm_moon_partial_mie_phase;
-uniform vec4 _atm_moon_mie_tint: hint_color;
+uniform vec4 _atm_moon_mie_tint: source_color;
 uniform float _atm_moon_mie_intensity;
+
+uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
 // Inc.
 //------------------------------------------------------------------------------
@@ -187,7 +190,7 @@ void vertex(){
 	angle_mult.y = saturate(_sun_direction.y + 0.45);
 	angle_mult.z = saturate(-_sun_direction.y + 0.30);
 	angle_mult.w = saturate(-_sun_direction.y + 0.60);
-	camera_matrix = CAMERA_MATRIX;
+	camera_matrix = INV_VIEW_MATRIX;
 }
 
 void fragment(){

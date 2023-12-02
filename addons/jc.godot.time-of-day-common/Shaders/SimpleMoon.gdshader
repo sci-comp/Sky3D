@@ -23,7 +23,7 @@ float saturate(float v){
 
 varying vec3 normal;
 void vertex(){
-	normal = (WORLD_MATRIX * vec4(VERTEX, 0.0)).xyz;
+	normal = (MODEL_MATRIX * vec4(VERTEX, 0.0)).xyz;
 }
 
 void fragment(){

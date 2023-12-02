@@ -1,25 +1,30 @@
-tool
-class_name TimeOfDay extends Node
-"""========================================================
-°                         TimeOfDay.
-°                   ======================
-°
-°   Category: TimeOfDay
-°   -----------------------------------------------------
-°   Description:
-°       Time of Day manager.
-°   -----------------------------------------------------
-°   Copyright:
-°               J. Cuellar 2021. MIT License.
-°                   See: LICENSE File.
-========================================================"""
+@tool
+class_name TimeOfDay
+extends Node
+
+#"""========================================================
+#°                         TimeOfDay.
+#°                   ======================
+#°
+#°   Category: TimeOfDay
+#°   -----------------------------------------------------
+#°   Description:
+#°       Time of Day manager.
+#°   -----------------------------------------------------
+#°   Copyright:
+#°               J. Cuellar 2021. MIT License.
+#°                   See: LICENSE File.
+#========================================================"""
 
 # Target
 #----------------------------------------------------------
 var __dome: Skydome = null
 var __dome_found: bool = false
 
-var dome_path: NodePath setget set_dome_path
+var dome_path: NodePath:
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_dome_path(value)
 func set_dome_path(value: NodePath) -> void:
 	dome_path = value
 	if value != null:
@@ -33,32 +38,44 @@ func set_dome_path(value: NodePath) -> void:
 var system_sync: bool = false
 var total_cycle_in_minutes: float = 15.0
 
-var total_hours: float = 7.0 setget set_total_hours
+var total_hours: float = 7.0:
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_total_hours(value)
 func set_total_hours(value: float) -> void:
 	total_hours = value
 	emit_signal("total_hours_changed", value)
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
-var day: int = 12 setget set_day
+var day: int = 12:
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_day(value)
 func set_day(value: int) -> void:
 	day = value 
 	emit_signal("day_changed", value)
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
-var month: int = 2 setget set_month
+var month: int = 2:
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_month(value)
 func set_month(value: int) -> void:
 	month = value 
 	emit_signal("month_changed", value)
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
-var year: int = 2021 setget set_year
+var year: int = 2021:
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_year(value)
 func set_year(value: int) -> void:
 	year = value 
 	emit_signal("year_changed", value)
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
 func is_learp_year() -> bool:
@@ -95,53 +112,74 @@ enum CelestialCalculationsMode{
 	Realistic
 }
 
-var celestials_calculations: int = 0 setget set_celestials_calculations
+var celestials_calculations: int = 0:
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_celestials_calculations(value)
 func set_celestials_calculations(value: int) -> void:
 	celestials_calculations = value
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		__set_celestial_coords()
 	
-	property_list_changed_notify()
+	notify_property_list_changed()
 
-var latitude: float = 0.0 setget set_latitude
+var latitude: float = 0.0:
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_latitude(value)
 func set_latitude(value: float) -> void:
 	latitude = value
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
-var longitude: float = 0.0 setget set_longitude
+var longitude: float = 0.0:
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_longitude(value)
 func set_longitude(value: float) -> void:
 	longitude = value
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
-var utc: float = 0.0 setget set_utc
+var utc: float = 0.0:
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_utc(value)
 func set_utc(value: float) -> void:
 	utc = value
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
 var celestials_update_time: float = 0.0
 var __celestials_update_timer: float = 0.0
 
-var compute_moon_coords: bool = false setget set_compute_moon_coords
+var compute_moon_coords: bool = false:
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_compute_moon_coords(value)
 func set_compute_moon_coords(value: bool) -> void:
 	compute_moon_coords = value
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		__set_celestial_coords()
 	
-	property_list_changed_notify()
+	notify_property_list_changed()
 
-var compute_deep_space_coords: bool = false setget set_compute_deep_space_coords
+var compute_deep_space_coords: bool = false:
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_compute_deep_space_coords(value)
 func set_compute_deep_space_coords(value: bool) -> void:
 	compute_deep_space_coords = value
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
-var moon_coords_offset := Vector2(0.0, 0.0) setget set_moon_coords_offset
+var moon_coords_offset := Vector2(0.0, 0.0):
+	set(value):
+		# TODO: Manually copy the code from this method.
+		set_moon_coords_offset(value)
 func set_moon_coords_offset(value: Vector2) -> void:
 	moon_coords_offset = value
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
 func __get_latitude_rad() -> float:
@@ -181,7 +219,7 @@ func _init() -> void:
 	set_utc(utc)
 
 signal time_update(TimeOfDay)
-export var update_interval: float = 0.1
+@export var update_interval: float = 0.1
 var _last_update: int = 0
 
 
@@ -191,17 +229,17 @@ func _ready() -> void:
 	var timer := Timer.new()
 	timer.name = "Timer"
 	add_child(timer)
-	timer.connect("timeout", self, "_on_timeout")
+	timer.connect(&"timeout", self._on_timeout)
 	timer.wait_time = update_interval
 	timer.stop()
-	_last_update = OS.get_ticks_msec()
+	_last_update = Time.get_ticks_msec()
 
 
 func _on_timeout() -> void:
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		return
 	
-	var delta: float = .001 * (OS.get_ticks_msec() - _last_update)
+	var delta: float = .001 * (Time.get_ticks_msec() - _last_update)
 
 	if not system_sync:
 		__time_process(delta)
@@ -216,7 +254,7 @@ func _on_timeout() -> void:
 		__celestials_update_timer = 0.0
 
 	emit_signal("time_update", self)
-	_last_update = OS.get_ticks_msec()
+	_last_update = Time.get_ticks_msec()
 	
 
 func pause() -> void:
@@ -224,7 +262,7 @@ func pause() -> void:
 
 
 func resume() -> void:
-	_last_update = OS.get_ticks_msec() - update_interval
+	_last_update = Time.get_ticks_msec() - update_interval
 	$Timer.start()
 	
 
@@ -239,7 +277,7 @@ func __time_process(delta: float) -> void:
 		set_total_hours(total_hours + delta / time_cycle_duration() * DateTimeUtil.TOTAL_HOURS)
 
 func __get_date_time_os() -> void:
-	date_time_os = OS.get_datetime()
+	date_time_os = Time.get_datetime_dict_from_system()
 	set_time(date_time_os.hour, date_time_os.minute, date_time_os.second)
 	set_day(date_time_os.day)
 	set_month(date_time_os.month)
@@ -295,8 +333,8 @@ func __set_celestial_coords() -> void:
 				__dome.moon_azimuth = __moon_coords.x
 			
 			if compute_deep_space_coords:
-				var x = Quat(Vector3( (90 + latitude) * TOD_Math.DEG_TO_RAD, 0.0, 0.0))
-				var y = Quat(Vector3(0.0, 0.0, __sun_coords.y * TOD_Math.DEG_TO_RAD))
+				var x = Quaternion.from_euler(Vector3( (90 + latitude) * TOD_Math.DEG_TO_RAD, 0.0, 0.0))
+				var y = Quaternion.from_euler(Vector3(0.0, 0.0, __sun_coords.y * TOD_Math.DEG_TO_RAD))
 				__dome.deep_space_quat = x * y
 		
 		CelestialCalculationsMode.Realistic:
@@ -309,8 +347,8 @@ func __set_celestial_coords() -> void:
 				__dome.moon_azimuth = __moon_coords.x * TOD_Math.RAD_TO_DEG
 			
 			if compute_deep_space_coords:
-				var x = Quat(Vector3( (90 + latitude) * TOD_Math.DEG_TO_RAD, 0.0, 0.0) )
-				var y = Quat(Vector3(0.0, 0.0,  (180.0 - __local_sideral_time * TOD_Math.RAD_TO_DEG) * TOD_Math.DEG_TO_RAD)) 
+				var x = Quaternion.from_euler(Vector3( (90 + latitude) * TOD_Math.DEG_TO_RAD, 0.0, 0.0) )
+				var y = Quaternion.from_euler(Vector3(0.0, 0.0,  (180.0 - __local_sideral_time * TOD_Math.RAD_TO_DEG) * TOD_Math.DEG_TO_RAD)) 
 				__dome.deep_space_quat = x * y
 
 func __compute_simple_sun_coords() -> void:
@@ -526,8 +564,8 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "DateTime", type=TYPE_NIL, usage=PROPERTY_USAGE_GROUP})
 	ret.push_back({name = "system_sync", type=TYPE_BOOL})
 		
-	ret.push_back({name = "total_cycle_in_minutes", type=TYPE_REAL})
-	ret.push_back({name = "total_hours", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 24.0"})
+	ret.push_back({name = "total_cycle_in_minutes", type=TYPE_FLOAT})
+	ret.push_back({name = "total_hours", type=TYPE_FLOAT, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 24.0"})
 	ret.push_back({name = "day", type=TYPE_INT, hint=PROPERTY_HINT_RANGE, hint_string="0, 31"})
 	ret.push_back({name = "month", type=TYPE_INT, hint=PROPERTY_HINT_RANGE, hint_string="0, 12"})
 	ret.push_back({name = "year", type=TYPE_INT, hint=PROPERTY_HINT_RANGE, hint_string="-9999, 9999"})
@@ -540,9 +578,9 @@ func _get_property_list() -> Array:
 		ret.push_back({name = "moon_coords_offset", type=TYPE_VECTOR2})
 		
 	ret.push_back({name = "compute_deep_space_coords", type=TYPE_BOOL})
-	ret.push_back({name = "latitude", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="-90.0, 90.0"})
-	ret.push_back({name = "longitude", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="-180.0, 180.0"})
-	ret.push_back({name = "utc", type=TYPE_REAL, hint=PROPERTY_HINT_RANGE, hint_string="-12.0, 12.0"})
-	ret.push_back({name = "celestials_update_time", type=TYPE_REAL})
+	ret.push_back({name = "latitude", type=TYPE_FLOAT, hint=PROPERTY_HINT_RANGE, hint_string="-90.0, 90.0"})
+	ret.push_back({name = "longitude", type=TYPE_FLOAT, hint=PROPERTY_HINT_RANGE, hint_string="-180.0, 180.0"})
+	ret.push_back({name = "utc", type=TYPE_FLOAT, hint=PROPERTY_HINT_RANGE, hint_string="-12.0, 12.0"})
+	ret.push_back({name = "celestials_update_time", type=TYPE_FLOAT})
 	
 	return ret

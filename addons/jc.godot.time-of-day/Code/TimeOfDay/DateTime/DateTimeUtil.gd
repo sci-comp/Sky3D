@@ -1,17 +1,19 @@
 class_name DateTimeUtil
-"""========================================================
-°                         TimeOfDay.
-°                   ======================
-°
-°   Category: Utility.
-°   -----------------------------------------------------
-°   Description:
-°       DateTime util functions.
-°   -----------------------------------------------------
-°   Copyright:
-°               J. Cuellar 2021. MIT License.
-°                   See: LICENSE File.
-========================================================"""
+
+#"""========================================================
+#°                         TimeOfDay.
+#°                   ======================
+#°
+#°   Category: Utility.
+#°   -----------------------------------------------------
+#°   Description:
+#°       DateTime util functions.
+#°   -----------------------------------------------------
+#°   Copyright:
+#°               J. Cuellar 2021. MIT License.
+#°                   See: LICENSE File.
+#========================================================"""
+
 const TOTAL_HOURS: int = 24
 
 static func compute_leap_year(year: int) -> bool:

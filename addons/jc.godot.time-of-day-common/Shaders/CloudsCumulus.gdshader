@@ -31,16 +31,16 @@ uniform float _clouds_offset_speed;
 uniform vec3 _clouds_offset;
 uniform sampler2D _clouds_texture;
 
-uniform vec4 _clouds_day_color: hint_color;
-uniform vec4 _clouds_horizon_light_color: hint_color;
-uniform vec4 _clouds_night_color: hint_color;
+uniform vec4 _clouds_day_color: source_color;
+uniform vec4 _clouds_horizon_light_color: source_color;
+uniform vec4 _clouds_night_color: source_color;
 
 const int kCLOUDS_STEP = 10;
 
 uniform vec3 _clouds_partial_mie_phase;
 uniform float _clouds_mie_intensity;
 uniform vec4 _atm_sun_mie_tint;
-uniform vec4 _atm_moon_mie_tint: hint_color;
+uniform vec4 _atm_moon_mie_tint: source_color;
 
 const float kPI          = 3.1415927f;
 const float kINV_PI      = 0.3183098f;
@@ -182,10 +182,10 @@ varying vec4 angle_mult;
 
 void vertex(){
 	vec4 vert = vec4(VERTEX, 0.0);
-	POSITION =  PROJECTION_MATRIX * INV_CAMERA_MATRIX * WORLD_MATRIX * vert;
+	POSITION =  PROJECTION_MATRIX * VIEW_MATRIX * MODEL_MATRIX * vert;
 	POSITION.z = POSITION.w;
 	
-	world_pos = (WORLD_MATRIX * vert);
+	world_pos = (MODEL_MATRIX * vert);
 	angle_mult.x = saturate(1.0 - _sun_direction.y);
 	angle_mult.y = saturate(_sun_direction.y + 0.45);
 	angle_mult.z = saturate(-_sun_direction.y + 0.30);

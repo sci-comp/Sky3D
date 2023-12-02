@@ -1,23 +1,25 @@
-tool
-class_name SkydomeResources extends Resource 
-"""========================================================
-°                         TimeOfDay.
-°                   ======================
-°
-°   Category: Sky.
-°   -----------------------------------------------------
-°   Description:
-°       Skydome resources.
-°   -----------------------------------------------------
-°   Copyright:
-°               J. Cuellar 2021. MIT License.
-°                   See: LICENSE File.
-========================================================"""
+@tool
+class_name SkydomeResources
+extends Resource 
+
+#"""========================================================
+#°                         TimeOfDay.
+#°                   ======================
+#°
+#°   Category: Sky.
+#°   -----------------------------------------------------
+#°   Description:
+#°       Skydome resources.
+#°   -----------------------------------------------------
+#°   Copyright:
+#°               J. Cuellar 2021. MIT License.
+#°                   See: LICENSE File.
+#========================================================"""
 
 # Mesh.
 var _skydome_mesh:= SphereMesh.new()
 var _clouds_cumulus_mesh:= SphereMesh.new()
-var _full_screen_quad:= QuadMesh.new()
+var _full_screen_quad:= PlaneMesh.new()
 
 # Materials.
 var sky_material:= ShaderMaterial.new()
@@ -26,23 +28,23 @@ var moon_material:= ShaderMaterial.new()
 var clouds_cumulus_material:= ShaderMaterial.new()
 
 # Shaders.
-const _sky_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/Sky.shader")
-const _pv_sky_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/PerVertexSky.shader")
-const _atm_fog_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/AtmFog.shader")
-const _moon_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/SimpleMoon.shader")
-const _clouds_cumulus_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/CloudsCumulus.shader")
+const _sky_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/Sky.gdshader")
+const _pv_sky_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/PerVertexSky.gdshader")
+const _atm_fog_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/AtmFog.gdshader")
+const _moon_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/SimpleMoon.gdshader")
+const _clouds_cumulus_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/CloudsCumulus.gdshader")
 
 # Scenes.
 const _moon_render: PackedScene = preload("res://addons/jc.godot.time-of-day-common/Scenes/Moon/MoonRender.tscn")
 
 # Textures.
-const _moon_texture: Texture = preload("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MoonMap/MoonMap.png")
-const _background_texture: Texture = preload("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MilkyWay/Milkyway.jpg")
-const _stars_field_texture: Texture = preload("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MilkyWay/StarField.jpg")
+const _moon_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MoonMap/MoonMap.png")
+const _background_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MilkyWay/Milkyway.jpg")
+const _stars_field_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MilkyWay/StarField.jpg")
 const _sun_moon_curve_fade: Curve = preload("res://addons/jc.godot.time-of-day-common/Resources/SunMoonLightFade.tres")
-const _stars_field_noise: Texture = preload("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Textures/noise.jpg")
-const _clouds_texture: Texture = preload("res://addons/jc.godot.time-of-day-common/Resources/SNoise.tres")
-const _clouds_cumulus_texture: Texture = preload("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Textures/noiseClouds.png")
+const _stars_field_noise: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Textures/noise.jpg")
+const _clouds_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Resources/SNoise.tres")
+const _clouds_cumulus_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Textures/noiseClouds.png")
 
 enum SkydomeMeshQuality{
 	Low, High

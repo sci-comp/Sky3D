@@ -1,17 +1,19 @@
 class_name OrbitalElements
-"""========================================================
-°                         TimeOfDay.
-°                   ======================
-°
-°   Category: TimeOfDay
-°   -----------------------------------------------------
-°   Description:
-°       Orbital elements for planetary sistem.
-°   -----------------------------------------------------
-°   Copyright:
-°               J. Cuellar 2021. MIT License.
-°                   See: LICENSE File.
-========================================================"""
+
+#"""========================================================
+#°                         TimeOfDay.
+#°                   ======================
+#°
+#°   Category: TimeOfDay
+#°   -----------------------------------------------------
+#°   Description:
+#°       Orbital elements for planetary sistem.
+#°   -----------------------------------------------------
+#°   Copyright:
+#°               J. Cuellar 2021. MIT License.
+#°                   See: LICENSE File.
+#========================================================"""
+
 var N: float # Longitude of the ascending node.
 var i: float # The Inclination to the ecliptic.
 var w: float # Argument of perihelion.
