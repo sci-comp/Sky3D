@@ -184,7 +184,7 @@ func _init() -> void:
 
 
 signal time_update(TimeOfDay)
-@export var run_at_startup: bool = false
+@export var run_at_startup: bool = true
 @export var update_interval: float = 0.1
 var _last_update: int = 0
 var _update_timer: Timer

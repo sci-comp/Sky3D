@@ -38,7 +38,6 @@ cull_mask = 4
 
 [node name="TimeOfDay" type="Node" parent="."]
 script = ExtResource("3")
-run_at_startup = true
 dome_path = NodePath("../Skydome")
 system_sync = false
 total_cycle_in_minutes = 15.0
