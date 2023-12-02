@@ -5,35 +5,35 @@
 [ext_resource path="res://addons/jc.godot.time-of-day/Code/TimeOfDay/TimeOfDay.gd" type="Script" id=3]
 [ext_resource path="res://addons/jc.godot.time-of-day/Code/Sky/Skydome.gd" type="Script" id=4]
 
-[node name="Main" type="Spatial"]
+[node name="Main" type="Node3D"]
 
 [node name="PrimitivesCity" parent="." instance=ExtResource( 2 )]
-transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0 )
+transform = Transform3D( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource( 1 )
 
-[node name="SunLight" type="DirectionalLight" parent="WorldEnvironment"]
-transform = Transform( 0, -0.838126, -0.545477, -0.293232, -0.521499, 0.801282, -0.956041, 0.159952, -0.245766, -0.545477, 0.801283, -0.245765 )
+[node name="SunLight" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D( 0, -0.838126, -0.545477, -0.293232, -0.521499, 0.801282, -0.956041, 0.159952, -0.245766, -0.545477, 0.801283, -0.245765 )
 light_color = Color( 0.987431, 0.707969, 0.679914, 1 )
 light_energy = 0.801282
 shadow_enabled = true
 
-[node name="MoonLight" type="DirectionalLight" parent="WorldEnvironment"]
-transform = Transform( 0, -0.998858, -0.0477696, -0.179953, -0.0469898, 0.982552, -0.983675, 0.00859629, -0.179748, -0.0477695, 0.982552, -0.179747 )
+[node name="MoonLight" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D( 0, -0.998858, -0.0477696, -0.179953, -0.0469898, 0.982552, -0.983675, 0.00859629, -0.179748, -0.0477695, 0.982552, -0.179747 )
 visible = false
 light_color = Color( 0.572549, 0.776471, 0.956863, 1 )
 light_energy = 0.0
 shadow_enabled = true
 
-[node name="MainCamera" type="Camera" parent="."]
-transform = Transform( 0.0135226, 0.0597346, 0.998123, 0.00809374, 0.998175, -0.0598474, -0.999876, 0.00888784, 0.0130144, 10.1699, 2.75546, -0.0224504 )
+[node name="MainCamera" type="Camera3D" parent="."]
+transform = Transform3D( 0.0135226, 0.0597346, 0.998123, 0.00809374, 0.998175, -0.0598474, -0.999876, 0.00888784, 0.0130144, 10.1699, 2.75546, -0.0224504 )
 far = 8192.0
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.33927, 0 )
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.33927, 0 )
 update_mode = 1
-extents = Vector3( 10000, 10000, 10000 )
+size = Vector3( 10000, 10000, 10000 )
 cull_mask = 4
 interior_ambient_energy = 0.0
 __meta__ = {

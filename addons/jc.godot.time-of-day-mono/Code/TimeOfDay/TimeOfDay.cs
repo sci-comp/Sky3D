@@ -26,7 +26,7 @@ namespace JC.TimeOfDay
     }
 
     [Tool]
-    public class OrbitalElements : Godot.Object  //  unmarshallable error in struct.
+    public partial class OrbitalElements : Godot.Object  //  unmarshallable error in struct.
     {
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace JC.TimeOfDay
     }
 
     [Tool]
-    public class TimeOfDay : Node
+    public partial class TimeOfDay : Node
     {
     #region Properties
 
@@ -228,7 +228,7 @@ namespace JC.TimeOfDay
                 if(Engine.EditorHint)
                     SetCelestialCoords();
 
-                PropertyListChangedNotify();
+                NotifyPropertyListChanged();
             }
         }
 
@@ -287,7 +287,7 @@ namespace JC.TimeOfDay
                 if(Engine.EditorHint)
                     SetCelestialCoords();
                 
-                PropertyListChangedNotify();
+                NotifyPropertyListChanged();
             }
         }
 
@@ -499,7 +499,7 @@ namespace JC.TimeOfDay
                         vy.y = 0.0f;
                         vy.z = _SunCoords.y * TOD_Math.kDegToRad;
 
-                        _Dome.DeepSpaceQuat = new Quat(vx) * new Quat(vy);
+                        _Dome.DeepSpaceQuat = new Quaternion(vx) * new Quaternion(vy);
                     }
 
                 break;
@@ -528,7 +528,7 @@ namespace JC.TimeOfDay
                         vy.y = 0.0f;
                         vy.z = (180.0f - _LocalSideralTime * TOD_Math.kRadToDeg) * TOD_Math.kDegToRad;
 
-                        _Dome.DeepSpaceQuat = new Quat(vx) * new Quat(vy);
+                        _Dome.DeepSpaceQuat = new Quaternion(vx) * new Quaternion(vy);
                     }
 
                 break;

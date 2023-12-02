@@ -96,7 +96,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _GroundColor = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kGroundColorP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kGroundColorP, value);
             }
         }
 
@@ -141,7 +141,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _HorizonLevel = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kHorizonLevel, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kHorizonLevel, value);
             }
         }
 
@@ -172,15 +172,15 @@ namespace JC.TimeOfDay
         }
 
         bool _FinishSetSunPos = false;
-        private Transform _SunTransform = new Transform();
-        public Transform SunTransform => _SunTransform;
+        private Transform3D _SunTransform = new Transform3D();
+        public Transform3D SunTransform => _SunTransform;
         public Vector3 SunDirection => _SunTransform.origin - SkyConst.kDefaultPosition;
  
         [Signal]
         public delegate void SunDirectionChanged(Vector3 value);
 
         [Signal]
-        public delegate void SunTransformChanged(Transform value);
+        public delegate void SunTransformChanged(Transform3D value);
 
         #endregion
 
@@ -209,15 +209,15 @@ namespace JC.TimeOfDay
         }
 
         bool _FinishSetMoonPos = false;
-        private Transform _MoonTransform = new Transform();
-        public Transform MoonTransform => _MoonTransform;
+        private Transform3D _MoonTransform = new Transform3D();
+        public Transform3D MoonTransform => _MoonTransform;
         public Vector3 MoonDirection => _MoonTransform.origin - SkyConst.kDefaultPosition;
 
         [Signal]
         public delegate void MoonDirectionChanged(Vector3 value);
 
         [Signal]
-        public delegate void MoonTransformChanged(Transform value);
+        public delegate void MoonTransformChanged(Transform3D value);
 
         #endregion
 
@@ -252,8 +252,8 @@ namespace JC.TimeOfDay
             set 
             {
                 _AtmDarkness = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmDarknessP, value);
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmDarknessP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmDarknessP, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmDarknessP, value);
             }
         }
 
@@ -264,8 +264,8 @@ namespace JC.TimeOfDay
             set 
             {
                 _AtmSunIntensity = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmSunIntensityP, value);
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmSunIntensityP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmSunIntensityP, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmSunIntensityP, value);
             }
         }
 
@@ -276,8 +276,8 @@ namespace JC.TimeOfDay
             set 
             {
                 _AtmDayTint = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmDayTintP, value);
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmDayTintP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmDayTintP, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmDayTintP, value);
             }
         }
 
@@ -288,8 +288,8 @@ namespace JC.TimeOfDay
             set 
             {
                 _AtmHorizonLightTint = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmHorizonLightTintP, value);
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmHorizonLightTintP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmHorizonLightTintP, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmHorizonLightTintP, value);
             }
         }
 
@@ -355,7 +355,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _AtmLevelParams = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmLevelParamsP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmLevelParamsP, value);
                 FogAtmLevelParamsOffset = FogAtmLevelParamsOffset;
             }
         }
@@ -367,8 +367,8 @@ namespace JC.TimeOfDay
             set 
             {
                 _AtmThickness = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmThicknessP, value);
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmThicknessP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmThicknessP, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmThicknessP, value);
             }
         }
 
@@ -401,9 +401,9 @@ namespace JC.TimeOfDay
             set 
             {
                 _AtmSunMieTint = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmSunMieTintP, value);
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmSunMieTintP, value);
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kAtmSunMieTintP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmSunMieTintP, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmSunMieTintP, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kAtmSunMieTintP, value);
             }
         }
 
@@ -414,8 +414,8 @@ namespace JC.TimeOfDay
             set 
             {
                 _AtmSunMieIntensity = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmSunMieIntensityP, value);
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmSunMieIntensityP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmSunMieIntensityP, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmSunMieIntensityP, value);
             }
         }
 
@@ -427,8 +427,8 @@ namespace JC.TimeOfDay
             {
                 _AtmSunMieAnisotropy = value;
                 var partial = ScatterLib.GetPartialMiePhase(value);
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.KAtmSunPartialMiePhaseP, partial);
-                _Resources.FogMaterial.SetShaderParam(SkyConst.KAtmSunPartialMiePhaseP, partial);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.KAtmSunPartialMiePhaseP, partial);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.KAtmSunPartialMiePhaseP, partial);
             }
         }
 
@@ -439,9 +439,9 @@ namespace JC.TimeOfDay
             set 
             {
                 _AtmMoonMieTint = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmMoonMieTintP, value);
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmMoonMieTintP, value);
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kAtmMoonMieTintP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmMoonMieTintP, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmMoonMieTintP, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kAtmMoonMieTintP, value);
             }
         }
 
@@ -452,8 +452,8 @@ namespace JC.TimeOfDay
             set 
             {
                 _AtmMoonMieIntensity = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmMoonMieIntensityP, value * AtmMoonPhasesMult);
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmMoonMieIntensityP, value * AtmMoonPhasesMult);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmMoonMieIntensityP, value * AtmMoonPhasesMult);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmMoonMieIntensityP, value * AtmMoonPhasesMult);
             }
         }
 
@@ -465,8 +465,8 @@ namespace JC.TimeOfDay
             {
                 _AtmMoonMieAnisotropy = value;
                 var partial = ScatterLib.GetPartialMiePhase(value);
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmMoonPartialMiePhaseP, partial);
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmMoonPartialMiePhaseP, partial);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmMoonPartialMiePhaseP, partial);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmMoonPartialMiePhaseP, partial);
             }
         }
 
@@ -499,7 +499,7 @@ namespace JC.TimeOfDay
             set
             {
                 _FogAtmLevelParamsOffset = value;
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmLevelParamsP, _AtmLevelParams + value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmLevelParamsP, _AtmLevelParams + value);
             }
         }
 
@@ -510,7 +510,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _FogDensity = value;
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kFogDensityP, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kFogDensityP, value);
             }
         }
 
@@ -521,7 +521,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _FogStart = value;
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kFogStart, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kFogStart, value);
             }
         }
 
@@ -532,7 +532,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _FogEnd = value;
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kFogEnd, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kFogEnd, value);
             }
         }
 
@@ -543,7 +543,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _FogRayleighDepth = value;
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kFogRayleighDepthP, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kFogRayleighDepthP, value);
             }
         }
 
@@ -554,7 +554,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _FogMieDepth = value;
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kFogMieDepthP, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kFogMieDepthP, value);
             }
         }
 
@@ -565,7 +565,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _FogFalloff = value;
-                _Resources.FogMaterial.SetShaderParam(SkyConst.kFogFallof, value);
+                _Resources.FogMaterial.SetShaderParameter(SkyConst.kFogFallof, value);
             }
         }
 
@@ -609,7 +609,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _SunDiskColor = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kSunDiskColorP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kSunDiskColorP, value);
             }
         }
 
@@ -620,7 +620,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _SunDiskIntensity = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kSunDiskIntensityP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kSunDiskIntensityP, value);
             }
         }
 
@@ -631,7 +631,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _SunDiskSize = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kSunDiskSizeP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kSunDiskSizeP, value);
             }
         }
 
@@ -642,7 +642,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _MoonColor = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kMoonColorP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kMoonColorP, value);
             }
         }
 
@@ -653,7 +653,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _MoonSize = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kMoonSizeP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kMoonSizeP, value);
             }
         }
 
@@ -668,18 +668,18 @@ namespace JC.TimeOfDay
                 if(!value)
                     MoonTexture = _Resources.MoonTexture;
                 
-                PropertyListChangedNotify();
+                NotifyPropertyListChanged();
             }
         }
 
-        private Texture _MoonTexture = null;
-        public Texture MoonTexture 
+        private Texture2D _MoonTexture = null;
+        public Texture2D MoonTexture 
         {
             get => _MoonTexture;
             set 
             {
                 _MoonTexture = value;
-                _Resources.MoonMaterial.SetShaderParam(SkyConst.kTextureP, value);
+                _Resources.MoonMaterial.SetShaderParameter(SkyConst.kTextureP, value);
             }
         }
 
@@ -707,7 +707,7 @@ namespace JC.TimeOfDay
                 }
 
                 _MoonRT = _MoonInstance.GetTexture();
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kMoonTextureP, _MoonRT);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kMoonTextureP, _MoonRT);
             }
         }
 
@@ -756,7 +756,7 @@ namespace JC.TimeOfDay
             {
                 _SunLightPath = value;
                 if(value != null)
-                    _SunLightNode = GetNodeOrNull<DirectionalLight>(value);
+                    _SunLightNode = GetNodeOrNull<DirectionalLight3D>(value);
 
                 _SunLightReady = _SunLightNode != null ? true: false;
 
@@ -765,7 +765,7 @@ namespace JC.TimeOfDay
         }
 
         private bool _SunLightReady = false;
-        private DirectionalLight _SunLightNode = null;
+        private DirectionalLight3D _SunLightNode = null;
         private float _SunLightAltitudeMult = 0.0f;
 
 
@@ -802,7 +802,7 @@ namespace JC.TimeOfDay
                 _MoonLightPath = value;
 
                 if(value != null)
-                    _MoonLightNode = GetNodeOrNull<DirectionalLight>(value);
+                    _MoonLightNode = GetNodeOrNull<DirectionalLight3D>(value);
                 
                 _MoonLightReady = _MoonLightNode != null ? true: false;
                 
@@ -810,7 +810,7 @@ namespace JC.TimeOfDay
             }
         }
 
-        private DirectionalLight _MoonLightNode = null;
+        private DirectionalLight3D _MoonLightNode = null;
         private bool _MoonLightReady = false;
         private float _MoonLightAltitudeMult = 0.0f;
 
@@ -828,12 +828,12 @@ namespace JC.TimeOfDay
                 _DeepSpaceEuler = value;
                 _DeepSpaceBasis = new Basis(value);
                 _DeepSpaceQuat = _DeepSpaceBasis.RotationQuat();
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kDeepSpaceMatrixP, _DeepSpaceBasis);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kDeepSpaceMatrixP, _DeepSpaceBasis);
             }
         }
 
-        private Quat _DeepSpaceQuat = Quat.Identity;
-        public Quat DeepSpaceQuat 
+        private Quaternion _DeepSpaceQuat = Quaternion.Identity;
+        public Quaternion DeepSpaceQuat 
         {
             get => _DeepSpaceQuat;
             set 
@@ -841,7 +841,7 @@ namespace JC.TimeOfDay
                 _DeepSpaceQuat = value;
                 _DeepSpaceBasis = new Basis(value);
                 _DeepSpaceEuler = _DeepSpaceBasis.GetEuler();
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kDeepSpaceMatrixP, _DeepSpaceBasis);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kDeepSpaceMatrixP, _DeepSpaceBasis);
             }
         }
  
@@ -854,7 +854,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _BackgroundColor = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kBGColP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kBGColP, value);
             }
         }
 
@@ -869,18 +869,18 @@ namespace JC.TimeOfDay
                 if(!value)
                     BackgroundTexture = _Resources.BackgroundTexture;
                 
-                PropertyListChangedNotify();
+                NotifyPropertyListChanged();
             }
         }
 
-        private Texture _BackgroundTexture = null;
-        public Texture BackgroundTexture 
+        private Texture2D _BackgroundTexture = null;
+        public Texture2D BackgroundTexture 
         {
             get => _BackgroundTexture;
             set 
             {
                 _BackgroundTexture = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kBGTextureP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kBGTextureP, value);
             }
         }
         
@@ -891,7 +891,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _StarsFieldColor = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kStarsColorP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kStarsColorP, value);
             }
         }
 
@@ -906,18 +906,18 @@ namespace JC.TimeOfDay
                 if(!value)
                     StarsFieldTexture = _Resources.StarsFieldTexture;
                 
-                PropertyListChangedNotify();
+                NotifyPropertyListChanged();
             }
         }
 
-        private Texture _StarsFieldTexture = null;
-        public Texture StarsFieldTexture 
+        private Texture2D _StarsFieldTexture = null;
+        public Texture2D StarsFieldTexture 
         {
             get => _StarsFieldTexture;
             set 
             {
                 _StarsFieldTexture = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kStarsTextureP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kStarsTextureP, value);
             }
         }
 
@@ -928,7 +928,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _StarsScintillation = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kStarsScP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kStarsScP, value);
             }
         }
 
@@ -939,7 +939,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _StarsScintillationSpeed = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kStarsScSpeedP, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kStarsScSpeedP, value);
             }
         }
 
@@ -954,7 +954,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsThickness = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kCloudsThickness, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kCloudsThickness, value);
 
             }
         }
@@ -966,7 +966,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsCoverage = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kCloudsCoverage, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kCloudsCoverage, value);
             }
         }
 
@@ -977,7 +977,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsAbsorption = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kCloudsAbsorption, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kCloudsAbsorption, value);
             }
         }
 
@@ -988,7 +988,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsSkyTintFade = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kCloudsSkyTintFade, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kCloudsSkyTintFade, value);
             }
         }
 
@@ -999,7 +999,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsIntensity = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kCloudsIntensity, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kCloudsIntensity, value);
             }
         }
 
@@ -1010,7 +1010,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsSize = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kCloudsSize, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kCloudsSize, value);
             }
         }
 
@@ -1021,7 +1021,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsUV = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kCloudsUV, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kCloudsUV, value);
             }
         }
 
@@ -1032,7 +1032,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsOffset = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kCloudsOffset, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kCloudsOffset, value);
             }
         }
 
@@ -1043,7 +1043,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsOffsetSpeed = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kCloudsOffsetSpeed, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kCloudsOffsetSpeed, value);
             }
         }
 
@@ -1058,19 +1058,19 @@ namespace JC.TimeOfDay
                 if(!value)
                     CloudsTexture = _Resources.CloudsTexture;
                 
-                PropertyListChangedNotify();
+                NotifyPropertyListChanged();
             }
 
         }
 
-        private Texture _CloudsTexture = null;
-        public Texture CloudsTexture 
+        private Texture2D _CloudsTexture = null;
+        public Texture2D CloudsTexture 
         {
             get => _CloudsTexture;
             set 
             {
                 _CloudsTexture = value;
-                _Resources.SkyMaterial.SetShaderParam(SkyConst.kCloudsTexture, value);
+                _Resources.SkyMaterial.SetShaderParameter(SkyConst.kCloudsTexture, value);
             }
         }
 
@@ -1103,7 +1103,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsCumulusDayColor = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsDayColor, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsDayColor, value);
             }
         }
 
@@ -1114,7 +1114,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsCumulusHorizonLightColor = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsHorizonLightColor, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsHorizonLightColor, value);
             }
         }
 
@@ -1125,7 +1125,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsCumulusNightColor = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsNightColor, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsNightColor, value);
             }
         }
 
@@ -1136,7 +1136,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsCumulusThickness = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsThickness, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsThickness, value);
             }
         }
 
@@ -1147,7 +1147,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsCumulusCoverage = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsCoverage, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsCoverage, value);
             }
         }
 
@@ -1158,7 +1158,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsCumulusAbsorption = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsAbsorption, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsAbsorption, value);
             }
         }
 
@@ -1169,7 +1169,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsCumulusNoiseFreq = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsNoiseFreq, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsNoiseFreq, value);
             }
         }
 
@@ -1180,7 +1180,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsCumulusIntensity = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsIntensity, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsIntensity, value);
             }
         }
 
@@ -1191,7 +1191,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsCumulusMieIntensity = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsMieIntensity, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsMieIntensity, value);
             }
         }
 
@@ -1204,7 +1204,7 @@ namespace JC.TimeOfDay
                 _CloudsCumulusMieAnisotropy = value;
 
                 var partial = ScatterLib.GetPartialMiePhase(value);
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsPartialMiePhase, partial);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsPartialMiePhase, partial);
             }
         }
 
@@ -1215,7 +1215,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsCumulusSize = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsSize, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsSize, value);
             }
         }
 
@@ -1226,7 +1226,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsCumulusOffset = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsOffset, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsOffset, value);
             }
         }
 
@@ -1237,7 +1237,7 @@ namespace JC.TimeOfDay
             set 
             {
                 _CloudsCumulusOffsetSpeed = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsOffsetSpeed, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsOffsetSpeed, value);
             }
         }
 
@@ -1252,19 +1252,19 @@ namespace JC.TimeOfDay
                 if(!value)
                     CloudsCumulusTexture = _Resources.CloudsCumulusTexture;
                 
-                PropertyListChangedNotify();
+                NotifyPropertyListChanged();
             }
 
         }
 
-        private Texture _CloudsCumulusTexture = null;
-        public Texture CloudsCumulusTexture 
+        private Texture2D _CloudsCumulusTexture = null;
+        public Texture2D CloudsCumulusTexture 
         {
             get => _CloudsCumulusTexture;
             set 
             {
                 _CloudsCumulusTexture = value;
-                _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kCloudsTexture, value);
+                _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kCloudsTexture, value);
             }
         }
 
@@ -1298,24 +1298,24 @@ namespace JC.TimeOfDay
         private SkyDomeResources _Resources = new SkyDomeResources();
     
         // Instances.
-        private MeshInstance _SkyInstance = null;
-        private MeshInstance _FogInstance = null;
+        private MeshInstance3D _SkyInstance = null;
+        private MeshInstance3D _FogInstance = null;
 
-        private Viewport _MoonInstance = null;
+        private SubViewport _MoonInstance = null;
         private ViewportTexture _MoonRT = null;
-        private Spatial _MoonInstanceTransform = null;
-        private MeshInstance _MoonInstanceMesh = null;
+        private Node3D _MoonInstanceTransform = null;
+        private MeshInstance3D _MoonInstanceMesh = null;
 
-        private MeshInstance _CloudsCumulusInstance = null;
+        private MeshInstance3D _CloudsCumulusInstance = null;
 
         private bool CheckInstances
         {
             get 
             {
-                _SkyInstance  = GetNodeOrNull<MeshInstance>(SkyConst.kSkyInstance);
-                _MoonInstance = GetNodeOrNull<Viewport>(SkyConst.kMoonInstance);
-                _FogInstance  = GetNodeOrNull<MeshInstance>(SkyConst.kFogInstance);
-                _CloudsCumulusInstance = GetNodeOrNull<MeshInstance>(SkyConst.kCloudsCInstance);
+                _SkyInstance  = GetNodeOrNull<MeshInstance3D>(SkyConst.kSkyInstance);
+                _MoonInstance = GetNodeOrNull<SubViewport>(SkyConst.kMoonInstance);
+                _FogInstance  = GetNodeOrNull<MeshInstance3D>(SkyConst.kFogInstance);
+                _CloudsCumulusInstance = GetNodeOrNull<MeshInstance3D>(SkyConst.kCloudsCInstance);
 
                 if(_SkyInstance == null)  return false;
                 if(_MoonInstance == null) return false;
@@ -1338,7 +1338,7 @@ namespace JC.TimeOfDay
             _Resources.SetupCloudsCumulusResources(_SkyRenderPriority+1);
 
             ForceSetupInstances();
-            _Resources.SkyMaterial.SetShaderParam(SkyConst.kNoiseTex, _Resources.StarsFieldNoise);
+            _Resources.SkyMaterial.SetShaderParameter(SkyConst.kNoiseTex, _Resources.StarsFieldNoise);
         }
 
         public override void _EnterTree()
@@ -1488,23 +1488,23 @@ namespace JC.TimeOfDay
         private void BuildDome()
         {
             // Sky.
-            _SkyInstance = this.GetOrCreate<MeshInstance>(this, SkyConst.kSkyInstance, false);
+            _SkyInstance = this.GetOrCreate<MeshInstance3D>(this, SkyConst.kSkyInstance, false);
 
             // Moon.
-            _MoonInstance = GetNodeOrNull<Viewport>(SkyConst.kMoonInstance);
+            _MoonInstance = GetNodeOrNull<SubViewport>(SkyConst.kMoonInstance);
             if(_MoonInstance == null)
             {
        
-                _MoonInstance = _Resources.MoonRender.Instance() as Viewport;
+                _MoonInstance = _Resources.MoonRender.Instance() as SubViewport;
                 this.AddChild(_MoonInstance);
                 //_MoonInstance.Owner = this.GetTree().EditedSceneRoot;
             }
 
             // Fog.
-            _FogInstance = this.GetOrCreate<MeshInstance>(this, SkyConst.kFogInstance, false);
+            _FogInstance = this.GetOrCreate<MeshInstance3D>(this, SkyConst.kFogInstance, false);
 
             // Clouds.
-            _CloudsCumulusInstance = this.GetOrCreate<MeshInstance>(this, SkyConst.kCloudsCInstance, false);
+            _CloudsCumulusInstance = this.GetOrCreate<MeshInstance3D>(this, SkyConst.kCloudsCInstance, false);
             
             SetupInstances();
         }
@@ -1529,8 +1529,8 @@ namespace JC.TimeOfDay
             if(_MoonInstance == null)
                 throw new Exception("Moon instance not found");
             
-            _MoonInstanceTransform = _MoonInstance.GetNodeOrNull<Spatial>("MoonTransform");
-            _MoonInstanceMesh = _MoonInstanceTransform.GetNodeOrNull<MeshInstance>("Camera/Mesh");
+            _MoonInstanceTransform = _MoonInstance.GetNodeOrNull<Node3D>("MoonTransform");
+            _MoonInstanceMesh = _MoonInstanceTransform.GetNodeOrNull<MeshInstance3D>("Camera3D/Mesh");
             _MoonInstanceMesh.MaterialOverride = _Resources.MoonMaterial;
             
             if(_FogInstance == null)
@@ -1544,14 +1544,14 @@ namespace JC.TimeOfDay
             SetupMeshInstance(_CloudsCumulusInstance, _Resources.CloudsCumulusMesh, _Resources.CloudsCumulusMaterial, SkyConst.kDefaultPosition);
         }
 
-        private void SetupMeshInstance(MeshInstance target, Mesh mesh, Material mat,  Vector3 origin)
+        private void SetupMeshInstance(MeshInstance3D target, Mesh mesh, Material mat,  Vector3 origin)
         {
-            var tmpTransform = target.Transform;
+            var tmpTransform = target.Transform3D;
             tmpTransform.origin = origin;
-            target.Transform = tmpTransform;
+            target.Transform3D = tmpTransform;
             target.Mesh = mesh;
             target.ExtraCullMargin = SkyConst.kMaxExtraCullMargin;
-            target.CastShadow = GeometryInstance.ShadowCastingSetting.Off;
+            target.CastShadow = GeometryInstance3D.ShadowCastingSetting.Off;
             target.MaterialOverride = mat;
         }
 
@@ -1564,8 +1564,8 @@ namespace JC.TimeOfDay
             Vector2 p;
             p.x = tonemap;
             p.y = exposure;
-            _Resources.SkyMaterial.SetShaderParam(SkyConst.kColorCorrectionP, p);
-            _Resources.FogMaterial.SetShaderParam(SkyConst.kColorCorrectionP, p);
+            _Resources.SkyMaterial.SetShaderParameter(SkyConst.kColorCorrectionP, p);
+            _Resources.FogMaterial.SetShaderParameter(SkyConst.kColorCorrectionP, p);
         }
 
     #endregion
@@ -1600,16 +1600,16 @@ namespace JC.TimeOfDay
             EmitSignal(nameof(SunDirectionChanged), SunDirection);
 
             // Set Sun Direction.
-            _Resources.SkyMaterial.SetShaderParam(SkyConst.kSunDirP, SunDirection);
-            _Resources.FogMaterial.SetShaderParam(SkyConst.kSunDirP, SunDirection);
-            _Resources.MoonMaterial.SetShaderParam(SkyConst.kSunDirP, SunDirection);
-            _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kSunDirP, SunDirection);
+            _Resources.SkyMaterial.SetShaderParameter(SkyConst.kSunDirP, SunDirection);
+            _Resources.FogMaterial.SetShaderParameter(SkyConst.kSunDirP, SunDirection);
+            _Resources.MoonMaterial.SetShaderParameter(SkyConst.kSunDirP, SunDirection);
+            _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kSunDirP, SunDirection);
 
             if(_SunLightReady)
             {
                 //if(_SunLightNode.LightEnergy > 0.0 && (Mathf.Abs(_SunAltitude) < 90.0f))
                 if(_SunLightNode.LightEnergy > 0.0)
-                    _SunLightNode.Transform = _SunTransform;
+                    _SunLightNode.Transform3D = _SunTransform;
             }
 
             _SunLightAltitudeMult = TOD_Math.Saturate(SunDirection.y);
@@ -1647,22 +1647,22 @@ namespace JC.TimeOfDay
             EmitSignal(nameof(MoonDirectionChanged), MoonDirection);
             EmitSignal(nameof(MoonTransformChanged), _MoonTransform);
 
-            _Resources.SkyMaterial.SetShaderParam(SkyConst.kMoonDirP, MoonDirection);
-            _Resources.FogMaterial.SetShaderParam(SkyConst.kMoonDirP, MoonDirection);
-            _Resources.SkyMaterial.SetShaderParam(SkyConst.kMoonMatrixP, _MoonTransform.basis.Inverse());
-            _Resources.MoonMaterial.SetShaderParam(SkyConst.kSunDirP, SunDirection);
-            _Resources.CloudsCumulusMaterial.SetShaderParam(SkyConst.kMoonDirP, MoonDirection);
+            _Resources.SkyMaterial.SetShaderParameter(SkyConst.kMoonDirP, MoonDirection);
+            _Resources.FogMaterial.SetShaderParameter(SkyConst.kMoonDirP, MoonDirection);
+            _Resources.SkyMaterial.SetShaderParameter(SkyConst.kMoonMatrixP, _MoonTransform.basis.Inverse());
+            _Resources.MoonMaterial.SetShaderParameter(SkyConst.kSunDirP, SunDirection);
+            _Resources.CloudsCumulusMaterial.SetShaderParameter(SkyConst.kMoonDirP, MoonDirection);
 
             if(_MoonInstanceTransform == null)
                 throw new Exception("Moon instance transform not found");
             
-            _MoonInstanceTransform.Transform = _MoonTransform;
+            _MoonInstanceTransform.Transform3D = _MoonTransform;
 
             if(_MoonLightReady)
             {
                 //if(_MoonLightNode.LightEnergy > 0.0f && (Mathf.Abs(_MoonAltitude) < 90.0f))  
                 if(_MoonLightNode.LightEnergy > 0.0f)
-                    _MoonLightNode.Transform = _MoonTransform;
+                    _MoonLightNode.Transform3D = _MoonTransform;
             }
 
             _MoonLightAltitudeMult = TOD_Math.Saturate(MoonDirection.y);
@@ -1682,22 +1682,22 @@ namespace JC.TimeOfDay
             var wll = ScatterLib.ComputeWavelenghtsLambda(_AtmWavelenghts);
             var wls = ScatterLib.ComputeWavelenghts(wll);
             var betaRay = ScatterLib.ComputeBetaRay(wls);
-            _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmBetaRayP, betaRay);
-            _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmBetaRayP, betaRay);
+            _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmBetaRayP, betaRay);
+            _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmBetaRayP, betaRay);
         }
 
         private void SetBetaMie()
         {
             var bM = ScatterLib.ComputeBetaMie(_AtmMie, _AtmTurbidity);
-            _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmBetaMieP, bM);
-            _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmBetaMieP, bM);
+            _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmBetaMieP, bM);
+            _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmBetaMieP, bM);
         }
  
         private void SetNightIntensity()
         {
             Color tint = _AtmNightTint * AtmNightIntensity;
-            _Resources.SkyMaterial.SetShaderParam(SkyConst.kAtmNightTintP, tint);
-            _Resources.FogMaterial.SetShaderParam(SkyConst.kAtmNightTintP, _AtmNightTint * FogAtmNightIntensity);
+            _Resources.SkyMaterial.SetShaderParameter(SkyConst.kAtmNightTintP, tint);
+            _Resources.FogMaterial.SetShaderParameter(SkyConst.kAtmNightTintP, _AtmNightTint * FogAtmNightIntensity);
 
             AtmMoonMieIntensity = AtmMoonMieIntensity;
         }

@@ -247,7 +247,7 @@ namespace JC.TimeOfDay
                     {"name", "MoonTexture"},
                     {"type", Variant.Type.Object},
                     {"hint", PropertyHint.File},
-                    {"hint_string", "Texture"}
+                    {"hint_string", "Texture2D"}
                 };
                 ret.Add(pMoonTexture);
             }
@@ -323,7 +323,7 @@ namespace JC.TimeOfDay
                     {"name", "BackgroundTexture"},
                     {"type", Variant.Type.Object},
                     {"hint", PropertyHint.File},
-                    {"hint_string", "Texture"}
+                    {"hint_string", "Texture2D"}
                 };
                 ret.Add(pBackgroundTexture);
             }
@@ -349,7 +349,7 @@ namespace JC.TimeOfDay
                     {"name", "StarsFieldTexture"},
                     {"type", Variant.Type.Object},
                     {"hint", PropertyHint.File},
-                    {"hint_string", "Texture"}
+                    {"hint_string", "Texture2D"}
                 };
                 ret.Add(pStarsFieldTexture);
             }
@@ -703,7 +703,7 @@ namespace JC.TimeOfDay
                     {"name", "CloudsTexture"},
                     {"type", Variant.Type.Object},
                     {"hint", PropertyHint.File},
-                    {"hint_sting", "Texture"}
+                    {"hint_sting", "Texture2D"}
                 };
                 ret.Add(pCloudsTexture);
 
@@ -840,7 +840,7 @@ namespace JC.TimeOfDay
                     {"name", "CloudsCumulusTexture"},
                     {"type", Variant.Type.Object},
                     {"hint", PropertyHint.File},
-                    {"hint_sting", "Texture"}
+                    {"hint_sting", "Texture2D"}
                 };
                 ret.Add(pCloudsCumulusTexture);
 

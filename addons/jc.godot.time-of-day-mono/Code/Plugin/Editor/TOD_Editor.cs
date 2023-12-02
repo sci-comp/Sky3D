@@ -18,19 +18,19 @@ using System;
 namespace JC.TimeOfDay
 {
     [Tool]
-    public class TOD_Editor : EditorPlugin
+    public partial class TOD_Editor : EditorPlugin
     {
         Script _SkydomeScript = 
             GD.Load<Script>("res://addons/jc.godot.time-of-day-mono/Code/Sky/Skydome.cs");
         
-        Texture _SkydomeTexture = 
-            GD.Load<Texture>("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Gizmos/SkyIcon.png");
+        Texture2D _SkydomeTexture = 
+            GD.Load<Texture2D>("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Gizmos/SkyIcon.png");
         
         Script _TimeOfDayScript = 
             GD.Load<Script>("res://addons/jc.godot.time-of-day-mono/Code/TimeOfDay/TimeOfDay.cs");
         
-        Texture _TimeOfDayTexture = 
-            GD.Load<Texture>("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Gizmos/SkyIcon.png");
+        Texture2D _TimeOfDayTexture = 
+            GD.Load<Texture2D>("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Gizmos/SkyIcon.png");
 
         public override void _EnterTree()
         {

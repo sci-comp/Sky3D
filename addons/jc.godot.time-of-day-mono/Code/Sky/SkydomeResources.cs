@@ -17,7 +17,7 @@ using System;
 namespace JC.TimeOfDay
 {
     [Tool]
-    public class SkyDomeResources : Resource
+    public partial class SkyDomeResources : Resource
     {
         // Meshes.
         public SphereMesh SkydomeMesh{ get; private set; } = new SphereMesh();
@@ -41,26 +41,26 @@ namespace JC.TimeOfDay
             GD.Load<PackedScene>("res://addons/jc.godot.time-of-day-common/Scenes/Moon/MoonRender.tscn");
 
         // Textures.
-        public Texture MoonTexture{ get; private set; } = 
-            GD.Load<Texture>("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MoonMap/MoonMap.png");
+        public Texture2D MoonTexture{ get; private set; } = 
+            GD.Load<Texture2D>("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MoonMap/MoonMap.png");
         
-        public Texture BackgroundTexture{ get; private set; } =
-            GD.Load<Texture>("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MilkyWay/Milkyway.jpg");
+        public Texture2D BackgroundTexture{ get; private set; } =
+            GD.Load<Texture2D>("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MilkyWay/Milkyway.jpg");
 
-        public Texture StarsFieldTexture{ get; private set; } =
-            GD.Load<Texture>("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MilkyWay/StarField.jpg");
+        public Texture2D StarsFieldTexture{ get; private set; } =
+            GD.Load<Texture2D>("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MilkyWay/StarField.jpg");
 
         public Curve SunMoonCurveFade{ get; private set; } =
             GD.Load<Curve>("res://addons/jc.godot.time-of-day-common/Resources/SunMoonLightFade.tres");
         
-        public Texture StarsFieldNoise{ get; private set; } =
-            GD.Load<Texture>("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Textures/noise.jpg");
+        public Texture2D StarsFieldNoise{ get; private set; } =
+            GD.Load<Texture2D>("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Textures/noise.jpg");
         
-        public Texture CloudsTexture{ get; private set; } = 
-            GD.Load<Texture>("res://addons/jc.godot.time-of-day-common/Resources/SNoise.tres");
+        public Texture2D CloudsTexture{ get; private set; } = 
+            GD.Load<Texture2D>("res://addons/jc.godot.time-of-day-common/Resources/SNoise.tres");
         
-        public Texture CloudsCumulusTexture{ get; private set; } =
-            GD.Load<Texture>("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Textures/noiseClouds.png");
+        public Texture2D CloudsCumulusTexture{ get; private set; } =
+            GD.Load<Texture2D>("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Textures/noiseClouds.png");
 
     #region Sky
 
