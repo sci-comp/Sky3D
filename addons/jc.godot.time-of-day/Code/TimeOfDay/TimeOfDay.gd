@@ -21,10 +21,7 @@ extends Node
 var __dome: Skydome = null
 var __dome_found: bool = false
 
-var dome_path: NodePath:
-	set(value):
-		# TODO: Manually copy the code from this method.
-		set_dome_path(value)
+var dome_path: NodePath: set = set_dome_path
 func set_dome_path(value: NodePath) -> void:
 	dome_path = value
 	if value != null:
@@ -38,40 +35,28 @@ func set_dome_path(value: NodePath) -> void:
 var system_sync: bool = false
 var total_cycle_in_minutes: float = 15.0
 
-var total_hours: float = 7.0:
-	set(value):
-		# TODO: Manually copy the code from this method.
-		set_total_hours(value)
+var total_hours: float = 7.0 : set = set_total_hours
 func set_total_hours(value: float) -> void:
 	total_hours = value
 	emit_signal("total_hours_changed", value)
 	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
-var day: int = 12:
-	set(value):
-		# TODO: Manually copy the code from this method.
-		set_day(value)
+var day: int = 12: set = set_day
 func set_day(value: int) -> void:
 	day = value 
 	emit_signal("day_changed", value)
 	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
-var month: int = 2:
-	set(value):
-		# TODO: Manually copy the code from this method.
-		set_month(value)
+var month: int = 2: set = set_month
 func set_month(value: int) -> void:
 	month = value 
 	emit_signal("month_changed", value)
 	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
-var year: int = 2021:
-	set(value):
-		# TODO: Manually copy the code from this method.
-		set_year(value)
+var year: int = 2021: set = set_year
 func set_year(value: int) -> void:
 	year = value 
 	emit_signal("year_changed", value)
@@ -112,10 +97,7 @@ enum CelestialCalculationsMode{
 	Realistic
 }
 
-var celestials_calculations: int = 0:
-	set(value):
-		# TODO: Manually copy the code from this method.
-		set_celestials_calculations(value)
+var celestials_calculations: int = 0: set = set_celestials_calculations
 func set_celestials_calculations(value: int) -> void:
 	celestials_calculations = value
 	if Engine.is_editor_hint():
@@ -123,28 +105,19 @@ func set_celestials_calculations(value: int) -> void:
 	
 	notify_property_list_changed()
 
-var latitude: float = 0.0:
-	set(value):
-		# TODO: Manually copy the code from this method.
-		set_latitude(value)
+var latitude: float = 0.0: set = set_latitude
 func set_latitude(value: float) -> void:
 	latitude = value
 	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
-var longitude: float = 0.0:
-	set(value):
-		# TODO: Manually copy the code from this method.
-		set_longitude(value)
+var longitude: float = 0.0: set = set_longitude
 func set_longitude(value: float) -> void:
 	longitude = value
 	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
-var utc: float = 0.0:
-	set(value):
-		# TODO: Manually copy the code from this method.
-		set_utc(value)
+var utc: float = 0.0: set = set_utc
 func set_utc(value: float) -> void:
 	utc = value
 	if Engine.is_editor_hint():
@@ -153,10 +126,7 @@ func set_utc(value: float) -> void:
 var celestials_update_time: float = 0.0
 var __celestials_update_timer: float = 0.0
 
-var compute_moon_coords: bool = false:
-	set(value):
-		# TODO: Manually copy the code from this method.
-		set_compute_moon_coords(value)
+var compute_moon_coords: bool = false: set = set_compute_moon_coords
 func set_compute_moon_coords(value: bool) -> void:
 	compute_moon_coords = value
 	if Engine.is_editor_hint():
@@ -164,19 +134,13 @@ func set_compute_moon_coords(value: bool) -> void:
 	
 	notify_property_list_changed()
 
-var compute_deep_space_coords: bool = false:
-	set(value):
-		# TODO: Manually copy the code from this method.
-		set_compute_deep_space_coords(value)
+var compute_deep_space_coords: bool = false: set = set_compute_deep_space_coords
 func set_compute_deep_space_coords(value: bool) -> void:
 	compute_deep_space_coords = value
 	if Engine.is_editor_hint():
 		__set_celestial_coords()
 
-var moon_coords_offset := Vector2(0.0, 0.0):
-	set(value):
-		# TODO: Manually copy the code from this method.
-		set_moon_coords_offset(value)
+var moon_coords_offset := Vector2(0.0, 0.0): set = set_moon_coords_offset
 func set_moon_coords_offset(value: Vector2) -> void:
 	moon_coords_offset = value
 	if Engine.is_editor_hint():
@@ -218,27 +182,30 @@ func _init() -> void:
 	set_longitude(longitude)
 	set_utc(utc)
 
+
 signal time_update(TimeOfDay)
+@export var run_at_startup: bool = false
 @export var update_interval: float = 0.1
 var _last_update: int = 0
+var _update_timer: Timer
 
 
 func _ready() -> void:
 	set_dome_path(dome_path)
 
-	var timer := Timer.new()
-	timer.name = "Timer"
-	add_child(timer)
-	timer.connect(&"timeout", self._on_timeout)
-	timer.wait_time = update_interval
-	timer.stop()
+	_update_timer = Timer.new()
+	_update_timer.name = "Timer"
+	add_child(_update_timer)
+	_update_timer.timeout.connect(_on_timeout)
+	_update_timer.wait_time = update_interval
+	if run_at_startup:
+		_update_timer.start()
+	else:
+		_update_timer.stop()
 	_last_update = Time.get_ticks_msec()
 
 
 func _on_timeout() -> void:
-	if Engine.is_editor_hint():
-		return
-	
 	var delta: float = .001 * (Time.get_ticks_msec() - _last_update)
 
 	if not system_sync:
@@ -258,13 +225,12 @@ func _on_timeout() -> void:
 	
 
 func pause() -> void:
-	$Timer.stop()
+	_update_timer.stop()
 
 
 func resume() -> void:
 	_last_update = Time.get_ticks_msec() - update_interval
-	$Timer.start()
-	
+	_update_timer.start()
 
 
 # DateTime

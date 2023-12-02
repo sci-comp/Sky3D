@@ -1,6 +1,6 @@
-[gd_resource type="Environment" format=2]
+[gd_resource type="Environment" format=3 uid="uid://dlo4d1tui6x2k"]
 
 [resource]
-ambient_light_color = Color( 0.50905, 0.434472, 0.487883, 0.599359 )
+ambient_light_color = Color(0.411379, 0.428613, 0.493092, 0.516339)
 tonemap_mode = 3
 tonemap_white = 6.0

@@ -1,9 +1,11 @@
 shader_type spatial;
 render_mode unshaded;
 
-uniform sampler2D gradient: hint_albedo;
+uniform sampler2D gradient: source_color;
 uniform float fog_intensity:  hint_range(0.0, 1.0);
 uniform float fog_amount: hint_range(0.0, 1.0);
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 
 void vertex() {
 	POSITION = vec4(VERTEX,	1.0);

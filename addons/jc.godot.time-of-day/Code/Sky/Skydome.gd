@@ -54,7 +54,7 @@ func set_exposure(value: float) -> void:
 var ground_color:= Color(0.3, 0.3, 0.3, 1.0): set = set_ground_color
 func set_ground_color(value: Color) -> void:
 	ground_color = value
-	__resources.sky_material.set_shader_uniform(SkyConst.GROUND_COLOR_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.GROUND_COLOR_P, value)
 
 var sky_layers: int = 4: set = set_sky_layers
 func set_sky_layers(value: int) -> void:
@@ -77,7 +77,7 @@ func set_sky_render_priority(value: int) -> void:
 var horizon_level: float = 0.0: set = set_horizon_level
 func set_horizon_level(value: float) -> void:
 	horizon_level = value
-	__resources.sky_material.set_shader_uniform(SkyConst.HORIZON_LEVEL, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.HORIZON_LEVEL, value)
 
 # Sun Coords.
 var sun_azimuth: float = 0.0: set = set_sun_azimuth
@@ -139,26 +139,26 @@ func set_atm_wavelenghts(value : Vector3) -> void:
 var atm_darkness: float = 0.5: set = set_atm_darkness
 func set_atm_darkness(value: float) -> void:
 	atm_darkness = value
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_DARKNESS_P, value)
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_DARKNESS_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_DARKNESS_P, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_DARKNESS_P, value)
 
 var atm_sun_instensity: float = 30.0: set = set_atm_sun_intensity
 func set_atm_sun_intensity(value: float) -> void:
 	atm_sun_instensity = value
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_SUN_INTENSITY_P, value)
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_SUN_INTENSITY_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_SUN_INTENSITY_P, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_SUN_INTENSITY_P, value)
 
 var atm_day_tint:= Color(0.807843, 0.909804, 1.0): set = set_atm_day_tint
 func set_atm_day_tint(value: Color) -> void:
 	atm_day_tint = value
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_DAY_TINT_P, value)
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_DAY_TINT_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_DAY_TINT_P, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_DAY_TINT_P, value)
 
 var atm_horizon_light_tint:= Color(0.980392, 0.635294, 0.462745, 1.0): set = set_atm_horizon_light_tint
 func set_atm_horizon_light_tint(value: Color) -> void:
 	atm_horizon_light_tint = value
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_HORIZON_LIGHT_TINT_P, value)
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_HORIZON_LIGHT_TINT_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_HORIZON_LIGHT_TINT_P, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_HORIZON_LIGHT_TINT_P, value)
 
 var atm_enable_moon_scatter_mode: bool = false: set = set_atm_enable_moon_scatter_mode
 func set_atm_enable_moon_scatter_mode(value: bool) -> void:
@@ -173,14 +173,14 @@ func set_atm_night_tint(value: Color) -> void:
 var atm_level_params:= Vector3(1.0, 0.0, 0.0): set = set_atm_level_params
 func set_atm_level_params(value: Vector3) -> void:
 	atm_level_params = value
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_LEVEL_PARAMS_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_LEVEL_PARAMS_P, value)
 	set_fog_atm_level_params_offset(fog_atm_level_params_offset)
 
 var atm_thickness: float = 0.7: set = set_atm_thickness
 func set_atm_thickness(value: float) -> void:
 	atm_thickness = value
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_THICKNESS_P, value)
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_THICKNESS_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_THICKNESS_P, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_THICKNESS_P, value)
 
 var atm_mie: float = 0.07: set = set_atm_mie
 func set_atm_mie(value: float) -> void:
@@ -195,42 +195,42 @@ func set_atm_turbidity(value: float) -> void:
 var atm_sun_mie_tint:= Color(1.0, 1.0, 1.0, 1.0): set = set_atm_sun_mie_tint
 func set_atm_sun_mie_tint(value: Color) -> void:
 	atm_sun_mie_tint = value
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_SUN_MIE_TINT_P, value)
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_SUN_MIE_TINT_P, value)
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.ATM_SUN_MIE_TINT_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_SUN_MIE_TINT_P, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_SUN_MIE_TINT_P, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.ATM_SUN_MIE_TINT_P, value)
 
 var atm_sun_mie_intensity: float = 1.0: set = set_atm_sun_mie_intensity
 func set_atm_sun_mie_intensity(value: float) -> void:
 	atm_sun_mie_intensity = value
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_SUN_MIE_INTENSITY_P, value)
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_SUN_MIE_INTENSITY_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_SUN_MIE_INTENSITY_P, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_SUN_MIE_INTENSITY_P, value)
 
 var atm_sun_mie_anisotropy: float = 0.8: set = set_atm_sun_mie_anisotropy
 func set_atm_sun_mie_anisotropy(value: float) -> void:
 	atm_sun_mie_anisotropy = value
 	var partial = ScatterLib.get_partial_mie_phase(value)
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_SUN_PARTIAL_MIE_PHASE_P, partial)
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_SUN_PARTIAL_MIE_PHASE_P, partial)
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_SUN_PARTIAL_MIE_PHASE_P, partial)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_SUN_PARTIAL_MIE_PHASE_P, partial)
 
 var atm_moon_mie_tint:= Color(0.137255, 0.184314, 0.292196): set = set_atm_moon_mie_tint
 func set_atm_moon_mie_tint(value: Color) -> void:
 	atm_moon_mie_tint = value
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_MOON_MIE_TINT_P, value)
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_MOON_MIE_TINT_P, value)
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.ATM_MOON_MIE_TINT_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_MOON_MIE_TINT_P, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_MOON_MIE_TINT_P, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.ATM_MOON_MIE_TINT_P, value)
 
 var atm_moon_mie_intensity: float = 0.7: set = set_atm_moon_mie_intensity
 func set_atm_moon_mie_intensity(value: float) -> void:
 	atm_moon_mie_intensity = value
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_MOON_MIE_INTENSITY_P, value * atm_moon_phases_mult())
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_MOON_MIE_INTENSITY_P, value * atm_moon_phases_mult())
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_MOON_MIE_INTENSITY_P, value * atm_moon_phases_mult())
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_MOON_MIE_INTENSITY_P, value * atm_moon_phases_mult())
 
 var atm_moon_mie_anisotropy: float = 0.8: set = set_atm_moon_mie_anisotropy
 func set_atm_moon_mie_anisotropy(value: float) -> void:
 	atm_moon_mie_anisotropy = value
 	var partial = ScatterLib.get_partial_mie_phase(value)
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_MOON_PARTIAL_MIE_PHASE_P, partial)
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_MOON_PARTIAL_MIE_PHASE_P, partial)
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_MOON_PARTIAL_MIE_PHASE_P, partial)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_MOON_PARTIAL_MIE_PHASE_P, partial)
 
 func atm_moon_phases_mult() -> float:
 	if not atm_enable_moon_scatter_mode:
@@ -260,37 +260,37 @@ func set_fog_visible(value: bool) -> void:
 var fog_atm_level_params_offset:= Vector3(0.0, 0.0, -1.0): set = set_fog_atm_level_params_offset
 func set_fog_atm_level_params_offset(value: Vector3) -> void:
 	fog_atm_level_params_offset = value
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_LEVEL_PARAMS_P, atm_level_params + value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_LEVEL_PARAMS_P, atm_level_params + value)
 
 var fog_density: float = 0.00015: set = set_fog_density
 func set_fog_density(value: float) -> void:
 	fog_density = value
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_FOG_DENSITY_P, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_FOG_DENSITY_P, value)
 
 var fog_start: float = 0.0: set = set_fog_start
 func set_fog_start(value: float) -> void:
 	fog_start = value
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_FOG_START, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_FOG_START, value)
 
 var fog_end: float = 1000: set = set_fog_end
 func set_fog_end(value: float) -> void:
 	fog_end = value
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_FOG_END, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_FOG_END, value)
 
 var fog_rayleigh_depth: float = 0.116: set = set_fog_rayleigh_depth
 func set_fog_rayleigh_depth(value: float) -> void:
 	fog_rayleigh_depth = value
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_FOG_RAYLEIGH_DEPTH_P, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_FOG_RAYLEIGH_DEPTH_P, value)
 
 var fog_mie_depth: float = 0.0001: set = set_fog_mie_depth
 func set_fog_mie_depth(value: float) -> void:
 	fog_mie_depth = value
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_FOG_MIE_DEPTH_P, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_FOG_MIE_DEPTH_P, value)
 
 var fog_falloff: float = 3.0: set = set_fog_falloff
 func set_fog_falloff(value: float) -> void:
 	fog_falloff = value
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_FOG_FALLOFF, value)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_FOG_FALLOFF, value)
 
 var fog_layers: int = 524288: set = set_fog_layers
 func set_fog_layers(value: int) -> void:
@@ -310,27 +310,27 @@ func set_fog_render_priority(value: int) -> void:
 var sun_disk_color:= Color(0.996094, 0.541334, 0.140076): set = set_sun_disk_color
 func set_sun_disk_color(value: Color) -> void:
 	sun_disk_color = value
-	__resources.sky_material.set_shader_uniform(SkyConst.SUN_DISK_COLOR_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.SUN_DISK_COLOR_P, value)
 
 var sun_disk_intensity: float = 2.0: set = set_sun_disk_intensity
 func set_sun_disk_intensity(value: float) -> void:
 	sun_disk_intensity = value
-	__resources.sky_material.set_shader_uniform(SkyConst.SUN_DISK_INTENSITY_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.SUN_DISK_INTENSITY_P, value)
 
 var sun_disk_size: float = 0.015: set = set_sun_disk_size
 func set_sun_disk_size(value: float) -> void:
 	sun_disk_size = value
-	__resources.sky_material.set_shader_uniform(SkyConst.SUN_DISK_SIZE_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.SUN_DISK_SIZE_P, value)
 
 var moon_color:= Color.WHITE: set = set_moon_color
 func set_moon_color(value: Color) -> void:
 	moon_color = value
-	__resources.sky_material.set_shader_uniform(SkyConst.MOON_COLOR_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.MOON_COLOR_P, value)
 
 var moon_size: float = 0.07: set = set_moon_size
 func set_moon_size(value: float) -> void:
 	moon_size = value
-	__resources.sky_material.set_shader_uniform(SkyConst.MOON_SIZE_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.MOON_SIZE_P, value)
 
 var enable_set_moon_texture = false: set = set_enable_set_moon_texture
 func set_enable_set_moon_texture(value: bool) -> void:
@@ -343,7 +343,7 @@ func set_enable_set_moon_texture(value: bool) -> void:
 var moon_texture: Texture2D = null: set = set_moon_texture
 func set_moon_texture(value: Texture2D) -> void:
 	moon_texture = value
-	__resources.moon_material.set_shader_uniform(SkyConst.TEXTURE_P, value)
+	__resources.moon_material.set_shader_parameter(SkyConst.TEXTURE_P, value)
 
 enum MoonResolution{
 	R64, R128, R256, R512, R1024,
@@ -364,7 +364,7 @@ func set_moon_resolution(value: int) -> void:
 		MoonResolution.R1024: __moon_instance.size = Vector2.ONE * 1024
 	
 	__moon_rt = __moon_instance.get_texture()
-	__resources.sky_material.set_shader_uniform(SkyConst.MOON_TEXTURE_P, __moon_rt)
+	__resources.sky_material.set_shader_parameter(SkyConst.MOON_TEXTURE_P, __moon_rt)
 
 ## Near space lights.
 var sun_light_color:= Color(0.984314, 0.843137, 0.788235): set = set_sun_light_color
@@ -426,22 +426,28 @@ var deep_space_euler:= Vector3(-0.752, 2.56, 0.0): set = set_deep_space_euler
 func set_deep_space_euler(value: Vector3) -> void:
 	deep_space_euler = value
 	__deep_space_basis = Basis.from_euler(value)
-	deep_space_quat = __deep_space_basis.get_rotation_quaternion()
-	__resources.sky_material.set_shader_uniform(SkyConst.DEEP_SPACE_MATRIX_P, __deep_space_basis)
+	__resources.sky_material.set_shader_parameter(SkyConst.DEEP_SPACE_MATRIX_P, __deep_space_basis)
+	var quat: Quaternion = __deep_space_basis.get_rotation_quaternion()
+	if deep_space_quat.angle_to(quat) < 0.01:
+		return
+	deep_space_quat = quat
 
 var deep_space_quat:= Quaternion.IDENTITY: set = set_deep_space_quat
 func set_deep_space_quat(value: Quaternion) -> void:
 	deep_space_quat = value
 	__deep_space_basis = Basis(value)
-	deep_space_euler = __deep_space_basis.get_euler()
-	__resources.sky_material.set_shader_uniform(SkyConst.DEEP_SPACE_MATRIX_P, __deep_space_basis)
+	__resources.sky_material.set_shader_parameter(SkyConst.DEEP_SPACE_MATRIX_P, __deep_space_basis)
+	var euler: Vector3 = __deep_space_basis.get_euler()
+	if deep_space_euler.angle_to(euler) < 0.01:
+		return
+	deep_space_euler = euler
 
 var __deep_space_basis: Basis
 
 var background_color:= Color(0.709804, 0.709804, 0.709804, 0.854902): set = set_background_color
 func set_background_color(value: Color) -> void:
 	background_color = value
-	__resources.sky_material.set_shader_uniform(SkyConst.BG_COL_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.BG_COL_P, value)
 
 var set_background_texture: bool = false: set = set_set_background_texture
 func set_set_background_texture(value: bool) -> void:
@@ -454,12 +460,12 @@ func set_set_background_texture(value: bool) -> void:
 var background_texture: Texture2D = null: set = _set_background_texture
 func _set_background_texture(value: Texture2D) -> void:
 	background_texture = value
-	__resources.sky_material.set_shader_uniform(SkyConst.BG_TEXTURE_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.BG_TEXTURE_P, value)
 
 var stars_field_color:= Color.WHITE: set = set_stars_field_color
 func set_stars_field_color(value: Color) -> void:
 	stars_field_color = value
-	__resources.sky_material.set_shader_uniform(SkyConst.STARS_COLOR_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.STARS_COLOR_P, value)
 
 var set_stars_field_texture: bool = false: set = set_set_stars_field_texture
 func set_set_stars_field_texture(value: bool) -> void:
@@ -472,62 +478,62 @@ func set_set_stars_field_texture(value: bool) -> void:
 var stars_field_texture: Texture2D = null: set = _set_stars_field_texture
 func _set_stars_field_texture(value: Texture2D) -> void:
 	stars_field_texture = value
-	__resources.sky_material.set_shader_uniform(SkyConst.STARS_TEXTURE_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.STARS_TEXTURE_P, value)
 
 var stars_scintillation: float = 0.75: set = set_stars_scintillation
 func set_stars_scintillation(value: float) -> void:
 	stars_scintillation = value
-	__resources.sky_material.set_shader_uniform(SkyConst.STARS_SC_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.STARS_SC_P, value)
 
 var stars_scintillation_speed: float = 0.01: set = set_stars_scintillation_speed
 func set_stars_scintillation_speed(value: float) -> void:
 	stars_scintillation_speed = value
-	__resources.sky_material.set_shader_uniform(SkyConst.STARS_SC_SPEED_P, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.STARS_SC_SPEED_P, value)
 
 var clouds_thickness: float = 1.7: set = set_clouds_thickness
 func set_clouds_thickness(value: float) -> void:
 	clouds_thickness = value
-	__resources.sky_material.set_shader_uniform(SkyConst.CLOUDS_THICKNESS, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.CLOUDS_THICKNESS, value)
 
 var clouds_coverage: float = 0.5: set = set_clouds_coverage
 func set_clouds_coverage(value: float) -> void:
 	clouds_coverage = value
-	__resources.sky_material.set_shader_uniform(SkyConst.CLOUDS_COVERAGE, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.CLOUDS_COVERAGE, value)
 
 var clouds_absorption: float = 2.0: set = set_clouds_absorption
 func set_clouds_absorption(value: float) -> void:
 	clouds_absorption = value
-	__resources.sky_material.set_shader_uniform(SkyConst.CLOUDS_ABSORPTION, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.CLOUDS_ABSORPTION, value)
 
 var clouds_sky_tint_fade: float = 0.5: set = set_clouds_sky_tint_fade
 func set_clouds_sky_tint_fade(value: float) -> void:
 	clouds_sky_tint_fade = value
-	__resources.sky_material.set_shader_uniform(SkyConst.CLOUDS_SKY_TINT_FADE, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.CLOUDS_SKY_TINT_FADE, value)
 
 var clouds_intensity: float = 10.0: set = set_clouds_intensity
 func set_clouds_intensity(value: float) -> void:
 	clouds_intensity = value
-	__resources.sky_material.set_shader_uniform(SkyConst.CLOUDS_INTENSITY, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.CLOUDS_INTENSITY, value)
 
 var clouds_size: float = 2.0: set = set_clouds_size
 func set_clouds_size(value: float) -> void:
 	clouds_size = value
-	__resources.sky_material.set_shader_uniform(SkyConst.CLOUDS_SIZE, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.CLOUDS_SIZE, value)
 
 var clouds_uv:= Vector2(0.16, 0.11): set = set_clouds_uv
 func set_clouds_uv(value: Vector2) -> void:
 	clouds_uv = value
-	__resources.sky_material.set_shader_uniform(SkyConst.CLOUDS_UV, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.CLOUDS_UV, value)
 
 var clouds_offset:= Vector2(0.21, 0.175): set = set_clouds_offset
 func set_clouds_offset(value: Vector2) -> void:
 	clouds_offset = value
-	__resources.sky_material.set_shader_uniform(SkyConst.CLOUDS_OFFSET, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.CLOUDS_OFFSET, value)
 
 var clouds_offset_speed: float = 0.01: set = set_clouds_offset_speed
 func set_clouds_offset_speed(value: float) -> void:
 	clouds_offset_speed = value
-	__resources.sky_material.set_shader_uniform(SkyConst.CLOUDS_OFFSET_SPEED, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.CLOUDS_OFFSET_SPEED, value)
 
 var set_clouds_texture: bool = false: set = set_set_clouds_texture
 func set_set_clouds_texture(value: bool) -> void:
@@ -540,7 +546,7 @@ func set_set_clouds_texture(value: bool) -> void:
 var clouds_texture: Texture2D = null: set = _set_clouds_texture
 func _set_clouds_texture(value: Texture2D) -> void:
 	clouds_texture = value
-	__resources.sky_material.set_shader_uniform(SkyConst.CLOUDS_TEXTURE, value)
+	__resources.sky_material.set_shader_parameter(SkyConst.CLOUDS_TEXTURE, value)
 
 var clouds_cumulus_visible: bool = true: set = set_clouds_cumulus_visible
 func set_clouds_cumulus_visible(value: bool) -> void:
@@ -554,68 +560,68 @@ func set_clouds_cumulus_visible(value: bool) -> void:
 var clouds_cumulus_day_color:= Color(0.823529, 0.87451, 1.0, 1.0): set = set_clouds_cumulus_day_color
 func set_clouds_cumulus_day_color(value: Color) -> void:
 	clouds_cumulus_day_color = value
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_DAY_COLOR, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_DAY_COLOR, value)
 
 var clouds_cumulus_horizon_light_color:= Color(1.0, 0.333333, 0.152941, 1.0): set = set_clouds_cumulus_horizon_light_color
 func set_clouds_cumulus_horizon_light_color(value: Color) -> void:
 	clouds_cumulus_horizon_light_color = value
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_HORIZON_LIGHT_COLOR, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_HORIZON_LIGHT_COLOR, value)
 
 var clouds_cumulus_night_color:= Color(0.090196, 0.094118, 0.129412, 1.0): set = set_clouds_cumulus_night_color
 func set_clouds_cumulus_night_color(value: Color) -> void:
 	clouds_cumulus_night_color = value
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_NIGHT_COLOR, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_NIGHT_COLOR, value)
 
 var clouds_cumulus_thickness: float = 0.0243: set = set_clouds_cumulus_thickness
 func set_clouds_cumulus_thickness(value: float) -> void:
 	clouds_cumulus_thickness = value
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_THICKNESS, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_THICKNESS, value)
 
 var clouds_cumulus_coverage: float = 0.55: set = set_clouds_cumulus_coverage
 func set_clouds_cumulus_coverage(value: float) -> void:
 	clouds_cumulus_coverage = value
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_COVERAGE, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_COVERAGE, value)
 
 var clouds_cumulus_absorption: float = 2.0: set = set_clouds_cumulus_absorption
 func set_clouds_cumulus_absorption(value: float) -> void:
 	clouds_cumulus_absorption = value
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_ABSORPTION, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_ABSORPTION, value)
 
 var clouds_cumulus_noise_freq: float = 2.7: set = set_clouds_cumulus_noise_freq
 func set_clouds_cumulus_noise_freq(value: float) -> void:
 	clouds_cumulus_noise_freq = value
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_NOISE_FREQ, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_NOISE_FREQ, value)
 
 var clouds_cumulus_intensity: float = 1.0: set = set_clouds_cumulus_intensity
 func set_clouds_cumulus_intensity(value: float) -> void:
 	clouds_cumulus_intensity = value
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_INTENSITY, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_INTENSITY, value)
 
 var clouds_cumulus_mie_intensity: float = 1.0: set = set_clouds_cumulus_mie_intensity
 func set_clouds_cumulus_mie_intensity(value: float) -> void:
 	clouds_cumulus_mie_intensity = value
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_MIE_INTENSITY, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_MIE_INTENSITY, value)
 
 var clouds_cumulus_mie_anisotropy: float = 0.206: set = set_clouds_cumulus_mie_anisotropy
 func set_clouds_cumulus_mie_anisotropy(value: float) -> void:
 	clouds_cumulus_mie_anisotropy = value
 	var partial = ScatterLib.get_partial_mie_phase(value)
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_PARTIAL_MIE_PHASE, partial)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_PARTIAL_MIE_PHASE, partial)
 
 var clouds_cumulus_size: float = 0.5: set = set_clouds_cumulus_size
 func set_clouds_cumulus_size(value: float) -> void:
 	clouds_cumulus_size = value
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_SIZE, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_SIZE, value)
 
 var clouds_cumulus_offset:= Vector3(0.64, 0.522, 0.128): set = set_clouds_cumulus_offset
 func set_clouds_cumulus_offset(value: Vector3) -> void:
 	clouds_cumulus_offset = value
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_OFFSET, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_OFFSET, value)
 
 var clouds_cumulus_offset_speed: float = 0.005: set = set_clouds_cumulus_offset_speed
 func set_clouds_cumulus_offset_speed(value: float) -> void:
 	clouds_cumulus_offset_speed = value
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_OFFSET_SPEED, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_OFFSET_SPEED, value)
 
 var set_clouds_cumulus_texture: bool = false: set = set_set_clouds_cumulus_texture
 func set_set_clouds_cumulus_texture(value: bool) -> void:
@@ -628,7 +634,7 @@ func set_set_clouds_cumulus_texture(value: bool) -> void:
 var clouds_cumulus_texture: Texture2D = null: set = _set_clouds_cumulus_texture
 func _set_clouds_cumulus_texture(value: Texture2D) -> void:
 	clouds_cumulus_texture = value
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.CLOUDS_TEXTURE, value)
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.CLOUDS_TEXTURE, value)
 
 
 ## Enviro.
@@ -675,7 +681,7 @@ func _init() -> void:
 	__resources.setup_clouds_cumulus_resources(sky_render_priority + 1)
 	
 	__force_setup_instances()
-	__resources.sky_material.set_shader_uniform(SkyConst.NOISE_TEX, __resources._stars_field_noise)
+	__resources.sky_material.set_shader_parameter(SkyConst.NOISE_TEX, __resources._stars_field_noise)
 
 func _enter_tree() -> void:
 	__build_dome()
@@ -884,8 +890,8 @@ func __set_color_correction_params(tonemap: float, exposure: float) -> void:
 	var p: Vector2
 	p.x = tonemap
 	p.y = exposure
-	__resources.sky_material.set_shader_uniform(SkyConst.COLOR_CORRECTION_P, p)
-	__resources.fog_material.set_shader_uniform(SkyConst.COLOR_CORRECTION_P, p)
+	__resources.sky_material.set_shader_parameter(SkyConst.COLOR_CORRECTION_P, p)
+	__resources.fog_material.set_shader_parameter(SkyConst.COLOR_CORRECTION_P, p)
 
 
 ## Coords.
@@ -909,10 +915,10 @@ func __set_sun_coords() -> void:
 	emit_signal("sun_transform_changed", __sun_transform)
 	emit_signal("sun_transform_changed", sun_direction())
 	
-	__resources.sky_material.set_shader_uniform(SkyConst.SUN_DIR_P, sun_direction())
-	__resources.fog_material.set_shader_uniform(SkyConst.SUN_DIR_P, sun_direction())
-	__resources.moon_material.set_shader_uniform(SkyConst.SUN_DIR_P, sun_direction())
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.SUN_DIR_P, sun_direction())
+	__resources.sky_material.set_shader_parameter(SkyConst.SUN_DIR_P, sun_direction())
+	__resources.fog_material.set_shader_parameter(SkyConst.SUN_DIR_P, sun_direction())
+	__resources.moon_material.set_shader_parameter(SkyConst.SUN_DIR_P, sun_direction())
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.SUN_DIR_P, sun_direction())
 	
 	if __sun_light_ready:
 		#if __sun_light_node.light_energy > 0.0 && (abs(sun_altitude) < 90.0
@@ -947,11 +953,11 @@ func __set_moon_coords() -> void:
 	emit_signal("moon_transform_changed", __moon_transform)
 	emit_signal("moon_direction_changed", moon_direction())
 	
-	__resources.sky_material.set_shader_uniform(SkyConst.MOON_DIR_P, moon_direction())
-	__resources.fog_material.set_shader_uniform(SkyConst.MOON_DIR_P, moon_direction())
-	__resources.moon_material.set_shader_uniform(SkyConst.MOON_DIR_P, moon_direction())
-	__resources.clouds_cumulus_material.set_shader_uniform(SkyConst.MOON_DIR_P, moon_direction())
-	__resources.sky_material.set_shader_uniform(SkyConst.MOON_MATRIX, __moon_transform.basis.inverse())
+	__resources.sky_material.set_shader_parameter(SkyConst.MOON_DIR_P, moon_direction())
+	__resources.fog_material.set_shader_parameter(SkyConst.MOON_DIR_P, moon_direction())
+	__resources.moon_material.set_shader_parameter(SkyConst.MOON_DIR_P, moon_direction())
+	__resources.clouds_cumulus_material.set_shader_parameter(SkyConst.MOON_DIR_P, moon_direction())
+	__resources.sky_material.set_shader_parameter(SkyConst.MOON_MATRIX, __moon_transform.basis.inverse())
 	
 	assert(__moon_instance_transform != null, "Moon instance transform not found")
 	__moon_instance_transform.transform = __moon_transform
@@ -973,18 +979,18 @@ func __set_beta_ray() -> void:
 	var wll = ScatterLib.compute_wavelenghts_lambda(atm_wavelenghts)
 	var wls = ScatterLib.compute_wavlenghts(wll)
 	var betaRay = ScatterLib.compute_beta_ray(wls)
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_BETA_RAY_P, betaRay)
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_BETA_RAY_P, betaRay)
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_BETA_RAY_P, betaRay)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_BETA_RAY_P, betaRay)
 
 func __set_beta_mie() -> void:
 	var bm = ScatterLib.compute_beta_mie(atm_mie, atm_turbidity)
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_BETA_MIE_P, bm)
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_BETA_MIE_P, bm)
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_BETA_MIE_P, bm)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_BETA_MIE_P, bm)
 
 func __set_night_intensity() -> void:
 	var tint: Color = atm_night_tint * atm_night_intensity()
-	__resources.sky_material.set_shader_uniform(SkyConst.ATM_NIGHT_TINT_P, tint)
-	__resources.fog_material.set_shader_uniform(SkyConst.ATM_NIGHT_TINT_P, atm_night_tint * fog_atm_night_intensity())
+	__resources.sky_material.set_shader_parameter(SkyConst.ATM_NIGHT_TINT_P, tint)
+	__resources.fog_material.set_shader_parameter(SkyConst.ATM_NIGHT_TINT_P, atm_night_tint * fog_atm_night_intensity())
 	
 	set_atm_moon_mie_intensity(atm_moon_mie_intensity)
 
@@ -1022,7 +1028,7 @@ func __set_moon_light_energy() -> void:
 	l*= atm_moon_phases_mult()
 	
 	var fade = (1.0 - sun_direction().y) * 0.5
-	__moon_light_node.light_energy = l * __resources._sun_moon_curve_fade.interpolate_baked(fade)
+	__moon_light_node.light_energy = l * __resources._sun_moon_curve_fade.sample_baked(fade)
 
 func __update_enviro() -> void:
 	if not __enable_enviro:
