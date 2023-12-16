@@ -35,7 +35,7 @@ uniform vec4 _clouds_day_color: source_color;
 uniform vec4 _clouds_horizon_light_color: source_color;
 uniform vec4 _clouds_night_color: source_color;
 
-const int kCLOUDS_STEP = 10;
+const int kCLOUDS_STEP = 5;
 
 uniform vec3 _clouds_partial_mie_phase;
 uniform float _clouds_mie_intensity;

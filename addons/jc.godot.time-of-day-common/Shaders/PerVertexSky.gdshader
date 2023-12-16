@@ -52,7 +52,7 @@ uniform float _sun_disk_intensity;
 uniform float _sun_disk_size;
 
 uniform vec4 _moon_color: source_color;
-uniform sampler2D _moon_texture: source_color;
+uniform sampler2D _moon_texture: source_color, repeat_disable;
 
 // Background.
 uniform sampler2D _background_texture: source_color;
@@ -299,5 +299,6 @@ void fragment(){
 	col.rgb = mix(col.rgb, _ground_color.rgb * scatter, saturate((-worldPos.y - _atm_level_params.z)*100.0));
 	
 	col.rgb = tonemapPhoto(col.rgb, _color_correction_params.y, _color_correction_params.x);
+
 	ALBEDO = col.rgb;
 }
