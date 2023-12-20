@@ -52,7 +52,7 @@ uniform float _sun_disk_intensity;
 uniform float _sun_disk_size;
 
 uniform vec4 _moon_color: source_color;
-uniform sampler2D _moon_texture: source_color;
+uniform sampler2D _moon_texture: source_color, repeat_disable;
 
 // Background.
 uniform sampler2D _background_texture: source_color;
