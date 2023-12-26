@@ -35,7 +35,7 @@ uniform vec4 _clouds_day_color: source_color;
 uniform vec4 _clouds_horizon_light_color: source_color;
 uniform vec4 _clouds_night_color: source_color;
 
-const int kCLOUDS_STEP = 5;
+const int kCLOUDS_STEP = 10;
 
 uniform vec3 _clouds_partial_mie_phase;
 uniform float _clouds_mie_intensity;
@@ -142,9 +142,12 @@ float miePhase(float mu, vec3 partial){
 }
 
 vec4 renderClouds2(vec3 ro, vec3 rd, float tm, float am){
-	vec4 ret;
+	vec4 ret = vec4(0, 0, 0, 0);
 	vec3 wind = _clouds_offset * (tm * _clouds_offset_speed);
-    vec3 n; float tt; float a = 0.0;
+	float a = 0.0;
+	
+	// n and tt doesnt need to be initialized since it would be set by IntersectSphere
+	vec3 n; float tt;
     if(IntersectSphere(500, ro, rd, tt, n))
 	{
 		float marchStep = float(kCLOUDS_STEP) * _clouds_thickness;
