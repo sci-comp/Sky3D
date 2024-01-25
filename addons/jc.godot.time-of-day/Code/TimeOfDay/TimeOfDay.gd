@@ -183,7 +183,7 @@ func _init() -> void:
 	set_utc(utc)
 
 
-signal time_update(TimeOfDay)
+signal time_update(value)
 
 @export var update_in_game: bool = true :
 	set(value):
@@ -205,7 +205,7 @@ signal time_update(TimeOfDay)
 
 @export_range(.016, 10) var update_interval: float = 0.1 :
 	set(value):
-		update_interval = value
+		update_interval = clamp(value, .016, 10)
 		if is_instance_valid(_update_timer):
 			_update_timer.wait_time = update_interval
 		resume()
@@ -240,7 +240,7 @@ func _on_timeout() -> void:
 		__set_celestial_coords()
 		__celestials_update_timer = 0.0
 
-	emit_signal("time_update", self)
+	emit_signal("time_update", total_hours)
 	_last_update = Time.get_ticks_msec()
 	
 
