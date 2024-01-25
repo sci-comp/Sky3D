@@ -11,7 +11,8 @@ config_version=5
 [application]
 
 config/name="TimeOfDay"
-config/features=PackedStringArray("4.1")
+run/main_scene="res://addons/jc.godot.time-of-day/Examples/GLES3/PrimitivesCityExampleGLES32.tscn"
+config/features=PackedStringArray("4.2")
 config/icon="res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Gizmos/SkyTextureIcon.png"
 
 [editor_plugins]

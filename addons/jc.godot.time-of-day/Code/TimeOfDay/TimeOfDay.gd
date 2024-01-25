@@ -184,10 +184,34 @@ func _init() -> void:
 
 
 signal time_update(TimeOfDay)
-@export var run_at_startup: bool = true
-@export var update_interval: float = 0.1
-var _last_update: int = 0
+
+@export var update_in_game: bool = true :
+	set(value):
+		update_in_game = value
+		if not Engine.is_editor_hint():
+			if update_in_game:
+				resume()
+			else:
+				pause()
+
+@export var update_in_editor: bool = true :
+	set(value):
+		update_in_editor = value
+		if Engine.is_editor_hint():
+			if update_in_editor:
+				resume()
+			else:
+				pause()
+
+@export_range(.016, 10) var update_interval: float = 0.1 :
+	set(value):
+		update_interval = value
+		if is_instance_valid(_update_timer):
+			_update_timer.wait_time = update_interval
+		resume()
+
 var _update_timer: Timer
+var _last_update: int = 0
 
 
 func _ready() -> void:
@@ -198,11 +222,7 @@ func _ready() -> void:
 	add_child(_update_timer)
 	_update_timer.timeout.connect(_on_timeout)
 	_update_timer.wait_time = update_interval
-	if run_at_startup:
-		_update_timer.start()
-	else:
-		_update_timer.stop()
-	_last_update = Time.get_ticks_msec()
+	resume()
 
 
 func _on_timeout() -> void:
@@ -225,12 +245,17 @@ func _on_timeout() -> void:
 	
 
 func pause() -> void:
-	_update_timer.stop()
+	if is_instance_valid(_update_timer):
+		_update_timer.stop()
 
 
 func resume() -> void:
-	_last_update = Time.get_ticks_msec() - update_interval
-	_update_timer.start()
+	if is_instance_valid(_update_timer):
+		# Assume resuming from a pause, so timer only gets one tick
+		_last_update = Time.get_ticks_msec() - update_interval
+		if (Engine.is_editor_hint() and update_in_editor) or \
+				(not Engine.is_editor_hint() and update_in_game):
+			_update_timer.start()
 
 
 # DateTime
