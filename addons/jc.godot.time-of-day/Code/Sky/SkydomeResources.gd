@@ -19,7 +19,7 @@ extends Resource
 # Mesh.
 var _skydome_mesh:= SphereMesh.new()
 var _clouds_cumulus_mesh:= SphereMesh.new()
-var _full_screen_quad:= PlaneMesh.new()
+var _full_screen_quad:= QuadMesh.new()
 
 # Materials.
 var sky_material:= ShaderMaterial.new()

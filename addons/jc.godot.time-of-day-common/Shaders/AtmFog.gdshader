@@ -185,7 +185,7 @@ varying mat4 camera_matrix;
 varying vec4 angle_mult;
 
 void vertex(){
-	POSITION = vec4(VERTEX.xy, -1.0, 1.0);
+	POSITION = vec4(VERTEX, 1.0);
 	angle_mult.x = saturate(1.0 - _sun_direction.y);
 	angle_mult.y = saturate(_sun_direction.y + 0.45);
 	angle_mult.z = saturate(-_sun_direction.y + 0.30);
