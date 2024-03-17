@@ -1,8 +1,12 @@
 # Credit
-"[The Milky Way panorama](https://www.eso.org/public/images/eso0932a/)" by ESO/S. Brunier, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/
+`Milkyway.jpg` "[The Milky Way panorama](https://www.eso.org/public/images/eso0932a/)" by ESO/S. Brunier, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/
 ).
 
-Your game credits should include the above information with a link to the license where reasonable.
+`StarField.jpg` is the same image modified to hide all but the brightest stars.
+
+Your game credits should include attribution similar to the above with a link to the license where reasonable.
+
+e.g. `The Milky Way panorama by ESO/S. Brunier, licensed under CC BY 4.0 and used in original and modified forms.`
 
 Higher resolutions and more information are available at: https://www.eso.org/public/images/eso0932a/
 
