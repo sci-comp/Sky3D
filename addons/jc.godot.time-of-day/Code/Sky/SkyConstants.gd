@@ -14,12 +14,31 @@ class_name SkyConst
 #°                   See: LICENSE File.
 #========================================================"""
 
-## Skydome
+# Nodes' names
 const SKY_INSTANCE:= "_SkyMeshI"
 const FOG_INSTANCE:= "_FogMeshI"
 const MOON_INSTANCE:= "MoonRender"
 const CLOUDS_C_INSTANCE:= "_CloudsCumulusI"
 
+# Shaders
+const _sky_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/Sky.gdshader")
+const _pv_sky_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/PerVertexSky.gdshader")
+const _clouds_cumulus_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/CloudsCumulus.gdshader")
+const _fog_shader: Shader = preload("res://addons/jc.godot.time-of-day-common/Shaders/AtmFog.gdshader")
+
+# Scenes
+const _moon_render: PackedScene = preload("res://addons/jc.godot.time-of-day-common/Scenes/Moon/MoonRender.tscn")
+
+# Textures
+const _moon_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MoonMap/MoonMap.png")
+const _background_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MilkyWay/Milkyway.jpg")
+const _stars_field_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MilkyWay/StarField.jpg")
+const _sun_moon_curve_fade: Curve = preload("res://addons/jc.godot.time-of-day-common/Resources/SunMoonLightFade.tres")
+const _stars_field_noise: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Textures/noise.jpg")
+const _clouds_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Resources/SNoise.tres")
+const _clouds_cumulus_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Textures/noiseClouds.png")
+
+## Skydome
 const MAX_EXTRA_CULL_MARGIN: float = 16384.0
 const DEFAULT_POSITION:= Vector3(0.0000001, 0.0000001, 0.0000001)
 
