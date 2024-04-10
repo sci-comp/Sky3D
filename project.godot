@@ -11,13 +11,17 @@ config_version=5
 [application]
 
 config/name="TimeOfDay"
-run/main_scene="res://addons/jc.godot.time-of-day/Examples/GLES3/PrimitivesCityExampleGLES32.tscn"
+run/main_scene="res://demo/PrimitivesCityExample.tscn"
 config/features=PackedStringArray("4.2")
-config/icon="res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Gizmos/SkyTextureIcon.png"
+config/icon="res://demo/Assets/Gizmos/SkyTextureIcon.png"
 
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/jc.godot.time-of-day/plugin.cfg")
+
+[filesystem]
+
+import/blender/enabled=false
 
 [physics]
 

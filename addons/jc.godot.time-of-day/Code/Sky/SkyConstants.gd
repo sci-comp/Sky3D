@@ -34,9 +34,9 @@ const _moon_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-comm
 const _background_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MilkyWay/Milkyway.jpg")
 const _stars_field_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MilkyWay/StarField.jpg")
 const _sun_moon_curve_fade: Curve = preload("res://addons/jc.godot.time-of-day-common/Resources/SunMoonLightFade.tres")
-const _stars_field_noise: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Textures/noise.jpg")
+const _stars_field_noise: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/Graphics/Textures/noise.jpg")
 const _clouds_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Resources/SNoise.tres")
-const _clouds_cumulus_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Textures/noiseClouds.png")
+const _clouds_cumulus_texture: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/Graphics/Textures/noiseClouds.png")
 
 ## Skydome
 const MAX_EXTRA_CULL_MARGIN: float = 16384.0

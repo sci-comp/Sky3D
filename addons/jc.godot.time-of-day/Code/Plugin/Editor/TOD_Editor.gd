@@ -16,10 +16,10 @@ extends EditorPlugin
 #========================================================"""
 
 const __skydome_script: Script = preload("res://addons/jc.godot.time-of-day/Code/Sky/Skydome.gd")
-const __skydome_icon: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Gizmos/SkyIcon.png")
+const __skydome_icon: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/Graphics/Gizmos/SkyIcon.png")
 
 const __time_of_day_script: Script = preload("res://addons/jc.godot.time-of-day/Code/TimeOfDay/TimeOfDay.gd")
-const __time_of_day_icon: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/MyAssets/Graphics/Gizmos/SkyIcon.png")
+const __time_of_day_icon: Texture2D = preload("res://addons/jc.godot.time-of-day-common/Assets/Graphics/Gizmos/SkyIcon.png")
 
 func _enter_tree() -> void:
 	add_custom_type("Skydome", "Node", __skydome_script, __skydome_icon)
