@@ -790,7 +790,8 @@ func update_sun_light_color() -> void:
 	if __sun_light_node == null:
 		return
 
-	__sun_light_node.light_color = TOD_Math.plerp_color(sun_horizon_light_color, sun_light_color, __sun_light_altitude_mult)
+	var sun_light_altitude_mult: float = TOD_Math.saturate(sun_direction().y)
+	__sun_light_node.light_color = TOD_Math.plerp_color(sun_horizon_light_color, sun_light_color, sun_light_altitude_mult)
 
 var sun_light_color:= Color(0.984314, 0.843137, 0.788235): set = set_sun_light_color
 func set_sun_light_color(value: Color) -> void:
@@ -816,6 +817,7 @@ func set_sun_light_energy(value: float) -> void:
 	sun_light_energy = value
 	update_sun_light_energy()
 	
+var __sun_light_node: DirectionalLight3D = null
 func update_sun_light_path() -> void:
 	if sun_light_path != null:
 		__sun_light_node = get_node_or_null(sun_light_path) as DirectionalLight3D
@@ -828,9 +830,6 @@ func set_sun_light_path(value: NodePath) -> void:
 
 	update_sun_light_path()
 	update_sun_coords()
-
-var __sun_light_node: DirectionalLight3D = null
-var __sun_light_altitude_mult: float = 0.0
 
 func update_moon_light_color() -> void:
 	if __moon_light_node == null:
@@ -1513,8 +1512,6 @@ func update_sun_coords() -> void:
 		if __sun_light_node.light_energy > 0.0:
 			__sun_light_node.transform = __sun_transform
 	
-	__sun_light_altitude_mult = TOD_Math.saturate(sun_direction().y)
-	
 	update_night_intensity()
 	update_sun_light_color()
 	update_sun_light_energy()
@@ -1610,7 +1607,10 @@ func __evaluate_light_enable() -> void:
 
 func update_sun_light_energy() -> void:
 	if __sun_light_node != null:
-		__sun_light_node.light_energy = TOD_Math.lerp_f(0.0, sun_light_energy, __sun_light_altitude_mult)
+		# Light energy should depend on how much of the sun disk is visible
+		var y = sun_direction().y
+		var sun_light_factor: float = TOD_Math.saturate((y + sun_disk_size) / (2 * sun_disk_size));
+		__sun_light_node.light_energy = TOD_Math.lerp_f(0.0, sun_light_energy, sun_light_factor)
 
 func update_moon_light_energy() -> void:
 	if __moon_light_node == null:
