@@ -2,7 +2,7 @@
 
 A dynamic day/night cycle addon for Godot Engine 4, written in GDScript.
 
-![image](https://github.com/TokisanGames/TimeOfDay/blob/main/Screenshots/Screenshot0.jpg)
+![image](https://github.com/TokisanGames/TimeOfDay/blob/main/screenshots/Screenshot0.jpg)
 
 ## Features
 * Supports Godot 4.2, may work with other versions
