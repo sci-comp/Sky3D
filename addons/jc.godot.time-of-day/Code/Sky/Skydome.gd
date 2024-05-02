@@ -790,7 +790,7 @@ func update_sun_light_color() -> void:
 	if __sun_light_node == null:
 		return
 
-	var sun_light_altitude_mult: float = TOD_Math.saturate(sun_direction().y)
+	var sun_light_altitude_mult: float = TOD_Math.saturate(sun_direction().y * 2)
 	__sun_light_node.light_color = TOD_Math.plerp_color(sun_horizon_light_color, sun_light_color, sun_light_altitude_mult)
 
 var sun_light_color:= Color(0.984314, 0.843137, 0.788235): set = set_sun_light_color
