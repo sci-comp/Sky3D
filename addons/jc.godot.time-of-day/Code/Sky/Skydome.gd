@@ -1633,6 +1633,8 @@ func __update_enviro() -> void:
 	var colB = TOD_Math.plerp_color(colA, atm_night_tint * atm_night_intensity(), b)
 	
 	enviro.ambient_light_color = colB
+	enviro.background_energy_multiplier = colB.get_luminance()
+	enviro.ambient_light_sky_contribution = 1 - enviro.background_energy_multiplier
 
 
 func _get_property_list() -> Array:
