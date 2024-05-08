@@ -790,7 +790,7 @@ func update_sun_light_color() -> void:
 	if __sun_light_node == null:
 		return
 
-	var sun_light_altitude_mult: float = TOD_Math.saturate(sun_direction().y)
+	var sun_light_altitude_mult: float = TOD_Math.saturate(sun_direction().y * 2)
 	__sun_light_node.light_color = TOD_Math.plerp_color(sun_horizon_light_color, sun_light_color, sun_light_altitude_mult)
 
 var sun_light_color:= Color(0.984314, 0.843137, 0.788235): set = set_sun_light_color
@@ -1633,6 +1633,8 @@ func __update_enviro() -> void:
 	var colB = TOD_Math.plerp_color(colA, atm_night_tint * atm_night_intensity(), b)
 	
 	enviro.ambient_light_color = colB
+	enviro.background_energy_multiplier = colB.get_luminance()
+	enviro.ambient_light_sky_contribution = 1 - enviro.background_energy_multiplier
 
 
 func _get_property_list() -> Array:
