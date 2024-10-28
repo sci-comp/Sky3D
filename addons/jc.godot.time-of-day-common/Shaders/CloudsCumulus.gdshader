@@ -185,8 +185,8 @@ varying vec4 angle_mult;
 
 void vertex(){
 	vec4 vert = vec4(VERTEX, 0.0);
-	POSITION =  PROJECTION_MATRIX * VIEW_MATRIX * MODEL_MATRIX * vert;
-	POSITION.z = POSITION.w;
+    POSITION = PROJECTION_MATRIX * MODELVIEW_MATRIX * vert;
+    POSITION.z = 0.0000001;
 	
 	world_pos = (MODEL_MATRIX * vert);
 	angle_mult.x = saturate(1.0 - _sun_direction.y);
@@ -207,5 +207,4 @@ void fragment(){
 	
 	ALBEDO = clouds.rgb;
 	ALPHA = pow3(clouds.a);
-	DEPTH = 1.0;
 }

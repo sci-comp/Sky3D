@@ -224,8 +224,8 @@ varying vec4 angle_mult;
 
 void vertex(){
 	vec4 vert = vec4(VERTEX, 0.0);
-	POSITION =  PROJECTION_MATRIX * VIEW_MATRIX * MODEL_MATRIX * vert;
-	POSITION.z = POSITION.w;
+    POSITION = PROJECTION_MATRIX * MODELVIEW_MATRIX * vert;
+    POSITION.z = 0.00000001;
 	
 	world_pos = MODEL_MATRIX * vert;
 	moon_coords.xyz = (_moon_matrix * VERTEX) / _moon_size + 0.5;

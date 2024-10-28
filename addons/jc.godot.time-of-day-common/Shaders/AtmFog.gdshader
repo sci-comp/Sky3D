@@ -16,33 +16,33 @@ render_mode blend_mix, cull_disabled, unshaded;
 
 uniform vec2 _color_correction_params;
 
-uniform float _fog_density;
-uniform float _fog_rayleigh_depth;
-uniform float _fog_mie_depth;
-uniform float _fog_falloff;
-uniform float _fog_start;
-uniform float _fog_end;
-uniform vec3 _sun_direction;
-uniform vec3 _moon_direction;
+uniform float _fog_density = .0001;
+uniform float _fog_rayleigh_depth = .115;
+uniform float _fog_mie_depth = 0.;
+uniform float _fog_falloff = 3.;
+uniform float _fog_start = 0.;
+uniform float _fog_end = 1000.;
+uniform vec3 _sun_direction = vec3(.25, -.25, .25);
+uniform vec3 _moon_direction = vec3(.45, -.25, .45);
 
-uniform float _atm_darkness;
-uniform float _atm_sun_intensity;
-uniform vec4 _atm_day_tint: source_color;
-uniform vec4 _atm_horizon_light_tint: source_color;
-uniform vec4 _atm_night_tint: source_color;
-uniform vec3 _atm_level_params;
-uniform float _atm_thickness;
+uniform float _atm_darkness = .5;
+uniform float _atm_sun_intensity = 30.;
+uniform vec4 _atm_day_tint: source_color = vec4(.78, .85, .98, 1.);
+uniform vec4 _atm_horizon_light_tint: source_color = vec4(.98, .73, .49, 1.);
+uniform vec4 _atm_night_tint: source_color = vec4(.16, .2, .25, 1.);
+uniform vec3 _atm_level_params = vec3(1., 0., 0.);
+uniform float _atm_thickness = .7;
 
 uniform vec3 _atm_beta_ray;
 uniform vec3 _atm_beta_mie;
 
 uniform vec3 _atm_sun_partial_mie_phase;
-uniform vec4 _atm_sun_mie_tint: source_color;
-uniform float _atm_sun_mie_intensity;
+uniform vec4 _atm_sun_mie_tint: source_color = vec4(1.);
+uniform float _atm_sun_mie_intensity = 1.;
 
 uniform vec3 _atm_moon_partial_mie_phase;
-uniform vec4 _atm_moon_mie_tint: source_color;
-uniform float _atm_moon_mie_intensity;
+uniform vec4 _atm_moon_mie_tint: source_color = vec4(.13, .18, .29, 1.);
+uniform float _atm_moon_mie_intensity = .7;
 
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
@@ -183,9 +183,11 @@ void computeCoords(vec2 uv, float depth, mat4 camMat, mat4 invProjMat,
 //------------------------------------------------------------------------------
 varying mat4 camera_matrix;
 varying vec4 angle_mult;
+varying flat int angle;
 
 void vertex(){
-	POSITION = vec4(VERTEX, 1.0);
+	POSITION = vec4(VERTEX.xy, 1.0, 1.0);
+	angle = 0; //ignore; without this the line below errors in 4.3-stable
 	angle_mult.x = saturate(1.0 - _sun_direction.y);
 	angle_mult.y = saturate(_sun_direction.y + 0.45);
 	angle_mult.z = saturate(-_sun_direction.y + 0.30);
