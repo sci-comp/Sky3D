@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dfje04v6keeiq"
+path="res://.godot/imported/RoundCube.obj-ed8d34e455fb760f000ebf06d7ded955.mesh"
+
+[deps]
+
+files=["res://.godot/imported/RoundCube.obj-ed8d34e455fb760f000ebf06d7ded955.mesh"]
+
+source_file="res://demo/assets/meshes/RoundCube.obj"
+dest_files=["res://.godot/imported/RoundCube.obj-ed8d34e455fb760f000ebf06d7ded955.mesh", "res://.godot/imported/RoundCube.obj-ed8d34e455fb760f000ebf06d7ded955.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

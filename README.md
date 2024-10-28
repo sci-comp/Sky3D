@@ -2,25 +2,19 @@
 
 A dynamic day/night cycle addon for Godot Engine 4, written in GDScript.
 
-![image](https://github.com/TokisanGames/TimeOfDay/blob/main/screenshots/Screenshot0.jpg)
+![image](https://github.com/TokisanGames/Sky3D/blob/main/screenshots/Screenshot0.jpg)
 
 ## Features
-* Supports Godot 4.2, may work with other versions
+* Supports Godot 4.3, may work with other versions
 * Auto rotating sun, moon, and stars
 * Dynamic clouds
 * Fog and cloud color responds to the sun and moon
 
 
-## Status
-
-This plugin was originally written for Godot 3 in GDScript and C# by J. Cuéllar. The original repository was lost, but we have revived and ported it to Godot 4.
-
-Currently, the GDScript version works fine. The original C# version is untouched and unsupported. Contributors are encouraged to follow the GDScript changes to update and maintain the C# version. Otherwise, we may remove it from the repository.
-
 ## Installation
 * Clone or download the repository. 
 * Create a directory in your project called addons.
-* Copy `addons/jc.godot.time-of-day` and `addons/jc.godot.time-of-day-common` into your project `addons` directory.
+* Copy `addons/sky_3d` into your project `addons` directory.
 * Go to `Project -> Project Settings -> Plugins` and enable the plugin. 
 
 
@@ -44,6 +38,9 @@ These are from v3, which may be out of date
 
 
 ## Credit
+
+This plugin was originally written for Godot 3 in GDScript and C# by J. Cuéllar. The original repository was deleted, but we have revived and ported the GDScript version to Godot 4.
+
 Developed for the Godot community by:
 |||
 |--|--|
@@ -57,6 +54,4 @@ Developed for the Godot community by:
 
 MIT License
 
-If using the stars asset, you must [credit the author](https://github.com/TokisanGames/TimeOfDay/blob/main/addons/jc.godot.time-of-day-common/Assets/ThirdParty/Graphics/Textures/MilkyWay/Credits.md).
-
- **TODO what about star field and moon map?**
+If using the stars asset, you must [credit the author](https://github.com/TokisanGames/Sky3D/blob/main/addons/sky_3d/assets/thirdparty/textures/milkyway/LICENSE.md).

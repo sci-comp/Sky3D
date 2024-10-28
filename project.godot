@@ -10,14 +10,14 @@ config_version=5
 
 [application]
 
-config/name="TimeOfDay"
-run/main_scene="res://demo/PrimitivesCityExample.tscn"
+config/name="Sky3D"
+run/main_scene="res://demo/Sky3DDemo.tscn"
 config/features=PackedStringArray("4.3")
-config/icon="res://demo/Assets/Gizmos/SkyTextureIcon.png"
+config/icon="res://icon.png"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/jc.godot.time-of-day/plugin.cfg")
+enabled=PackedStringArray("res://addons/sky_3d/plugin.cfg")
 
 [filesystem]
 
