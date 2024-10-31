@@ -1,9 +1,12 @@
 # Copyright (c) 2023-2024 Cory Petkovsek and Contributors
 # Copyright (c) 2021 J. Cuellar
 
-class_name Sky3DConstants
+class_name Sky3D
 
-# Nodes' names
+
+### Constants
+
+# Node names
 const SKY_INSTANCE:= "_SkyMeshI"
 const FOG_INSTANCE:= "_FogMeshI"
 const MOON_INSTANCE:= "MoonRender"
@@ -27,23 +30,23 @@ const _stars_field_noise: Texture2D = preload("res://addons/sky_3d/assets/textur
 const _clouds_texture: Texture2D = preload("res://addons/sky_3d/assets/resources/SNoise.tres")
 const _clouds_cumulus_texture: Texture2D = preload("res://addons/sky_3d/assets/textures/noiseClouds.png")
 
-## Skydome
+# Skydome
 const MAX_EXTRA_CULL_MARGIN: float = 16384.0
 const DEFAULT_POSITION:= Vector3(0.0000001, 0.0000001, 0.0000001)
 
-## Coords
+# Coords
 const SUN_DIR_P:= "_sun_direction"
 const MOON_DIR_P:= "_moon_direction"
 const MOON_MATRIX:= "_moon_matrix"
 
-## General
+# General
 const TEXTURE_P:= "_texture"
 const COLOR_CORRECTION_P:= "_color_correction_params"
 const GROUND_COLOR_P:= "_ground_color"
 const NOISE_TEX:= "_noise_tex"
 const HORIZON_LEVEL = "_horizon_level"
 
-## Atmosphere
+# Atmosphere
 const ATM_DARKNESS_P:= "_atm_darkness"
 const ATM_BETA_RAY_P:= "_atm_beta_ray"
 const ATM_SUN_INTENSITY_P:= "_atm_sun_intensity"
@@ -63,7 +66,7 @@ const ATM_MOON_MIE_TINT_P:= "_atm_moon_mie_tint"
 const ATM_MOON_MIE_INTENSITY_P:= "_atm_moon_mie_intensity"
 const ATM_MOON_PARTIAL_MIE_PHASE_P:= "_atm_moon_partial_mie_phase"
 
-## Fog
+# Fog
 const ATM_FOG_DENSITY_P:= "_fog_density"
 const ATM_FOG_RAYLEIGH_DEPTH_P:= "_fog_rayleigh_depth"
 const ATM_FOG_MIE_DEPTH_P:= "_fog_mie_depth"
@@ -71,7 +74,7 @@ const ATM_FOG_FALLOFF:= "_fog_falloff"
 const ATM_FOG_START:= "_fog_start"
 const ATM_FOG_END:= "_fog_end"
 
-## Near Space.
+# Near Space
 const SUN_DISK_COLOR_P:= "_sun_disk_color"
 const SUN_DISK_INTENSITY_P:= "_sun_disk_intensity"
 const SUN_DISK_SIZE_P:= "_sun_disk_size"
@@ -79,7 +82,7 @@ const MOON_COLOR_P:= "_moon_color"
 const MOON_SIZE_P:= "_moon_size"
 const MOON_TEXTURE_P:= "_moon_texture"
 
-## Deep Space.
+# Deep Space
 const DEEP_SPACE_MATRIX_P:= "_deep_space_matrix"
 const BG_COL_P:= "_background_color"
 const BG_TEXTURE_P:= "_background_texture"
@@ -88,7 +91,7 @@ const STARS_TEXTURE_P:= "_stars_field_texture"
 const STARS_SC_P:= "_stars_scintillation"
 const STARS_SC_SPEED_P:= "_stars_scintillation_speed"
 
-## Clouds
+# Clouds
 const CLOUDS_THICKNESS:= "_clouds_thickness"
 const CLOUDS_COVERAGE:= "_clouds_coverage"
 const CLOUDS_ABSORPTION:= "_clouds_absorption"

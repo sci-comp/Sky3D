@@ -1,17 +1,20 @@
-# Time Of Day
+# Sky3D
 
 A dynamic day/night cycle addon for Godot Engine 4, written in GDScript.
 
 ![image](https://github.com/TokisanGames/Sky3D/blob/main/screenshots/Screenshot0.jpg)
 
+
 ## Features
-* Supports Godot 4.3, may work with other versions
+
+* Supports Godot 4.3. May work with other versions
 * Auto rotating sun, moon, and stars
 * Dynamic clouds
-* Fog and cloud color responds to the sun and moon
+* Fog and cloud color respond to the sun and moon
 
 
 ## Installation
+
 * Clone or download the repository. 
 * Create a directory in your project called addons.
 * Copy `addons/sky_3d` into your project `addons` directory.
@@ -55,3 +58,4 @@ Developed for the Godot community by:
 MIT License
 
 If using the stars asset, you must [credit the author](https://github.com/TokisanGames/Sky3D/blob/main/addons/sky_3d/assets/thirdparty/textures/milkyway/LICENSE.md).
+
