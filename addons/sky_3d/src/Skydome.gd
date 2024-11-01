@@ -1031,19 +1031,17 @@ func update_moon_resolution() -> void:
 
 	
 #####################
-## Near space lights
+## Sun
 #####################
 
-var sun_light_color:= Color(0.984314, 0.843137, 0.788235): set = set_sun_light_color
-var sun_horizon_light_color:= Color(1.0, 0.384314, 0.243137, 1.0): set = set_sun_horizon_light_color
+# Original sun light (0.984314, 0.843137, 0.788235)
+# Original sun horizon (1.0, 0.384314, 0.243137, 1.0)
+
+var sun_light_color:= Color.WHITE : set = set_sun_light_color 
+var sun_horizon_light_color:= Color(.98, 0.523, 0.294, 1.0): set = set_sun_horizon_light_color
 var sun_light_energy: float = 1.0: set = set_sun_light_energy
 var __sun_light_node: DirectionalLight3D = null
 var sun_light_path: NodePath: set = set_sun_light_path
-var moon_light_color:= Color(0.572549, 0.776471, 0.956863, 1.0): set = set_moon_light_color
-var moon_light_energy: float = 0.3: set = set_moon_light_energy
-var moon_light_path: NodePath: set = set_moon_light_path
-var __moon_light_node: DirectionalLight3D
-var __moon_light_altitude_mult: float = 0.0
 
 
 func set_sun_light_color(value: Color) -> void:
@@ -1093,6 +1091,17 @@ func update_sun_light_path() -> void:
 		__sun_light_node = get_node_or_null(sun_light_path) as DirectionalLight3D
 	else:
 		__sun_light_node = null
+
+
+#####################
+## Moon
+#####################
+
+var moon_light_color:= Color(0.572549, 0.776471, 0.956863, 1.0): set = set_moon_light_color
+var moon_light_energy: float = 0.3: set = set_moon_light_energy
+var moon_light_path: NodePath: set = set_moon_light_path
+var __moon_light_node: DirectionalLight3D
+var __moon_light_altitude_mult: float = 0.0
 
 
 func set_moon_light_color(value: Color) -> void:
@@ -1658,6 +1667,7 @@ func update_clouds_cumulus_texture() -> void:
 var __enable_environment: bool = false
 var environment: Environment = null: set = set_environment
 
+
 func set_environment(value: Environment) -> void:
 	environment = value
 	__enable_environment = true if environment != null else false
@@ -1666,18 +1676,14 @@ func set_environment(value: Environment) -> void:
 
 
 func __update_environment() -> void:
-	if not __enable_environment:
+	if not __enable_environment or not __sun_light_node:
 		return
+	var factor = TOD_Math.saturate(-sun_direction().y + 0.60)
+	var col = TOD_Math.plerp_color(__sun_light_node.light_color, atm_night_tint * atm_night_intensity(), factor)
+	col.a = 1.
+	col.v = clamp(col.v, .35, 1.)
+	environment.ambient_light_color = col
 	
-	var a = TOD_Math.saturate(1.0 - sun_direction().y)
-	var b = TOD_Math.saturate(-sun_direction().y + 0.60)
-	
-	var colA = TOD_Math.plerp_color(atm_day_tint * 0.5, atm_horizon_light_tint, a)
-	var colB = TOD_Math.plerp_color(colA, atm_night_tint * atm_night_intensity(), b)
-	
-	environment.ambient_light_color = colB
-	environment.background_energy_multiplier = colB.get_luminance()
-	environment.ambient_light_sky_contribution = 1 - environment.background_energy_multiplier
 
 
 #####################

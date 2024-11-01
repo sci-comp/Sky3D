@@ -10,6 +10,8 @@ signal environment_changed
 @export var enable_sky3d: bool = true : set = set_sky3d_enabled
 @export var enable_sky: bool = true : set = set_sky_enabled
 @export var enable_fog: bool = true : set = set_fog_enabled
+
+@export_category("Time")
 @export var enable_time: bool = true : set = set_time_enabled
 @export_range(0.0, 24.0) var current_time: float = 8.0 : set = set_current_time
 @export_range(0.016, 10.0) var update_interval: float = 0.1 : set = set_update_interval
@@ -108,6 +110,9 @@ func initialize() -> void:
 		environment = Environment.new()
 		environment.tonemap_mode = Environment.TONE_MAPPER_ACES
 		environment.tonemap_white = 6
+		environment.background_mode = Environment.BG_SKY
+		environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+		environment.ambient_light_sky_contribution = 0.7
 		_initial_environment = environment
 		emit_signal("environment_changed", environment)
 
