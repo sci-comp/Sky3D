@@ -10,7 +10,8 @@ signal sun_direction_changed(value)
 signal sun_transform_changed(value)
 signal moon_direction_changed(value)
 signal moon_transform_changed(value)
-signal is_day(value)
+signal day_night_changed(value)
+signal lights_changed(value)
 
 
 enum SkyQuality {
@@ -1690,25 +1691,30 @@ func __update_environment() -> void:
 ## Lighting
 #####################
 
-var __light_enable: bool
+var __sun_light_enable: bool
+var __day: bool: get = is_day
+
+
+func is_day() -> bool:
+	return __day == true
 
 
 func __set_day_state(v: float, threshold: float = 1.80) -> void:
-	if abs(v) > threshold:
-		emit_signal("is_day", false)
-	else:
-		emit_signal("is_day", true)
+	# Signal when day has changed to night, or back
+	if __day == true and abs(v) > threshold:
+		__day = false
+		emit_signal("day_night_changed", false)
+	elif __day == false and abs(v) <= threshold:
+		__day = true
+		emit_signal("day_night_changed", true)
 	
-	__evaluate_light_enable()
-
-
-func __evaluate_light_enable() -> void:
-	if __sun_light_node != null:
-		__light_enable = true if __sun_light_node.light_energy > 0.0 else false
-		__sun_light_node.visible = __light_enable
-	if __moon_light_node != null:
-		__moon_light_node.visible = !__light_enable
-
+	# Adjust lights and signal. Happens at a different time from "day time" above
+	if __sun_light_node == null or __moon_light_node == null:
+		return
+	__sun_light_enable = true if __sun_light_node.light_energy > 0.0 else false
+	__sun_light_node.visible = __sun_light_enable
+	__moon_light_node.visible = !__sun_light_enable
+	emit_signal("lights_changed", true)
 
 
 func _get_property_list() -> Array:
