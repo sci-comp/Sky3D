@@ -12,15 +12,17 @@ signal environment_changed
 @export var enable_fog: bool = true : set = set_fog_enabled
 
 @export_category("Time")
-@export var enable_time: bool = true : set = set_time_enabled
+@export var enable_editor_time: bool = true : set = set_editor_time_enabled
+@export var enable_game_time: bool = true : set = set_game_time_enabled
 @export_range(0.0, 24.0) var current_time: float = 8.0 : set = set_current_time
 @export_range(0.016, 10.0) var update_interval: float = 0.1 : set = set_update_interval
 @export_range(-1440,1440,1) var minutes_per_day: float = 15.0 : set = set_minutes_per_day
 
+
 var sun: DirectionalLight3D
 var moon: DirectionalLight3D
 var tod: TimeOfDay
-var skydome: Skydome
+var sky: Skydome
 var _initial_environment: Environment
 
 
@@ -43,59 +45,62 @@ func set_sky3d_enabled(value: bool) -> void:
 
 
 func set_sky_enabled(value: bool) -> void:
-	if not skydome:
+	if not sky:
 		return
 	enable_sky = value
-	skydome.sky_visible = value
-	skydome.clouds_cumulus_visible = value
-	skydome.sun_light_energy = 1 if value else 0
-	skydome.moon_light_energy = 0.3 if value else 0
-	skydome.environment = _initial_environment if value else null
+	sky.sky_visible = value
+	sky.clouds_cumulus_visible = value
+	sky.sun_light_energy = 1 if value else 0
+	sky.moon_light_energy = 0.3 if value else 0
+	sky.environment = _initial_environment if value else null
 	emit_signal("environment_changed", environment)
 
 
 func set_fog_enabled(value: bool) -> void:
-	if skydome:
-		enable_fog = value
-		skydome.fog_visible = value
+	enable_fog = value
+	if sky:
+		sky.fog_visible = value
 
 
-func set_time_enabled(value:bool) -> void:
+func set_editor_time_enabled(value:bool) -> void:
+	enable_editor_time = value
 	if tod:
-		enable_time = value
-		if value:
-			tod.resume()
-		else:
-			tod.pause()
+		tod.update_in_editor = value
+
+
+func set_game_time_enabled(value:bool) -> void:
+	enable_game_time = value
+	if tod:
+		tod.update_in_game = value
 
 
 func pause() -> void:
-	enable_time = false
+	$TimeOfDay.pause()
 
 
 func resume() -> void:
-	enable_time = true
+	$TimeOfDay.resume()
 
 
 func set_current_time(value:float) -> void:
 	if value != current_time:
-		current_time = value 
-		if has_node("TimeOfDay"):
-			$TimeOfDay.total_hours = value
+		current_time = value
+		if tod:
+			tod.total_hours = value
 
 
 func set_minutes_per_day(value):
 	if value != minutes_per_day: 
-		minutes_per_day = value 
-		if has_node("TimeOfDay"):
-			$TimeOfDay.total_cycle_in_minutes = value
+		minutes_per_day = value
+		if tod:
+			tod.total_cycle_in_minutes = value
 
 
 func set_update_interval(value:float) -> void:
 	if value != update_interval:
-		update_interval = value 
-		if has_node("TimeOfDay"):
-			$TimeOfDay.update_interval = value
+		update_interval = value
+		if tod:
+			tod.update_interval = value
 
 
 func _on_timeofday_updated(time: float) -> void:
@@ -118,8 +123,8 @@ func initialize() -> void:
 
 	if get_child_count() > 0:
 		tod = $TimeOfDay
-		skydome = $Skydome
-		skydome.environment = environment
+		sky = $Skydome
+		sky.environment = environment
 		sun = $SunLight
 		moon = $MoonLight
 		return
@@ -142,21 +147,21 @@ func initialize() -> void:
 	tod.owner = get_tree().edited_scene_root
 	tod.dome_path = "../Skydome"
 	
-	skydome = Skydome.new()
-	skydome.name = "Skydome"
-	add_child(skydome, true)
-	skydome.owner = get_tree().edited_scene_root
-	skydome.sun_light_path = "../SunLight"
-	skydome.moon_light_path = "../MoonLight"
-	skydome.environment = environment
+	sky = Skydome.new()
+	sky.name = "Skydome"
+	add_child(sky, true)
+	sky.owner = get_tree().edited_scene_root
+	sky.sun_light_path = "../SunLight"
+	sky.moon_light_path = "../MoonLight"
+	sky.environment = environment
 	
 	
 func _set(property: StringName, value: Variant) -> bool:
 	if property == "environment":
 		environment = value
 		_initial_environment = value
-		if skydome:
-			skydome.environment = value
+		if sky:
+			sky.environment = value
 		emit_signal("environment_changed", environment)
 		return true
 	return false
