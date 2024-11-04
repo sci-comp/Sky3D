@@ -28,9 +28,10 @@ func _ready() -> void:
 
 @export_group("Visibility")
 @export var sky_enabled: bool = true : set = set_sky_enabled
-@export var clouds_enabled: bool = true : set = set_clouds_enabled
 @export var fog_enabled: bool = true : set = set_fog_enabled
+@export var clouds_enabled: bool = true : set = set_clouds_enabled
 @export var show_physical_sky: bool = false : set = set_show_physical_sky
+
 
 func set_sky3d_enabled(value: bool) -> void:
 	sky3d_enabled = value
@@ -61,18 +62,18 @@ func set_sky_enabled(value: bool) -> void:
 	emit_signal("environment_changed", environment)
 
 
+func set_fog_enabled(value: bool) -> void:
+	fog_enabled = value
+	if sky:
+		sky.fog_visible = value
+
+
 func set_clouds_enabled(value: bool) -> void:
 	if not sky:
 		return
 	clouds_enabled = value
 	sky.clouds_cumulus_visible = value
 	sky.clouds_thickness = float(value) * 1.7
-
-
-func set_fog_enabled(value: bool) -> void:
-	fog_enabled = value
-	if sky:
-		sky.fog_visible = value
 
 
 func set_show_physical_sky(value: bool) -> void:
@@ -90,6 +91,7 @@ func set_show_physical_sky(value: bool) -> void:
 @export_range(0.0, 24.0) var current_time: float = 8.0 : set = set_current_time
 @export_range(-1440,1440,1) var minutes_per_day: float = 15.0 : set = set_minutes_per_day
 @export_range(0.016, 10.0) var update_interval: float = 0.1 : set = set_update_interval
+var _is_day: bool = true
 
 
 func pause() -> void:
@@ -139,13 +141,29 @@ func _on_timeofday_updated(time: float) -> void:
 		current_time = tod.total_hours
 		update_interval = tod.update_interval
 
+	if night_ambient:
+		if abs(sky.sun_altitude) > 87 and _is_day:
+			_is_day = false
+			var tween: Tween = get_tree().create_tween()
+			tween.set_parallel(true)
+			tween.tween_property(environment, "ambient_light_sky_contribution", minf(night_ambient_min, sky_contribution), 3)
+			tween.tween_property(environment.sky.sky_material, "energy_multiplier", 1., 3)
+		elif abs(sky.sun_altitude) <= 87 and not _is_day:
+			_is_day = true
+			var tween: Tween = get_tree().create_tween()
+			tween.set_parallel(true)
+			tween.tween_property(environment, "ambient_light_sky_contribution", sky_contribution, 3)
+			tween.tween_property(environment.sky.sky_material, "energy_multiplier", reflected_energy, 3)
+
 
 ## Exposure
 
 @export_group("Exposure")
-@export_range(0,1,.005) var sky_contribution: float = 0.7: set = set_sky_contribution
+@export_range(0,1,.005) var sky_contribution: float = 1.0: set = set_sky_contribution
 @export_range(0,16,.005) var ambient_energy: float = 1.0: set = set_ambient_energy
-@export_range(0,128,.005) var refelected_energy: float = 1.0: set = set_reflected_energy
+@export var night_ambient: bool = true: set = set_night_ambient
+@export_range(0,1,.005) var night_ambient_min: float = .7
+@export_range(0,128,.005) var reflected_energy: float = 1.0: set = set_reflected_energy
 @export_range(0,16,.005) var skydome_energy: float = 1.3: set = set_skydome_energy
 @export_range(0,16,.005) var tonemap_exposure: float = 1.0: set = set_tonemap_exposure
 @export_range(0,16,.005) var camera_exposure: float = 1.0: set = set_camera_exposure
@@ -170,9 +188,17 @@ func set_ambient_energy(value:float) -> void:
 		environment.ambient_light_energy = value
 
 
+func set_night_ambient(value: bool) -> void:
+	night_ambient = value
+	if night_ambient:
+		_on_timeofday_updated(tod.total_hours)
+	else:
+		set_sky_contribution(sky_contribution)
+
+
 func set_reflected_energy(value:float) -> void:
 	if environment:
-		refelected_energy = value
+		reflected_energy = value
 		if environment.sky:
 			environment.sky.sky_material.energy_multiplier = value
 
