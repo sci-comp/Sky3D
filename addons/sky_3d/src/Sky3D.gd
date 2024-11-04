@@ -7,18 +7,6 @@ extends WorldEnvironment
 
 signal environment_changed
 
-@export var enable_sky3d: bool = true : set = set_sky3d_enabled
-@export var enable_sky: bool = true : set = set_sky_enabled
-@export var enable_fog: bool = true : set = set_fog_enabled
-
-@export_category("Time")
-@export var enable_editor_time: bool = true : set = set_editor_time_enabled
-@export var enable_game_time: bool = true : set = set_game_time_enabled
-@export_range(0.0, 24.0) var current_time: float = 8.0 : set = set_current_time
-@export_range(0.016, 10.0) var update_interval: float = 0.1 : set = set_update_interval
-@export_range(-1440,1440,1) var minutes_per_day: float = 15.0 : set = set_minutes_per_day
-
-
 var sun: DirectionalLight3D
 var moon: DirectionalLight3D
 var tod: TimeOfDay
@@ -33,6 +21,12 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	tod.time_changed.connect(_on_timeofday_updated)
 
+
+## Visibility
+
+@export var enable_sky3d: bool = true : set = set_sky3d_enabled
+@export var enable_sky: bool = true : set = set_sky_enabled
+@export var enable_fog: bool = true : set = set_fog_enabled
 
 func set_sky3d_enabled(value: bool) -> void:
 	enable_sky3d = value
@@ -52,7 +46,14 @@ func set_sky_enabled(value: bool) -> void:
 	sky.clouds_cumulus_visible = value
 	sky.sun_light_energy = 1 if value else 0
 	sky.moon_light_energy = 0.3 if value else 0
-	sky.environment = _initial_environment if value else null
+	if value:
+		if _initial_environment:
+			sky.environment = _initial_environment
+			environment = _initial_environment
+	else:
+		_initial_environment = environment
+		environment = null
+		sky.environment = null
 	emit_signal("environment_changed", environment)
 
 
@@ -60,6 +61,24 @@ func set_fog_enabled(value: bool) -> void:
 	enable_fog = value
 	if sky:
 		sky.fog_visible = value
+
+
+## Time
+
+@export_group("Time")
+@export var enable_editor_time: bool = true : set = set_editor_time_enabled
+@export var enable_game_time: bool = true : set = set_game_time_enabled
+@export_range(0.0, 24.0) var current_time: float = 8.0 : set = set_current_time
+@export_range(-1440,1440,1) var minutes_per_day: float = 15.0 : set = set_minutes_per_day
+@export_range(0.016, 10.0) var update_interval: float = 0.1 : set = set_update_interval
+
+
+func pause() -> void:
+	$TimeOfDay.pause()
+
+
+func resume() -> void:
+	$TimeOfDay.resume()
 
 
 func set_editor_time_enabled(value:bool) -> void:
@@ -72,14 +91,6 @@ func set_game_time_enabled(value:bool) -> void:
 	enable_game_time = value
 	if tod:
 		tod.update_in_game = value
-
-
-func pause() -> void:
-	$TimeOfDay.pause()
-
-
-func resume() -> void:
-	$TimeOfDay.resume()
 
 
 func set_current_time(value:float) -> void:
@@ -110,16 +121,85 @@ func _on_timeofday_updated(time: float) -> void:
 		update_interval = tod.update_interval
 
 
+## Exposure
+
+@export_group("Exposure")
+@export_range(0,1,.005) var ambient_sky_contribution: float = 0.7: set = set_ambient_sky_contribution
+@export_range(0,16,.005) var ambient_energy: float = 1.0: set = set_ambient_energy
+@export_range(0,16,.005) var tonemap_exposure: float = 1.0: set = set_tonemap_exposure
+@export_range(0,16,.005) var camera_exposure: float = 1.0: set = set_camera_exposure
+@export var auto_exposure: bool = false: set = set_camera_auto_exposure_enabled
+@export_range(0.01,16,.005) var auto_exposure_scale: float = 0.2: set = set_camera_auto_exposure_scale
+@export_range(0,1600,.5) var auto_exposure_min: float = 0.0: set = set_camera_auto_exposure_min
+@export_range(0,64000,.5) var auto_exposure_max: float = 800.0: set = set_camera_auto_exposure_max
+
+
+func set_ambient_sky_contribution(value:float) -> void:
+	if environment:
+		ambient_sky_contribution = value
+		environment.ambient_light_sky_contribution = value
+
+
+func set_ambient_energy(value:float) -> void:
+	if environment:
+		ambient_energy = value
+		environment.ambient_light_energy = value
+
+
+func set_tonemap_exposure(value:float) -> void:
+	if environment:
+		tonemap_exposure = value
+		environment.tonemap_exposure = value
+
+
+func set_camera_exposure(value:float) -> void:
+	if camera_attributes:
+		camera_exposure = value
+		camera_attributes.exposure_multiplier = value
+
+
+func set_camera_auto_exposure_enabled(value:bool) -> void:
+	if camera_attributes:
+		auto_exposure = value
+		camera_attributes.auto_exposure_enabled = value
+
+
+func set_camera_auto_exposure_scale(value:float) -> void:
+	if camera_attributes:
+		auto_exposure_scale = value
+		camera_attributes.auto_exposure_scale = value
+
+
+func set_camera_auto_exposure_min(value:float) -> void:
+	if camera_attributes:
+		auto_exposure_min = value
+		camera_attributes.auto_exposure_min_sensitivity = value
+
+
+func set_camera_auto_exposure_max(value:float) -> void:
+	if camera_attributes:
+		auto_exposure_max = value
+		camera_attributes.auto_exposure_max_sensitivity = value
+
+
+## Setup
+
+
 func initialize() -> void:
 	if environment == null:
 		environment = Environment.new()
-		environment.tonemap_mode = Environment.TONE_MAPPER_ACES
-		environment.tonemap_white = 6
 		environment.background_mode = Environment.BG_SKY
 		environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 		environment.ambient_light_sky_contribution = 0.7
+		environment.ambient_light_energy = 1.0
+		environment.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
+		environment.tonemap_mode = Environment.TONE_MAPPER_ACES
+		environment.tonemap_white = 6
 		_initial_environment = environment
 		emit_signal("environment_changed", environment)
+		
+	if camera_attributes == null:
+		camera_attributes = CameraAttributesPractical.new()
 
 	if get_child_count() > 0:
 		tod = $TimeOfDay
@@ -154,20 +234,9 @@ func initialize() -> void:
 	sky.sun_light_path = "../SunLight"
 	sky.moon_light_path = "../MoonLight"
 	sky.environment = environment
-	
-	
-func _set(property: StringName, value: Variant) -> bool:
-	if property == "environment":
-		environment = value
-		_initial_environment = value
-		if sky:
-			sky.environment = value
-		emit_signal("environment_changed", environment)
-		return true
-	return false
 
 
-### Constants
+## Constants
 
 # Node names
 const SKY_INSTANCE:= "_SkyMeshI"
