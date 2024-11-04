@@ -473,7 +473,7 @@ func update_moon_coords() -> void:
 var atm_quality: int = 1: set = set_atm_quality
 var atm_wavelenghts:= Vector3(680.0, 550.0, 440.0): set = set_atm_wavelenghts
 var atm_darkness: float = 0.5: set = set_atm_darkness
-var atm_sun_intensity: float = 30.0: set = set_atm_sun_intensity
+var atm_sun_intensity: float = 18.0: set = set_atm_sun_intensity
 var atm_day_tint:= Color(0.807843, 0.909804, 1.0): set = set_atm_day_tint
 var atm_horizon_light_tint:= Color(0.980392, 0.635294, 0.462745, 1.0): set = set_atm_horizon_light_tint
 var atm_enable_moon_scatter_mode: bool = false: set = set_atm_enable_moon_scatter_mode

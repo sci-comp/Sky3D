@@ -1,12 +1,19 @@
-[gd_scene load_steps=7 format=3 uid="uid://c5friqigqdh4k"]
+[gd_scene load_steps=9 format=3 uid="uid://c5friqigqdh4k"]
 
 [ext_resource type="PackedScene" uid="uid://dipn6t27p0nap" path="res://demo/assets/scenes/PrimitivesCity.tscn" id="2"]
 [ext_resource type="Script" path="res://addons/sky_3d/src/Sky3D.gd" id="2_cejat"]
 [ext_resource type="Script" path="res://addons/sky_3d/src/TimeOfDay.gd" id="3"]
 [ext_resource type="Script" path="res://addons/sky_3d/src/Skydome.gd" id="4"]
 
-[sub_resource type="Environment" id="Environment_pm88o"]
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_5kgu2"]
+use_debanding = false
+
+[sub_resource type="Sky" id="Sky_cwklf"]
+sky_material = SubResource("PhysicalSkyMaterial_5kgu2")
+
+[sub_resource type="Environment" id="Environment_lnpwy"]
 background_mode = 2
+sky = SubResource("Sky_cwklf")
 ambient_light_source = 3
 ambient_light_color = Color(0.826445, 0.772512, 0.745487, 1)
 ambient_light_color = Color(1, 1, 1, 1)
@@ -16,7 +23,7 @@ tonemap_mode = 3
 tonemap_white = 6.0
 ssil_enabled = true
 
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_65t48"]
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_5rgt7"]
 
 [node name="Main" type="Node3D"]
 
@@ -35,8 +42,8 @@ size = Vector3(10000, 10000, 10000)
 cull_mask = 4
 
 [node name="Sky3D" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_pm88o")
-camera_attributes = SubResource("CameraAttributesPractical_65t48")
+environment = SubResource("Environment_lnpwy")
+camera_attributes = SubResource("CameraAttributesPractical_5rgt7")
 script = ExtResource("2_cejat")
 current_time = 7.5
 
@@ -45,7 +52,6 @@ transform = Transform3D(0, -0.574049, 0.818821, -0.864765, 0.411193, 0.288274, -
 shadow_enabled = true
 
 [node name="MoonLight" type="DirectionalLight3D" parent="Sky3D"]
-transform = Transform3D(0, -0.649387, -0.760458, 0.351588, -0.711907, 0.607927, -0.936155, -0.267368, 0.228316, -0.760458, 0.607927, 0.228317)
 visible = false
 light_color = Color(0.572549, 0.776471, 0.956863, 1)
 light_energy = 0.0
@@ -57,7 +63,7 @@ dome_path = NodePath("../Skydome")
 system_sync = false
 total_cycle_in_minutes = 15.0
 total_hours = 7.5
-day = 22
+day = 21
 month = 12
 year = 2024
 celestials_calculations = 1
@@ -106,7 +112,7 @@ stars_scintillation_speed = 0.01
 atm_quality = 1
 atm_wavelenghts = Vector3(680, 550, 440)
 atm_darkness = 0.5
-atm_sun_intensity = 30.0
+atm_sun_intensity = 18.0
 atm_day_tint = Color(0.807843, 0.909804, 1, 1)
 atm_horizon_light_tint = Color(0.980392, 0.635294, 0.462745, 1)
 atm_enable_moon_scatter_mode = false
@@ -156,4 +162,4 @@ clouds_cumulus_size = 0.5
 clouds_cumulus_offset = Vector3(0.64, 0.522, 0.128)
 clouds_cumulus_offset_speed = 0.005
 set_clouds_cumulus_texture = false
-environment = SubResource("Environment_pm88o")
+environment = SubResource("Environment_lnpwy")

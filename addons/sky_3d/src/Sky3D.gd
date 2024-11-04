@@ -24,14 +24,18 @@ func _ready() -> void:
 
 ## Visibility
 
-@export var enable_sky3d: bool = true : set = set_sky3d_enabled
-@export var enable_sky: bool = true : set = set_sky_enabled
-@export var enable_fog: bool = true : set = set_fog_enabled
+@export var sky3d_enabled: bool = true : set = set_sky3d_enabled
+
+@export_group("Visibility")
+@export var sky_enabled: bool = true : set = set_sky_enabled
+@export var clouds_enabled: bool = true : set = set_clouds_enabled
+@export var fog_enabled: bool = true : set = set_fog_enabled
+@export var show_physical_sky: bool = false : set = set_show_physical_sky
 
 func set_sky3d_enabled(value: bool) -> void:
-	enable_sky3d = value
-	enable_sky = value
-	enable_fog = value
+	sky3d_enabled = value
+	sky_enabled = value
+	fog_enabled = value
 	if value:
 		resume()
 	else:
@@ -41,7 +45,7 @@ func set_sky3d_enabled(value: bool) -> void:
 func set_sky_enabled(value: bool) -> void:
 	if not sky:
 		return
-	enable_sky = value
+	sky_enabled = value
 	sky.sky_visible = value
 	sky.clouds_cumulus_visible = value
 	sky.sun_light_energy = 1 if value else 0
@@ -57,10 +61,25 @@ func set_sky_enabled(value: bool) -> void:
 	emit_signal("environment_changed", environment)
 
 
+func set_clouds_enabled(value: bool) -> void:
+	if not sky:
+		return
+	clouds_enabled = value
+	sky.clouds_cumulus_visible = value
+	sky.clouds_thickness = float(value) * 1.7
+
+
 func set_fog_enabled(value: bool) -> void:
-	enable_fog = value
+	fog_enabled = value
 	if sky:
 		sky.fog_visible = value
+
+
+func set_show_physical_sky(value: bool) -> void:
+	if not sky:
+		return
+	show_physical_sky = value
+	sky.sky_visible = !value
 
 
 ## Time
@@ -124,19 +143,24 @@ func _on_timeofday_updated(time: float) -> void:
 ## Exposure
 
 @export_group("Exposure")
-@export_range(0,1,.005) var ambient_sky_contribution: float = 0.7: set = set_ambient_sky_contribution
+@export_range(0,1,.005) var sky_contribution: float = 0.7: set = set_sky_contribution
 @export_range(0,16,.005) var ambient_energy: float = 1.0: set = set_ambient_energy
+@export_range(0,128,.005) var refelected_energy: float = 1.0: set = set_reflected_energy
+@export_range(0,16,.005) var skydome_energy: float = 1.3: set = set_skydome_energy
 @export_range(0,16,.005) var tonemap_exposure: float = 1.0: set = set_tonemap_exposure
 @export_range(0,16,.005) var camera_exposure: float = 1.0: set = set_camera_exposure
-@export var auto_exposure: bool = false: set = set_camera_auto_exposure_enabled
-@export_range(0.01,16,.005) var auto_exposure_scale: float = 0.2: set = set_camera_auto_exposure_scale
-@export_range(0,1600,.5) var auto_exposure_min: float = 0.0: set = set_camera_auto_exposure_min
-@export_range(0,64000,.5) var auto_exposure_max: float = 800.0: set = set_camera_auto_exposure_max
+
+@export_subgroup("Auto Exposure")
+@export var auto_exposure: bool = false: set = set_auto_exposure_enabled
+@export_range(0.01,16,.005) var auto_exposure_scale: float = 0.2: set = set_auto_exposure_scale
+@export_range(0,1600,.5) var auto_exposure_min: float = 0.0: set = set_auto_exposure_min
+@export_range(30,64000,.5) var auto_exposure_max: float = 800.0: set = set_auto_exposure_max
+@export_range(0.1,64,.1) var auto_exposure_speed: float = 0.5: set = set_auto_exposure_speed
 
 
-func set_ambient_sky_contribution(value:float) -> void:
+func set_sky_contribution(value:float) -> void:
 	if environment:
-		ambient_sky_contribution = value
+		sky_contribution = value
 		environment.ambient_light_sky_contribution = value
 
 
@@ -144,6 +168,19 @@ func set_ambient_energy(value:float) -> void:
 	if environment:
 		ambient_energy = value
 		environment.ambient_light_energy = value
+
+
+func set_reflected_energy(value:float) -> void:
+	if environment:
+		refelected_energy = value
+		if environment.sky:
+			environment.sky.sky_material.energy_multiplier = value
+
+
+func set_skydome_energy(value:float) -> void:
+	if sky:
+		skydome_energy = value
+		sky.exposure = value
 
 
 func set_tonemap_exposure(value:float) -> void:
@@ -158,28 +195,34 @@ func set_camera_exposure(value:float) -> void:
 		camera_attributes.exposure_multiplier = value
 
 
-func set_camera_auto_exposure_enabled(value:bool) -> void:
+func set_auto_exposure_enabled(value:bool) -> void:
 	if camera_attributes:
 		auto_exposure = value
 		camera_attributes.auto_exposure_enabled = value
 
 
-func set_camera_auto_exposure_scale(value:float) -> void:
+func set_auto_exposure_scale(value:float) -> void:
 	if camera_attributes:
 		auto_exposure_scale = value
 		camera_attributes.auto_exposure_scale = value
 
 
-func set_camera_auto_exposure_min(value:float) -> void:
+func set_auto_exposure_min(value:float) -> void:
 	if camera_attributes:
 		auto_exposure_min = value
 		camera_attributes.auto_exposure_min_sensitivity = value
 
 
-func set_camera_auto_exposure_max(value:float) -> void:
+func set_auto_exposure_max(value:float) -> void:
 	if camera_attributes:
 		auto_exposure_max = value
 		camera_attributes.auto_exposure_max_sensitivity = value
+
+
+func set_auto_exposure_speed(value:float) -> void:
+	if camera_attributes:
+		auto_exposure_speed = value
+		camera_attributes.auto_exposure_speed = value
 
 
 ## Setup
@@ -189,6 +232,9 @@ func initialize() -> void:
 	if environment == null:
 		environment = Environment.new()
 		environment.background_mode = Environment.BG_SKY
+		environment.sky = Sky.new()
+		environment.sky.sky_material = PhysicalSkyMaterial.new()
+		environment.sky.sky_material.use_debanding = false
 		environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 		environment.ambient_light_sky_contribution = 0.7
 		environment.ambient_light_energy = 1.0
