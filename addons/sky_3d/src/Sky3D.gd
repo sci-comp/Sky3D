@@ -11,7 +11,6 @@ var sun: DirectionalLight3D
 var moon: DirectionalLight3D
 var tod: TimeOfDay
 var sky: Skydome
-var _initial_environment: Environment
 
 
 func _enter_tree() -> void:
@@ -19,6 +18,14 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	# Reapply current settings once attached to the tree
+	sky_enabled = sky_enabled
+	lights_enabled = lights_enabled
+	fog_enabled = fog_enabled
+	clouds_enabled = clouds_enabled
+	show_physical_sky = show_physical_sky
+	current_time = current_time
+
 	tod.time_changed.connect(_on_timeofday_updated)
 
 
@@ -28,6 +35,7 @@ func _ready() -> void:
 
 @export_group("Visibility")
 @export var sky_enabled: bool = true : set = set_sky_enabled
+@export var lights_enabled: bool = true : set = set_lights_enabled
 @export var fog_enabled: bool = true : set = set_fog_enabled
 @export var clouds_enabled: bool = true : set = set_clouds_enabled
 @export var show_physical_sky: bool = false : set = set_show_physical_sky
@@ -37,6 +45,7 @@ func set_sky3d_enabled(value: bool) -> void:
 	sky3d_enabled = value
 	sky_enabled = value
 	fog_enabled = value
+	clouds_enabled = value
 	if value:
 		resume()
 	else:
@@ -44,22 +53,23 @@ func set_sky3d_enabled(value: bool) -> void:
 
 
 func set_sky_enabled(value: bool) -> void:
+	sky_enabled = value
 	if not sky:
 		return
-	sky_enabled = value
 	sky.sky_visible = value
 	sky.clouds_cumulus_visible = value
 	sky.sun_light_energy = 1 if value else 0
 	sky.moon_light_energy = 0.3 if value else 0
-	if value:
-		if _initial_environment:
-			sky.environment = _initial_environment
-			environment = _initial_environment
-	else:
-		_initial_environment = environment
-		environment = null
-		sky.environment = null
-	emit_signal("environment_changed", environment)
+
+
+func set_lights_enabled(value: bool) -> void:
+	lights_enabled = value
+	if not sky:
+		return
+	sky.sun_light_enable = value
+	sky.moon_light_enable = value
+	sky.__sun_light_node.visible = value && sky.__sun_light_node.light_energy > 0
+	sky.__moon_light_node.visible = ! value && sky.__moon_light_node.light_energy > 0
 
 
 func set_fog_enabled(value: bool) -> void:
@@ -69,17 +79,17 @@ func set_fog_enabled(value: bool) -> void:
 
 
 func set_clouds_enabled(value: bool) -> void:
+	clouds_enabled = value
 	if not sky:
 		return
-	clouds_enabled = value
 	sky.clouds_cumulus_visible = value
 	sky.clouds_thickness = float(value) * 1.7
 
 
 func set_show_physical_sky(value: bool) -> void:
+	show_physical_sky = value
 	if not sky:
 		return
-	show_physical_sky = value
 	sky.sky_visible = !value
 
 
@@ -115,28 +125,25 @@ func set_game_time_enabled(value:bool) -> void:
 
 
 func set_current_time(value:float) -> void:
-	if value != current_time:
-		current_time = value
-		if tod:
-			tod.total_hours = value
+	current_time = value
+	if tod and tod.total_hours != current_time:
+		tod.total_hours = value
 
 
 func set_minutes_per_day(value):
-	if value != minutes_per_day: 
-		minutes_per_day = value
-		if tod:
-			tod.total_cycle_in_minutes = value
+	minutes_per_day = value
+	if tod:
+		tod.total_cycle_in_minutes = value
 
 
 func set_update_interval(value:float) -> void:
-	if value != update_interval:
-		update_interval = value
-		if tod:
-			tod.update_interval = value
+	update_interval = value
+	if tod:
+		tod.update_interval = value
 
 
 func _on_timeofday_updated(time: float) -> void:
-	if Engine.is_editor_hint() and tod:
+	if tod and Engine.is_editor_hint():
 		minutes_per_day = tod.total_cycle_in_minutes
 		current_time = tod.total_hours
 		update_interval = tod.update_interval
@@ -255,6 +262,7 @@ func set_auto_exposure_speed(value:float) -> void:
 
 
 func initialize() -> void:
+	# Create default environment
 	if environment == null:
 		environment = Environment.new()
 		environment.background_mode = Environment.BG_SKY
@@ -267,45 +275,55 @@ func initialize() -> void:
 		environment.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 		environment.tonemap_mode = Environment.TONE_MAPPER_ACES
 		environment.tonemap_white = 6
-		_initial_environment = environment
 		emit_signal("environment_changed", environment)
-		
+	
+	# Create default camera attributes
 	if camera_attributes == null:
 		camera_attributes = CameraAttributesPractical.new()
 
+	# Create children nodes
 	if get_child_count() > 0:
 		tod = $TimeOfDay
 		sky = $Skydome
 		sky.environment = environment
 		sun = $SunLight
 		moon = $MoonLight
-		return
-	
-	sun = DirectionalLight3D.new()
-	sun.name = "SunLight"
-	add_child(sun, true)
-	sun.owner = get_tree().edited_scene_root
-	sun.shadow_enabled = true
+	else:
+		sun = DirectionalLight3D.new()
+		sun.name = "SunLight"
+		add_child(sun, true)
+		sun.owner = get_tree().edited_scene_root
+		sun.shadow_enabled = true
 
-	moon = DirectionalLight3D.new()
-	moon.name = "MoonLight"
-	add_child(moon, true)
-	moon.owner = get_tree().edited_scene_root
-	moon.shadow_enabled = true
+		moon = DirectionalLight3D.new()
+		moon.name = "MoonLight"
+		add_child(moon, true)
+		moon.owner = get_tree().edited_scene_root
+		moon.shadow_enabled = true
 
-	tod = TimeOfDay.new()
-	tod.name = "TimeOfDay"
-	add_child(tod, true)
-	tod.owner = get_tree().edited_scene_root
-	tod.dome_path = "../Skydome"
-	
-	sky = Skydome.new()
-	sky.name = "Skydome"
-	add_child(sky, true)
-	sky.owner = get_tree().edited_scene_root
-	sky.sun_light_path = "../SunLight"
-	sky.moon_light_path = "../MoonLight"
-	sky.environment = environment
+		tod = TimeOfDay.new()
+		tod.name = "TimeOfDay"
+		add_child(tod, true)
+		tod.owner = get_tree().edited_scene_root
+		tod.dome_path = "../Skydome"
+		
+		sky = Skydome.new()
+		sky.name = "Skydome"
+		add_child(sky, true)
+		sky.owner = get_tree().edited_scene_root
+		sky.sun_light_path = "../SunLight"
+		sky.moon_light_path = "../MoonLight"
+		sky.environment = environment
+
+
+func _set(property: StringName, value: Variant) -> bool:
+	match property:
+		"environment":
+			sky.environment = value
+			environment = value
+			emit_signal("environment_changed", environment)
+			return true
+	return false
 
 
 ## Constants

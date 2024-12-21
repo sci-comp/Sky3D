@@ -11,7 +11,7 @@ signal sun_transform_changed(value)
 signal moon_direction_changed(value)
 signal moon_transform_changed(value)
 signal day_night_changed(value)
-signal lights_changed(value)
+signal lights_changed
 
 
 enum SkyQuality {
@@ -1038,6 +1038,7 @@ func update_moon_resolution() -> void:
 # Original sun light (0.984314, 0.843137, 0.788235)
 # Original sun horizon (1.0, 0.384314, 0.243137, 1.0)
 
+@export var sun_light_enable: bool = true
 var sun_light_color:= Color.WHITE : set = set_sun_light_color 
 var sun_horizon_light_color:= Color(.98, 0.523, 0.294, 1.0): set = set_sun_horizon_light_color
 var sun_light_energy: float = 1.0: set = set_sun_light_energy
@@ -1098,6 +1099,7 @@ func update_sun_light_path() -> void:
 ## Moon
 #####################
 
+@export var moon_light_enable: bool = true
 var moon_light_color:= Color(0.572549, 0.776471, 0.956863, 1.0): set = set_moon_light_color
 var moon_light_energy: float = 0.3: set = set_moon_light_energy
 var moon_light_path: NodePath: set = set_moon_light_path
@@ -1691,7 +1693,6 @@ func __update_environment() -> void:
 ## Lighting
 #####################
 
-var __sun_light_enable: bool
 var __day: bool: get = is_day
 
 
@@ -1703,18 +1704,21 @@ func __set_day_state(v: float, threshold: float = 1.80) -> void:
 	# Signal when day has changed to night, or back
 	if __day == true and abs(v) > threshold:
 		__day = false
-		emit_signal("day_night_changed", false)
+		emit_signal("day_night_changed", __day)
 	elif __day == false and abs(v) <= threshold:
 		__day = true
-		emit_signal("day_night_changed", true)
+		emit_signal("day_night_changed", __day)
 	
 	# Adjust lights and signal. Happens at a different time from "day time" above
-	if __sun_light_node == null or __moon_light_node == null:
-		return
-	__sun_light_enable = true if __sun_light_node.light_energy > 0.0 else false
-	__sun_light_node.visible = __sun_light_enable
-	__moon_light_node.visible = !__sun_light_enable
-	emit_signal("lights_changed", true)
+	if __sun_light_node and __moon_light_node:
+		if sun_light_enable and not __sun_light_node.visible and __sun_light_node.light_energy > 0.0:
+			__sun_light_node.visible = true
+			__moon_light_node.visible = false
+			emit_signal("lights_changed")
+		elif moon_light_enable and not __moon_light_node.visible and __moon_light_node.light_energy > 0.0:
+			__sun_light_node.visible = false
+			__moon_light_node.visible = true
+			emit_signal("lights_changed")
 
 
 func _get_property_list() -> Array:
