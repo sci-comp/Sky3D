@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Cory Petkovsek and Contributors
+// Copyright (c) 2023-2025 Cory Petkovsek and Contributors
 // Copyright (c) 2021 J. Cuellar
 
 shader_type spatial;
@@ -9,7 +9,7 @@ uniform vec2 _color_correction_params;
 uniform vec4 _ground_color: source_color;
 uniform float _horizon_level;
 
-// uniforms.
+// uniforms
 uniform vec3 _sun_direction;
 uniform vec3 _moon_direction;
 
@@ -17,7 +17,7 @@ uniform float _moon_size;
 uniform mat3 _moon_matrix;
 uniform mat3 _deep_space_matrix;
 
-// Atmospheric Scattering.
+// Atmospheric Scattering
 uniform float _atm_darkness;
 uniform float _atm_sun_intensity;
 uniform vec4 _atm_day_tint: source_color;
@@ -26,7 +26,7 @@ uniform vec4 _atm_night_tint: source_color;
 uniform vec3 _atm_level_params;
 uniform float _atm_thickness;
 
-// Sun mie phase.
+// Sun mie phase
 uniform vec4 _atm_sun_mie_tint: source_color;
 uniform float _atm_sun_mie_intensity;
 uniform vec4 _atm_moon_mie_tint: source_color;
@@ -36,7 +36,7 @@ uniform vec3 _atm_beta_mie;
 uniform vec3 _atm_sun_partial_mie_phase;
 uniform vec3 _atm_moon_partial_mie_phase;
 
-// Sun disk.
+// Sun disk
 uniform vec4 _sun_disk_color: source_color;
 uniform float _sun_disk_intensity;
 uniform float _sun_disk_size;
@@ -44,11 +44,11 @@ uniform float _sun_disk_size;
 uniform vec4 _moon_color: source_color;
 uniform sampler2D _moon_texture: source_color, repeat_disable;
 
-// Background.
+// Background
 uniform sampler2D _background_texture: source_color;
 uniform vec4 _background_color: source_color;
 
-// Stars Field.
+// Stars Field
 uniform vec4 _stars_field_color: source_color;
 uniform sampler2D _stars_field_texture: source_color;
 uniform float _stars_scintillation;
@@ -56,7 +56,7 @@ uniform float _stars_scintillation_speed;
 
 uniform sampler2D _noise_tex: source_color;
 
-// Clouds.
+// Clouds
 uniform float _clouds_coverage;
 uniform float _clouds_thickness;
 uniform float _clouds_absorption;
@@ -71,7 +71,7 @@ uniform vec4 _clouds_horizon_light_color: source_color;
 uniform vec4 _clouds_night_color: source_color;
 uniform sampler2D _clouds_texture;
 
-// Inc.
+// Inc
 //------------------------------------------------------------------------------
 const float kPI          = 3.1415927f;
 const float kINV_PI      = 0.3183098f;
@@ -123,7 +123,7 @@ float disk(vec3 norm, vec3 coords, lowp float size){
 	return 1.0 - step(size, dist);
 }
 
-// Atmosphere Inc.
+// Atmosphere Inc
 //------------------------------------------------------------------------------
 const float RAYLEIGH_ZENITH_LENGTH = 8.4e3;
 const float MIE_ZENITH_LENGTH = 1.25e3;
@@ -136,7 +136,7 @@ float miePhase(float mu, vec3 partial){
 	return kPI4 * (partial.x) * (pow(partial.y - partial.z * mu, -1.5));
 }
 
-// Simplifield for more performance.
+// Simplifield for more performance
 void simpleOpticalDepth(float y, out float sr, out float sm){
 	y = max(0.03, y + 0.03) + _atm_level_params.y;
 	y = 1.0 / (y * _atm_level_params.x);
@@ -144,7 +144,7 @@ void simpleOpticalDepth(float y, out float sr, out float sm){
 	sm = y * MIE_ZENITH_LENGTH;
 }
 
-// Paper based.
+// Paper based
 void opticalDepth(float y, out float sr, out float sm){
 	y = max(0.0, y);
 	y = saturate(y * _atm_level_params.x);
@@ -183,7 +183,7 @@ vec3 atmosphericScattering(float sr, float sm, vec2 mu, vec3 mult){
 	return (scatter * lcol) + nscatter;
 }
 
-// Clouds.
+// Clouds
 //------------------------------------------------------------------------------
 float noiseClouds(vec2 coords, vec2 offset){
 	float a = textureLod(_clouds_texture, coords.xy * _clouds_uv + offset.x, 0.0).r;
@@ -208,7 +208,7 @@ vec4 renderClouds(vec3 pos, float tm){
 	return vec4(vec3(density*sh) * _clouds_intensity, a);
 }
 
-// Varyings.
+// Varyings
 //------------------------------------------------------------------------------
 varying vec4 world_pos;
 varying vec4 moon_coords;
@@ -231,7 +231,7 @@ void vertex(){
 	angle_mult.z = saturate(-_sun_direction.y + 0.30);
 	angle_mult.w = saturate(-_sun_direction.y + 0.60);
 
-	// Atmosphere.
+	// Atmosphere
 	vec3 worldPos = normalize(world_pos).xyz;
 	vec2 mu = vec2(dot(_sun_direction, worldPos), dot(_moon_direction, worldPos));
 	float sr, sm;
@@ -247,13 +247,13 @@ void fragment(){
 	float horizonBlend = saturate((worldPos.y - 0.03) * 3.0);
 	col.rgb += scatter.rgb;
 
-	// Near Space.
+	// Near Space
 	vec3 nearSpace = vec3(0.0);
 	vec3 sunDisk = disk(worldPos, _sun_direction, _sun_disk_size) *
 		_sun_disk_color.rgb * scatter.rgb;
 	sunDisk *= _sun_disk_intensity;
 
-	// Moon.
+	// Moon
 	vec4 moon = texture(_moon_texture, vec2(-moon_coords.x+1.0, moon_coords.y));
 	moon.rgb = contrastLevel(moon.rgb * _moon_color.rgb, _moon_color.a);
 	moon *= saturate(moon_coords.w);
@@ -264,13 +264,13 @@ void fragment(){
 	vec3 deepSpace = vec3(0.0);
 	vec2 deepSpaceUV = equirectUV(normalize(deep_space_coords));
 
-	// Background.
+	// Background
 	vec3 deepSpaceBackground = textureLod(_background_texture, deepSpaceUV, 0.0).rgb;
 	deepSpaceBackground *= _background_color.rgb;
 	deepSpaceBackground = contrastLevel(deepSpaceBackground, _background_color.a);
 	deepSpace.rgb += deepSpaceBackground.rgb * moonMask;
 
-	// Stars Field.
+	// Stars Field
 	float starsScintillation = textureLod(_noise_tex, UV + (TIME * _stars_scintillation_speed), 0.0).r;
 	starsScintillation = mix(1.0, starsScintillation * 1.5, _stars_scintillation);
 
@@ -281,7 +281,7 @@ void fragment(){
 	deepSpace.rgb *= angle_mult.z;
 	col.rgb += deepSpace.rgb * horizonBlend;
 
-	// Clouds.
+	// Clouds
 	vec4 clouds = renderClouds(cloudsPos, TIME);
 	clouds.a = saturate(clouds.a);
 	clouds.rgb *= mix(mix(_clouds_day_color.rgb, _clouds_horizon_light_color.rgb, angle_mult.x),

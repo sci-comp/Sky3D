@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2024 Cory Petkovsek and Contributors
+# Copyright (c) 2023-2025 Cory Petkovsek and Contributors
 # Copyright (c) 2021 J. Cuellar
 
 @tool
@@ -122,9 +122,9 @@ var date_time_os: Dictionary
 var system_sync: bool = false
 var total_cycle_in_minutes: float = 15.0
 var total_hours: float = 7.0 : set = set_total_hours
-var day: int = 21: set = set_day
-var month: int = 12: set = set_month
-var year: int = 2024: set = set_year
+var day: int = 1: set = set_day
+var month: int = 1: set = set_month
+var year: int = 2025: set = set_year
 
 
 func set_total_hours(value: float) -> void:

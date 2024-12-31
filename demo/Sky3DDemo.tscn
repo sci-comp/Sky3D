@@ -15,7 +15,7 @@ sky_material = SubResource("PhysicalSkyMaterial_5kgu2")
 background_mode = 2
 sky = SubResource("Sky_cwklf")
 ambient_light_source = 3
-ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_color = Color(0.46773, 0.293776, 0.201036, 1)
 ambient_light_sky_contribution = 0.85
 reflected_light_source = 2
 tonemap_mode = 3
@@ -27,14 +27,12 @@ ssil_enabled = true
 [node name="Main" type="Node3D"]
 
 [node name="PrimitivesCity" parent="." instance=ExtResource("2")]
-transform = Transform3D(0.300706, 0, 0.953717, 0, 1, 0, -0.953717, 0, 0.300706, 0, 0, 0)
 
 [node name="MainCamera" type="Camera3D" parent="."]
 transform = Transform3D(0.0135226, 0.0597346, 0.998123, 0.00809374, 0.998175, -0.0598474, -0.999876, 0.00888784, 0.0130144, 10.1699, 2.75546, -0.0224504)
 far = 8192.0
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
-visible = false
 update_mode = 1
 size = Vector3(2000, 2000, 2000)
 cull_mask = 4
@@ -43,18 +41,18 @@ cull_mask = 4
 environment = SubResource("Environment_lnpwy")
 camera_attributes = SubResource("CameraAttributesPractical_5rgt7")
 script = ExtResource("2_cejat")
-current_time = 7.2
+current_time = 6.25
 update_interval = 0.016
 sky_contribution = 0.85
 
 [node name="SunLight" type="DirectionalLight3D" parent="Sky3D"]
-transform = Transform3D(0, -0.489264, 0.872136, -0.758809, 0.568034, 0.318664, -0.651313, -0.661785, -0.371258, 0.872136, 0.318664, -0.371258)
-light_color = Color(0.992747, 0.827005, 0.743954, 1)
+transform = Transform3D(0, -0.426721, 0.904384, -0.992241, 0.112441, 0.0530535, -0.124329, -0.897367, -0.42341, 0.904384, 0.0530536, -0.42341)
+light_color = Color(0.982122, 0.573613, 0.368912, 1)
 shadow_enabled = true
 directional_shadow_max_distance = 600.0
 
 [node name="MoonLight" type="DirectionalLight3D" parent="Sky3D"]
-transform = Transform3D(0, -0.999537, 0.0304313, -0.570065, 0.0250024, 0.821219, -0.821599, -0.0173478, -0.569801, 0.0304314, 0.821219, -0.569801)
+transform = Transform3D(0, -0.232391, -0.972623, 0.997635, 0.0668467, -0.0159718, 0.0687283, -0.970323, 0.231841, -0.972623, -0.0159717, 0.231841)
 visible = false
 light_color = Color(0.572549, 0.776471, 0.956863, 1)
 light_energy = 0.0
@@ -67,9 +65,10 @@ update_interval = 0.016
 dome_path = NodePath("../Skydome")
 system_sync = false
 total_cycle_in_minutes = 15.0
-day = 21
-total_hours = 7.2
-year = 2024
+total_hours = 6.25
+day = 1
+month = 1
+year = 2025
 celestials_calculations = 1
 compute_moon_coords = true
 compute_deep_space_coords = true
@@ -88,8 +87,8 @@ ground_color = Color(0.3, 0.3, 0.3, 1)
 sky_layers = 4
 sky_render_priority = -128
 horizon_level = 0.0
-sun_altitude = 71.4178
-sun_azimuth = 113.059
+sun_altitude = 86.9588
+sun_azimuth = 115.088
 sun_disk_color = Color(0.996094, 0.541334, 0.140076, 1)
 sun_disk_intensity = 2.0
 sun_disk_size = 0.015
@@ -97,8 +96,8 @@ sun_light_path = NodePath("../SunLight")
 sun_light_color = Color(1, 1, 1, 1)
 sun_horizon_light_color = Color(0.98, 0.523, 0.294, 1)
 sun_light_energy = 1.0
-moon_altitude = 170.074
-moon_azimuth = 101.242
+moon_altitude = 79.7162
+moon_azimuth = 294.742
 moon_color = Color(1, 1, 1, 1)
 moon_size = 0.07
 enable_set_moon_texture = false
@@ -106,7 +105,7 @@ moon_resolution = 2
 moon_light_path = NodePath("../MoonLight")
 moon_light_color = Color(0.572549, 0.776471, 0.956863, 1)
 moon_light_energy = 0.3
-deep_space_euler = Vector3(1.29154, 3.14159, -2.70918)
+deep_space_euler = Vector3(1.29154, 3.14159, 2.78205)
 background_color = Color(0.709804, 0.709804, 0.709804, 0.854902)
 set_background_texture = false
 stars_field_color = Color(1, 1, 1, 1)
@@ -142,7 +141,7 @@ fog_end = 1000.0
 fog_layers = 524288
 fog_render_priority = 123
 clouds_thickness = 1.7
-clouds_coverage = 0.5
+clouds_coverage = 0.627
 clouds_absorption = 2.0
 clouds_sky_tint_fade = 0.5
 clouds_intensity = 10.0
@@ -156,14 +155,14 @@ clouds_cumulus_day_color = Color(0.823529, 0.87451, 1, 1)
 clouds_cumulus_horizon_light_color = Color(0.98, 0.4312, 0.1568, 1)
 clouds_cumulus_night_color = Color(0.090196, 0.094118, 0.129412, 1)
 clouds_cumulus_thickness = 0.0243
-clouds_cumulus_coverage = 0.55
+clouds_cumulus_coverage = 0.691
 clouds_cumulus_absorption = 2.0
 clouds_cumulus_noise_freq = 2.7
 clouds_cumulus_intensity = 1.0
 clouds_cumulus_mie_intensity = 1.0
 clouds_cumulus_mie_anisotropy = 0.206
 clouds_cumulus_size = 0.5
-clouds_cumulus_offset = Vector3(0.64, 0.522, 0.128)
+clouds_cumulus_offset = Vector3(0.64, 0.707, 0.128)
 clouds_cumulus_offset_speed = 0.005
 set_clouds_cumulus_texture = false
 environment = SubResource("Environment_lnpwy")
