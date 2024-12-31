@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Cory Petkovsek and Contributors
+// Copyright (c) 2023-2025 Cory Petkovsek and Contributors
 // Copyright (c) 2021 J. Cuellar
 
 shader_type spatial;
@@ -37,7 +37,7 @@ uniform float _atm_moon_mie_intensity = .7;
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
-// Inc.
+// Inc
 //------------------------------------------------------------------------------
 const float kPI          = 3.1415927f;
 const float kINV_PI      = 0.3183098f;
@@ -77,7 +77,7 @@ vec2 equirectUV(vec3 norm){
 	return ret;
 }
 
-// Atmosphere Inc.
+// Atmosphere Inc
 //------------------------------------------------------------------------------
 const float RAYLEIGH_ZENITH_LENGTH = 8.4e3;
 const float MIE_ZENITH_LENGTH = 1.25e3;
@@ -90,7 +90,7 @@ float miePhase(float mu, vec3 partial){
 	return kPI4 * (partial.x) * (pow(partial.y - partial.z * mu, -1.5));
 }
 
-// Simplifield for more performance.
+// Simplifield for more performance
 void simpleOpticalDepth(float y, out float sr, out float sm){
 	y = max(0.03, y + 0.03) + _atm_level_params.y;
 	y = 1.0 / (y * _atm_level_params.x);
@@ -98,15 +98,15 @@ void simpleOpticalDepth(float y, out float sr, out float sm){
 	sm = y * MIE_ZENITH_LENGTH;
 }
 
-// Paper based.
+// Paper based
 void opticalDepth(float y, out float sr, out float sm){
 	y = max(0.0, y);
 	y = saturate(y * _atm_level_params.x);
-	
+
 	float zenith = acos(y);
 	zenith = cos(zenith) + 0.15 * pow(93.885 - ((zenith * 180.0) / kPI), -1.253);
 	zenith = 1.0 / (zenith + _atm_level_params.y);
-	
+
 	sr = zenith * RAYLEIGH_ZENITH_LENGTH;
 	sm = zenith * MIE_ZENITH_LENGTH;
 }
@@ -114,26 +114,26 @@ void opticalDepth(float y, out float sr, out float sm){
 vec3 atmosphericScattering(float sr, float sm, vec2 mu, vec3 mult, float depth){
 	vec3 betaMie = _atm_beta_mie;
 	vec3 betaRay = _atm_beta_ray * _atm_thickness;
-	
+
 	vec3 extcFactor = saturateRGB(exp(-(betaRay * sr + betaMie * sm)));
-	
+
 	float extcFF = mix(saturate(_atm_thickness * 0.5), 1.0, mult.x);
 	vec3 finalExtcFactor = mix(1.0 - extcFactor, (1.0 - extcFactor) * extcFactor, extcFF);
-	
+
 	float rayleighPhase = rayleighPhase(mu.x);
 	vec3 BRT = betaRay * rayleighPhase * saturate(depth * _fog_rayleigh_depth);
 	vec3 BMT = betaMie * miePhase(mu.x, _atm_sun_partial_mie_phase);
 	BMT *= _atm_sun_mie_intensity * _atm_sun_mie_tint.rgb * saturate(depth * _fog_mie_depth);
-	
+
 	vec3 BRMT = (BRT + BMT) / (betaRay + betaMie);
 	vec3 scatter = _atm_sun_intensity * (BRMT * finalExtcFactor) * _atm_day_tint.rgb * mult.y;
 	scatter = mix(scatter, scatter * (1.0 - extcFactor), _atm_darkness);
-	
+
 	vec3 lcol = mix(_atm_day_tint.rgb, _atm_horizon_light_tint.rgb, mult.x);
 	vec3 nscatter = (1.0 - extcFactor) * _atm_night_tint.rgb * saturate(depth * _fog_rayleigh_depth);
-	nscatter += miePhase(mu.y, _atm_moon_partial_mie_phase) * 
+	nscatter += miePhase(mu.y, _atm_moon_partial_mie_phase) *
 		_atm_moon_mie_tint.rgb * _atm_moon_mie_intensity * 0.005 * saturate(depth * _fog_mie_depth);
-	
+
 	return (scatter * lcol) + nscatter;
 }
 
@@ -153,16 +153,16 @@ float fogDistance(float depth){
 	return saturate(1.0 - d);
 }
 
-void computeCoords(vec2 uv, float depth, mat4 camMat, mat4 invProjMat, 
+void computeCoords(vec2 uv, float depth, mat4 camMat, mat4 invProjMat,
 	out vec3 viewDir, out vec3 worldPos){
-		
+
 	vec3 ndc = vec3(uv * 2.0 - 1.0, depth);
-	
+
 	// ViewDir
 	vec4 view = invProjMat * vec4(ndc, 1.0);
 	viewDir = view.xyz / view.w;
-	
-	// worldPos.
+
+	// worldPos
 	view = camMat * view;
 	view.xyz /= view.w;
 	view.xyz -= (camMat * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
@@ -187,25 +187,25 @@ void vertex(){
 
 void fragment(){
 	float depthRaw = texture(DEPTH_TEXTURE, SCREEN_UV).r;
-	
-	vec3 view; vec3 worldPos; 
+
+	vec3 view; vec3 worldPos;
 	computeCoords(SCREEN_UV, depthRaw, camera_matrix, INV_PROJECTION_MATRIX, view, worldPos);
 	worldPos = normalize(worldPos);
-	
+
 	float linearDepth = -view.z;
 	float fogFactor = fogExp(linearDepth, _fog_density);
 	fogFactor *= fogFalloff(worldPos.y, 0.0, _fog_falloff);
 	fogFactor *= fogDistance(linearDepth);
-	
+
 	vec2 mu = vec2(dot(_sun_direction, worldPos), dot(_moon_direction, worldPos));
 	float sr; float sm; simpleOpticalDepth(worldPos.y + _atm_level_params.z, sr, sm);
 	vec3 scatter = atmosphericScattering(sr, sm, mu.xy, angle_mult.xyz, linearDepth);
-	
+
 	vec3 tint =  scatter;
 	vec4 fogColor = vec4(tint.rgb, fogFactor);
 	fogColor = vec4((fogColor.rgb), saturate(fogColor.a));
 	fogColor.rgb = tonemapPhoto(fogColor.rgb, _color_correction_params.y, _color_correction_params.x);
-	
+
 	ALBEDO = fogColor.rgb;
 	ALPHA = fogColor.a;
 	//ALPHA = (depthRaw) < 0.999999999999 ? fogColor.a: 0.0; // Exclude sky.

@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 Cory Petkovsek and Contributors
+// Copyright (c) 2023-2025 Cory Petkovsek and Contributors
 // Copyright (c) 2021 J. Cuellar
 // This shader is based on DanilS clouds shader with MIT License
 // See https://github.com/danilw/godot-utils-and-other/tree/master/Dynamic%20sky%20and%20reflection
