@@ -14,8 +14,6 @@ var sky: Skydome
 
 
 func _enter_tree() -> void:
-	_default_sun_energy = $Skydome.sun_light_energy
-	_default_moon_energy = $Skydome.moon_light_energy
 	initialize()
 
 
@@ -326,6 +324,9 @@ func initialize() -> void:
 		sky.sun_light_path = "../SunLight"
 		sky.moon_light_path = "../MoonLight"
 		sky.environment = environment
+		
+	_default_sun_energy = $Skydome.sun_light_energy
+	_default_moon_energy = $Skydome.moon_light_energy
 
 
 func _set(property: StringName, value: Variant) -> bool:

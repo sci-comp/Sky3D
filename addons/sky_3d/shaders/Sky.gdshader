@@ -66,6 +66,9 @@ uniform float _clouds_size;
 uniform vec2 _clouds_uv;
 uniform float _clouds_offset_speed;
 uniform vec2 _clouds_offset;
+uniform vec4 _clouds_day_color: source_color;
+uniform vec4 _clouds_horizon_light_color: source_color;
+uniform vec4 _clouds_night_color: source_color;
 uniform sampler2D _clouds_texture;
 
 // Inc.
@@ -281,9 +284,9 @@ void fragment(){
 	// Clouds.
 	vec4 clouds = renderClouds(cloudsPos, TIME);
 	clouds.a = saturate(clouds.a);
-	clouds.rgb *= mix(mix(vec3(1.0), _atm_horizon_light_tint.rgb, angle_mult.x), 
-		_atm_night_tint.rgb, angle_mult.w);
-	
+	clouds.rgb *= mix(mix(_clouds_day_color.rgb, _clouds_horizon_light_color.rgb, angle_mult.x), 
+		_clouds_night_color.rgb, angle_mult.w);
+			
 	clouds.a = mix(0.0, clouds.a, horizonBlend);
 	col.rgb = mix(col.rgb, clouds.rgb + mix(vec3(0.0), scatter, _clouds_sky_tint_fade), clouds.a);
 	col.rgb = mix(col.rgb, _ground_color.rgb * scatter, saturate((-worldPos.y - _atm_level_params.z)*100.0));

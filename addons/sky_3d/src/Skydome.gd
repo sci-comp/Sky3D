@@ -1444,7 +1444,7 @@ func update_clouds_texture() -> void:
 
 var clouds_cumulus_visible: bool = true: set = set_clouds_cumulus_visible
 var clouds_cumulus_day_color:= Color(0.823529, 0.87451, 1.0, 1.0): set = set_clouds_cumulus_day_color
-var clouds_cumulus_horizon_light_color:= Color(1.0, 0.333333, 0.152941, 1.0): set = set_clouds_cumulus_horizon_light_color
+var clouds_cumulus_horizon_light_color:= Color(.98, 0.43, 0.15, 1.0): set = set_clouds_cumulus_horizon_light_color
 var clouds_cumulus_night_color:= Color(0.090196, 0.094118, 0.129412, 1.0): set = set_clouds_cumulus_night_color
 var clouds_cumulus_thickness: float = 0.0243: set = set_clouds_cumulus_thickness
 var clouds_cumulus_coverage: float = 0.55: set = set_clouds_cumulus_coverage
@@ -1484,6 +1484,7 @@ func update_clouds_cumulus_day_color() -> void:
 	if !is_scene_built:
 		return
 	clouds_cumulus_material.set_shader_parameter(Sky3D.CLOUDS_DAY_COLOR, clouds_cumulus_day_color)
+	sky_material.set_shader_parameter(Sky3D.CLOUDS_DAY_COLOR, clouds_cumulus_day_color)
 
 
 func set_clouds_cumulus_horizon_light_color(value: Color) -> void:
@@ -1497,6 +1498,7 @@ func update_clouds_cumulus_horizon_light_color() -> void:
 	if !is_scene_built:
 		return
 	clouds_cumulus_material.set_shader_parameter(Sky3D.CLOUDS_HORIZON_LIGHT_COLOR, clouds_cumulus_horizon_light_color)
+	sky_material.set_shader_parameter(Sky3D.CLOUDS_HORIZON_LIGHT_COLOR, clouds_cumulus_horizon_light_color)
 
 
 func set_clouds_cumulus_night_color(value: Color) -> void:
@@ -1510,6 +1512,7 @@ func update_clouds_cumulus_night_color() -> void:
 	if !is_scene_built:
 		return
 	clouds_cumulus_material.set_shader_parameter(Sky3D.CLOUDS_NIGHT_COLOR, clouds_cumulus_night_color)
+	sky_material.set_shader_parameter(Sky3D.CLOUDS_NIGHT_COLOR, clouds_cumulus_night_color)
 
 
 func set_clouds_cumulus_thickness(value: float) -> void:
