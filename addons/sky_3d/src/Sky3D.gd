@@ -14,6 +14,8 @@ var sky: Skydome
 
 
 func _enter_tree() -> void:
+	_default_sun_energy = $Skydome.sun_light_energy
+	_default_moon_energy = $Skydome.moon_light_energy
 	initialize()
 
 
@@ -39,6 +41,8 @@ func _ready() -> void:
 @export var fog_enabled: bool = true : set = set_fog_enabled
 @export var clouds_enabled: bool = true : set = set_clouds_enabled
 @export var show_physical_sky: bool = false : set = set_show_physical_sky
+var _default_sun_energy: float
+var _default_moon_energy: float
 
 
 func set_sky3d_enabled(value: bool) -> void:
@@ -58,8 +62,8 @@ func set_sky_enabled(value: bool) -> void:
 		return
 	sky.sky_visible = value
 	sky.clouds_cumulus_visible = value
-	sky.sun_light_energy = 1 if value else 0
-	sky.moon_light_energy = 0.3 if value else 0
+	sky.sun_light_energy = _default_sun_energy if value else 0
+	sky.moon_light_energy = _default_moon_energy if value else 0
 
 
 func set_lights_enabled(value: bool) -> void:
@@ -110,6 +114,14 @@ func pause() -> void:
 
 func resume() -> void:
 	$TimeOfDay.resume()
+
+
+func is_day() -> bool:
+	return _is_day
+
+	
+func is_night() -> bool:
+	return not _is_day
 
 
 func set_editor_time_enabled(value:bool) -> void:
