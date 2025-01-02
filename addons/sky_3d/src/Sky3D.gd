@@ -436,8 +436,8 @@ const CLOUDS_SIZE:= "_clouds_size"
 const CLOUDS_NOISE_FREQ:= "_clouds_noise_freq"
 
 const CLOUDS_UV:= "_clouds_uv"
-const CLOUDS_OFFSET:= "_clouds_offset"
-const CLOUDS_OFFSET_SPEED:= "_clouds_offset_speed"
+const CLOUDS_DIRECTION:= "_clouds_direction"
+const CLOUDS_SPEED:= "_clouds_speed"
 const CLOUDS_TEXTURE:= "_clouds_texture"
 
 const CLOUDS_DAY_COLOR:= "_clouds_day_color"

@@ -120,8 +120,8 @@ func _ready() -> void:
 	update_clouds_intensity()
 	update_clouds_size()
 	update_clouds_uv()
-	update_clouds_offset()
-	update_clouds_offset_speed()
+	update_clouds_direction()
+	update_clouds_speed()
 	set_set_clouds_texture(set_clouds_texture)
 	update_clouds_texture()
 	
@@ -138,8 +138,8 @@ func _ready() -> void:
 	update_clouds_cumulus_mie_intensity()
 	update_clouds_cumulus_mie_anisotropy()
 	update_clouds_cumulus_size()
-	update_clouds_cumulus_offset()
-	update_clouds_cumulus_offset_speed()
+	update_clouds_cumulus_direction()
+	update_clouds_cumulus_speed()
 	set_set_clouds_cumulus_texture(set_clouds_cumulus_texture)
 	update_clouds_cumulus_texture()
 	
@@ -1295,8 +1295,8 @@ var clouds_sky_tint_fade: float = 0.5: set = set_clouds_sky_tint_fade
 var clouds_intensity: float = 10.0: set = set_clouds_intensity
 var clouds_size: float = 2.0: set = set_clouds_size
 var clouds_uv:= Vector2(0.16, 0.11): set = set_clouds_uv
-var clouds_offset:= Vector2(0.21, 0.175): set = set_clouds_offset
-var clouds_offset_speed: float = 0.01: set = set_clouds_offset_speed
+var clouds_direction:= Vector2(0.25, 0.25): set = set_clouds_direction
+var clouds_speed: float = 0.07: set = set_clouds_speed
 var set_clouds_texture: bool = false: set = set_set_clouds_texture
 var clouds_texture: Texture2D = null: set = _set_clouds_texture
 
@@ -1392,30 +1392,30 @@ func update_clouds_uv() -> void:
 	sky_material.set_shader_parameter(Sky3D.CLOUDS_UV, clouds_uv)
 
 
-func set_clouds_offset(value: Vector2) -> void:
-	if value == clouds_offset:
+func set_clouds_direction(value: Vector2) -> void:
+	if value == clouds_direction:
 		return
-	clouds_offset = value
-	update_clouds_offset()
+	clouds_direction = value
+	update_clouds_direction()
 	
 
-func update_clouds_offset() -> void:
+func update_clouds_direction() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_OFFSET, clouds_offset)
+	sky_material.set_shader_parameter(Sky3D.CLOUDS_DIRECTION, clouds_direction)
 
 
-func set_clouds_offset_speed(value: float) -> void:
-	if value == clouds_offset_speed:
+func set_clouds_speed(value: float) -> void:
+	if value == clouds_speed:
 		return
-	clouds_offset_speed = value
-	update_clouds_offset_speed()
+	clouds_speed = value
+	update_clouds_speed()
 	
 
-func update_clouds_offset_speed() -> void:
+func update_clouds_speed() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_OFFSET_SPEED, clouds_offset_speed)
+	sky_material.set_shader_parameter(Sky3D.CLOUDS_SPEED, clouds_speed)
 
 
 func set_set_clouds_texture(value: bool) -> void:
@@ -1454,8 +1454,8 @@ var clouds_cumulus_intensity: float = 1.0: set = set_clouds_cumulus_intensity
 var clouds_cumulus_mie_intensity: float = 1.0: set = set_clouds_cumulus_mie_intensity
 var clouds_cumulus_mie_anisotropy: float = 0.206: set = set_clouds_cumulus_mie_anisotropy
 var clouds_cumulus_size: float = 0.5: set = set_clouds_cumulus_size
-var clouds_cumulus_offset:= Vector3(0.64, 0.522, 0.128): set = set_clouds_cumulus_offset
-var clouds_cumulus_offset_speed: float = 0.005: set = set_clouds_cumulus_offset_speed
+var clouds_cumulus_direction:= Vector3(0.25, 0.1, 0.25): set = set_clouds_cumulus_direction
+var clouds_cumulus_speed: float = 0.05: set = set_clouds_cumulus_speed
 var set_clouds_cumulus_texture: bool = false: set = set_set_clouds_cumulus_texture
 var clouds_cumulus_texture: Texture2D = null: set = _set_clouds_cumulus_texture
 
@@ -1620,30 +1620,30 @@ func update_clouds_cumulus_size() -> void:
 	clouds_cumulus_material.set_shader_parameter(Sky3D.CLOUDS_SIZE, clouds_cumulus_size)
 
 
-func set_clouds_cumulus_offset(value: Vector3) -> void:
-	if value == clouds_cumulus_offset:
+func set_clouds_cumulus_direction(value: Vector3) -> void:
+	if value == clouds_cumulus_direction:
 		return
-	clouds_cumulus_offset = value
-	update_clouds_cumulus_offset()
+	clouds_cumulus_direction = value
+	update_clouds_cumulus_direction()
 
 
-func update_clouds_cumulus_offset() -> void:
+func update_clouds_cumulus_direction() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CLOUDS_OFFSET, clouds_cumulus_offset)
+	clouds_cumulus_material.set_shader_parameter(Sky3D.CLOUDS_DIRECTION, clouds_cumulus_direction)
 
 
-func set_clouds_cumulus_offset_speed(value: float) -> void:
-	if value == clouds_cumulus_offset_speed:
+func set_clouds_cumulus_speed(value: float) -> void:
+	if value == clouds_cumulus_speed:
 		return
-	clouds_cumulus_offset_speed = value
-	update_clouds_cumulus_offset_speed()
+	clouds_cumulus_speed = value
+	update_clouds_cumulus_speed()
 
 
-func update_clouds_cumulus_offset_speed() -> void:
+func update_clouds_cumulus_speed() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CLOUDS_OFFSET_SPEED, clouds_cumulus_offset_speed)
+	clouds_cumulus_material.set_shader_parameter(Sky3D.CLOUDS_SPEED, clouds_cumulus_speed)
 
 
 func set_set_clouds_cumulus_texture(value: bool) -> void:
@@ -1830,8 +1830,8 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "clouds_intensity", type = TYPE_FLOAT})
 	ret.push_back({name = "clouds_size", type = TYPE_FLOAT})
 	ret.push_back({name = "clouds_uv", type = TYPE_VECTOR2})
-	ret.push_back({name = "clouds_offset", type = TYPE_VECTOR2})
-	ret.push_back({name = "clouds_offset_speed", type = TYPE_FLOAT})
+	ret.push_back({name = "clouds_direction", type = TYPE_VECTOR2})
+	ret.push_back({name = "clouds_speed", type = TYPE_FLOAT})
 	ret.push_back({name = "set_clouds_texture", type = TYPE_BOOL})
 	
 	if set_clouds_texture:
@@ -1851,8 +1851,8 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "clouds_cumulus_mie_intensity", type = TYPE_FLOAT})
 	ret.push_back({name = "clouds_cumulus_mie_anisotropy", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 0.999999"})
 	ret.push_back({name = "clouds_cumulus_size", type = TYPE_FLOAT})
-	ret.push_back({name = "clouds_cumulus_offset", type = TYPE_VECTOR3})
-	ret.push_back({name = "clouds_cumulus_offset_speed", type = TYPE_FLOAT})
+	ret.push_back({name = "clouds_cumulus_direction", type = TYPE_VECTOR3})
+	ret.push_back({name = "clouds_cumulus_speed", type = TYPE_FLOAT})
 	ret.push_back({name = "set_clouds_cumulus_texture", type = TYPE_BOOL})
 	
 	if set_clouds_cumulus_texture:
