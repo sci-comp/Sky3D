@@ -88,7 +88,7 @@ float remap(float value, float fromMin, float fromMax, float toMin, float toMax)
 }
 
 float cloudsDensity(vec3 p, vec3 offset, float t){
-	vec3 pos = p * 0.0212242 + offset;
+	vec3 pos = p * 0.0212242 - offset;
 	float dens = noiseCloudsFBM(pos, _clouds_noise_freq);
 	dens += dens;
 	

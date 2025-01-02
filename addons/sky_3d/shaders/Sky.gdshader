@@ -186,8 +186,11 @@ vec3 atmosphericScattering(float sr, float sm, vec2 mu, vec3 mult){
 // Clouds
 //------------------------------------------------------------------------------
 float noiseClouds(vec2 coords, vec2 offset){
-	float a = textureLod(_clouds_texture, coords.xy * _clouds_uv + offset.x, 0.0).r;
-	float b = textureLod(_clouds_texture, coords.xy * _clouds_uv + offset.y, 0.0).r;
+	float speed = TIME * _clouds_offset_speed * .5; // .5 matches cumulus clouds
+	vec2 wind = offset * speed;
+	vec2 wind2 = (offset + offset) * speed;
+	float a = textureLod(_clouds_texture, coords.xy * _clouds_uv - wind, 0.0).r;
+	float b = textureLod(_clouds_texture, coords.xy * _clouds_uv - wind2, 0.0).r;
 	return ((a + b) * 0.5);
 }
 
@@ -199,11 +202,10 @@ float cloudsDensity(vec2 p, vec2 offset){
 	return saturate(d);
 }
 
-vec4 renderClouds(vec3 pos, float tm){
+vec4 renderClouds(vec3 pos){
 	pos.xy = pos.xz / pos.y;
 	pos *= _clouds_size;
-	vec2 wind = _clouds_offset.xy * (tm * _clouds_offset_speed);
-	float density = cloudsDensity(pos.xy, wind);
+	float density = cloudsDensity(pos.xy, _clouds_offset);
 	float sh = saturate(exp(-_clouds_absorption * density));
 	float a = saturate(density * _clouds_thickness);
 	return vec4(vec3(density*sh) * _clouds_intensity, a);
@@ -283,7 +285,7 @@ void fragment(){
 	col.rgb += deepSpace.rgb * horizonBlend;
 	
 	// Clouds
-	vec4 clouds = renderClouds(cloudsPos, TIME);
+	vec4 clouds = renderClouds(cloudsPos);
 	clouds.a = saturate(clouds.a);
 	clouds.rgb *= mix(mix(_clouds_day_color.rgb, _clouds_horizon_light_color.rgb, angle_mult.x), 
 		_clouds_night_color.rgb, angle_mult.w);
