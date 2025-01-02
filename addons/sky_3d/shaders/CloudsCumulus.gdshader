@@ -15,8 +15,8 @@ uniform float _clouds_noise_freq;
 uniform float _clouds_sky_tint_fade;
 uniform float _clouds_intensity;
 uniform float _clouds_size;
-uniform float _clouds_offset_speed;
-uniform vec3 _clouds_offset;
+uniform float _clouds_speed;
+uniform vec3 _clouds_direction;
 uniform sampler2D _clouds_texture;
 
 uniform vec4 _clouds_day_color: source_color;
@@ -88,7 +88,7 @@ float remap(float value, float fromMin, float fromMax, float toMin, float toMax)
 }
 
 float cloudsDensity(vec3 p, vec3 offset, float t){
-	vec3 pos = p * 0.0212242 + offset;
+	vec3 pos = p * 0.0212242 - offset;
 	float dens = noiseCloudsFBM(pos, _clouds_noise_freq);
 	dens += dens;
 	
@@ -131,7 +131,7 @@ float miePhase(float mu, vec3 partial){
 
 vec4 renderClouds2(vec3 ro, vec3 rd, float tm, float am){
 	vec4 ret = vec4(0, 0, 0, 0);
-	vec3 wind = _clouds_offset * (tm * _clouds_offset_speed);
+	vec3 wind = _clouds_direction * (tm * _clouds_speed);
 	float a = 0.0;
 	
 	// n and tt doesnt need to be initialized since it would be set by IntersectSphere
