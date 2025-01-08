@@ -9,9 +9,8 @@ A dynamic day/night cycle for Godot Engine 4, written in GDScript.
 ## Features
 
 * Supports Godot 4.3+, Forward and Mobile renderers (Not Compatibility yet)
-* Automatically rotating sun, moon, and stars
-* Dynamic clouds
-* Atmosphere, fog and cloud colors change in sync with cycle
+* Automatically rotating sun, moon, and stars, with moon phases
+* Dynamic atmosphere, fog, and clouds that change with the day cycle
 * Consolidated controls to adjust lighting and camera exposure
 * Management of game time: current time, day length, day or night
 
@@ -25,6 +24,7 @@ A dynamic day/night cycle for Godot Engine 4, written in GDScript.
 ## Installation
 
 * Clone or download the repository. 
+* Open the project in Godot and run `demo/Sky3DDemo.tscn` to test it.
 * Copy `addons/sky_3d` into your project `addons` directory. Create the folder if missing.
 * Open `Project -> Project Settings -> Plugins` and enable the plugin. 
 
@@ -34,7 +34,9 @@ A dynamic day/night cycle for Godot Engine 4, written in GDScript.
 * Create or open a Scene.
 * Remove any existing `WorldEnvironment` node.
 * Create a new `Sky3D` node.
-* Customize the settings in the Sky3D, Sky3D/Environment, TimeOfDay, and Skydome nodes. Light energy is driven by Sky3D, but you can adjust shadow settings on the lights.
+* Customize the settings of the `Sky3D`, `Sky3D/Environment`, `TimeOfDay`, `Skydome`, `SunLight`, and `MoonLight` nodes. Some settings like light energy, color, and angle are driven by Sky3D and not changeable unless you disable `Sky3D.enable_editor_time` and/or `enable_game_time`. Other settings like shadow configuration are adjustable.
+
+For support, join our [Discord server](https://tokisan.com/discord).
 
 
 ## Credit
