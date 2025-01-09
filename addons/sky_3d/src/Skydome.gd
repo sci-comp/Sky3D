@@ -203,8 +203,8 @@ func build_scene() -> void:
 
 func __setup_mesh_instance(target: MeshInstance3D, origin: Vector3) -> void:
 	target.transform.origin = origin
-	target.extra_cull_margin = Sky3D.MAX_EXTRA_CULL_MARGIN
 	target.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	target.custom_aabb = AABB(Vector3(-1e31, -1e31, -1e31), Vector3(2e31, 2e31, 2e31))
 
 
 #####################
