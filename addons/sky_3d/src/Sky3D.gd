@@ -153,7 +153,7 @@ func set_update_interval(value:float) -> void:
 
 
 func _on_timeofday_updated(time: float) -> void:
-	if tod and Engine.is_editor_hint():
+	if tod:
 		minutes_per_day = tod.total_cycle_in_minutes
 		current_time = tod.total_hours
 		update_interval = tod.update_interval
