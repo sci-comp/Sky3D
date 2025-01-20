@@ -27,19 +27,7 @@ var _default_moon_energy: float
 
 
 func _enter_tree() -> void:
-	initialize()
-
-
-func _ready() -> void:
-	# Reapply current settings once attached to the tree
-	sky_enabled = sky_enabled
-	lights_enabled = lights_enabled
-	fog_enabled = fog_enabled
-	clouds_enabled = clouds_enabled
-	show_physical_sky = show_physical_sky
-	current_time = current_time
-
-	tod.time_changed.connect(_on_timeofday_updated)
+	_initialize()
 	update_day_night(true)
 
 
@@ -148,12 +136,14 @@ func is_night() -> bool:
 
 ## Pauses time calculation.
 func pause() -> void:
-	$TimeOfDay.pause()
+	if tod:
+		tod.pause()
 
 
 ## Resumes time calculation.
 func resume() -> void:
-	$TimeOfDay.resume()
+	if tod:
+		tod.resume()
 
 
 func set_editor_time_enabled(value: bool) -> void:
@@ -392,7 +382,7 @@ func set_auto_exposure_speed(value: float) -> void:
 ## Setup
 
 
-func initialize() -> void:
+func _initialize() -> void:
 	# Create default environment
 	if environment == null:
 		environment = Environment.new()
@@ -412,42 +402,49 @@ func initialize() -> void:
 	if camera_attributes == null:
 		camera_attributes = CameraAttributesPractical.new()
 
-	# Create children nodes
-	if get_child_count() > 0:
-		tod = $TimeOfDay
-		sky = $Skydome
-		sky.environment = environment
+	# Assign children nodes
+	
+	if has_node("SunLight"):
 		sun = $SunLight
-		moon = $MoonLight
 	else:
 		sun = DirectionalLight3D.new()
 		sun.name = "SunLight"
 		add_child(sun, true)
 		sun.owner = get_tree().edited_scene_root
 		sun.shadow_enabled = true
-
+	
+	if has_node("MoonLight"):
+		moon = $MoonLight
+	else:
 		moon = DirectionalLight3D.new()
 		moon.name = "MoonLight"
 		add_child(moon, true)
 		moon.owner = get_tree().edited_scene_root
 		moon.shadow_enabled = true
 
-		tod = TimeOfDay.new()
-		tod.name = "TimeOfDay"
-		add_child(tod, true)
-		tod.owner = get_tree().edited_scene_root
-		tod.dome_path = "../Skydome"
-		
+	if has_node("Skydome"):
+		sky = $Skydome
+	else:
 		sky = Skydome.new()
 		sky.name = "Skydome"
 		add_child(sky, true)
 		sky.owner = get_tree().edited_scene_root
 		sky.sun_light_path = "../SunLight"
 		sky.moon_light_path = "../MoonLight"
-		sky.environment = environment
-		
-	_default_sun_energy = $Skydome.sun_light_energy
-	_default_moon_energy = $Skydome.moon_light_energy
+	sky.environment = environment
+	_default_sun_energy = sky.sun_light_energy
+	_default_moon_energy = sky.moon_light_energy
+
+	if has_node("TimeOfDay"):
+		tod = $TimeOfDay
+	else:
+		tod = TimeOfDay.new()
+		tod.name = "TimeOfDay"
+		add_child(tod, true)
+		tod.owner = get_tree().edited_scene_root
+		tod.dome_path = "../Skydome"
+	if not tod.time_changed.is_connected(_on_timeofday_updated):
+		tod.time_changed.connect(_on_timeofday_updated)
 
 
 func _set(property: StringName, value: Variant) -> bool:
