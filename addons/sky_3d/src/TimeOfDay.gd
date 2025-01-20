@@ -279,6 +279,33 @@ func set_time(hour: int, minute: int, second: int) -> void:
 	set_total_hours(DateTimeUtil.hours_to_total_hours(hour, minute, second))
 
 
+func set_from_datetime_dict(datetime_dict: Dictionary) -> void:
+	set_year(datetime_dict.year)
+	set_month(datetime_dict.month)
+	set_day(datetime_dict.day)
+	set_time(datetime_dict.hour, datetime_dict.minute, datetime_dict.second)
+
+
+func get_datetime_dict() -> Dictionary:
+	var datetime_dict := {
+		"year": year,
+		"month": month,
+		"day": day,
+		"hour": floor(total_hours),
+		"minute": floor(fmod(total_hours, 1.0) * 60.0),
+		"second": floor(fmod(total_hours * 60.0, 1.0) * 60.0)
+	}
+	return datetime_dict
+
+
+func set_from_unix_timestamp(timestamp: int) -> void:
+	set_from_datetime_dict(Time.get_datetime_dict_from_unix_time(timestamp))
+
+
+func get_unix_timestamp() -> int:
+	return Time.get_unix_time_from_datetime_dict(get_datetime_dict())
+
+
 func __time_process(delta: float) -> void:
 	if time_cycle_duration() != 0.0:
 		set_total_hours(total_hours + delta / time_cycle_duration() * DateTimeUtil.TOTAL_HOURS)
