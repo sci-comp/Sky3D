@@ -29,12 +29,11 @@ var sky: Skydome
 
 func set_sky3d_enabled(value: bool) -> void:
 	sky3d_enabled = value
-	sky_enabled = value
-	fog_enabled = value
-	clouds_enabled = value
 	if value:
+		show_sky()
 		resume()
 	else:
+		hide_sky()
 		pause()
 
 
@@ -53,7 +52,7 @@ func set_sky_enabled(value: bool) -> void:
 	if not sky:
 		return
 	sky.sky_visible = value
-	sky.clouds_cumulus_visible = value
+	sky.clouds_cumulus_visible = clouds_enabled and value
 
 
 ## Enables the Sun and Moon DirectionalLights.
@@ -90,14 +89,18 @@ func set_clouds_enabled(value: bool) -> void:
 	# TODO should create an on/off in skydome so disabling this doesn't change the enabled value
 
 
-## Shows the PhysicalSky in the environment, used for reflective light. 
-@export var show_physical_sky: bool = false : set = set_show_physical_sky
+## Disables rendering of sky, fog, and lights
+func hide_sky() -> void:
+	sky_enabled = false
+	lights_enabled = false
+	fog_enabled = false
 
-func set_show_physical_sky(value: bool) -> void:
-	show_physical_sky = value
-	if not sky:
-		return
-	sky.sky_visible = !value
+
+## Enables rendering of sky, fog, and lights
+func show_sky() -> void:
+	sky_enabled = true
+	lights_enabled = true
+	fog_enabled = true
 
 
 #####################
