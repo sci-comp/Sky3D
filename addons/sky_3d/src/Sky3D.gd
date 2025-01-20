@@ -1,15 +1,26 @@
 # Copyright (c) 2023-2025 Cory Petkovsek and Contributors
 # Copyright (c) 2021 J. Cuellar
 
+## Sky3D is an Atmosphereic Day/Night Cycle for Godot 4.
+##
+## It manages time, moving the sun, moon, and stars, and consolidates environmental lighting controls.
+## To use it, remove any WorldEnvironment node from you scene, then add a new Sky3D node.
+## Explore and configure the settings in the Sky3D, SunLight, MoonLight, TimeOfDay, and Skydome nodes.
+
 @tool
 class_name Sky3D
 extends WorldEnvironment
 
+## Emitted when the environment variable has changed.
 signal environment_changed
 
+## The Sun DirectionalLight.
 var sun: DirectionalLight3D
+## The Moon DirectionalLight.
 var moon: DirectionalLight3D
+## The TimeOfDay node.
 var tod: TimeOfDay
+## The Skydome node.
 var sky: Skydome
 
 
@@ -29,15 +40,24 @@ func _ready() -> void:
 	tod.time_changed.connect(_on_timeofday_updated)
 
 
-## Visibility
-
+## Enables all rendering and time tracking.
 @export var sky3d_enabled: bool = true : set = set_sky3d_enabled
 
 @export_group("Visibility")
+
+## Enables the sky shader. Disable sky, lights, fog for a black sky or call hide_sky().
 @export var sky_enabled: bool = true : set = set_sky_enabled
+
+## Enables the Sun and Moon DirectionalLights.
 @export var lights_enabled: bool = true : set = set_lights_enabled
+
+## Enables the screen space fog shader.
 @export var fog_enabled: bool = true : set = set_fog_enabled
+
+## Enables the 2D and cumulus cloud layers.
 @export var clouds_enabled: bool = true : set = set_clouds_enabled
+
+## Shows the PhysicalSky in the environment, used for reflective light. 
 @export var show_physical_sky: bool = false : set = set_show_physical_sky
 var _default_sun_energy: float
 var _default_moon_energy: float
@@ -95,46 +115,59 @@ func set_show_physical_sky(value: bool) -> void:
 	sky.sky_visible = !value
 
 
-## Time
-
 @export_group("Time")
+
+## Move time forward in the editor.
 @export var enable_editor_time: bool = true : set = set_editor_time_enabled
+
+## Move time forward in game.
 @export var enable_game_time: bool = true : set = set_game_time_enabled
+
+## The time right now in hours, 0-24.
 @export_range(0.0, 24.0) var current_time: float = 8.0 : set = set_current_time
+
+## The length of a full day in real minutes. +/-1440 (24 hours), forward or backwards.
 @export_range(-1440,1440,1) var minutes_per_day: float = 15.0 : set = set_minutes_per_day
+
+## Frequency of updates. Set to 0.016 for 60fps.
 @export_range(0.016, 10.0) var update_interval: float = 0.1 : set = set_update_interval
+
 var _is_day: bool = true
 
 
-func pause() -> void:
-	$TimeOfDay.pause()
-
-
-func resume() -> void:
-	$TimeOfDay.resume()
-
-
+## Returns true if the sun is above the horizon.
 func is_day() -> bool:
 	return _is_day
 
 	
+## Returns true if the sun is below the horizon.
 func is_night() -> bool:
 	return not _is_day
 
 
-func set_editor_time_enabled(value:bool) -> void:
+## Pauses time calculation.
+func pause() -> void:
+	$TimeOfDay.pause()
+
+
+## Resumes time calculation.
+func resume() -> void:
+	$TimeOfDay.resume()
+
+
+func set_editor_time_enabled(value: bool) -> void:
 	enable_editor_time = value
 	if tod:
 		tod.update_in_editor = value
 
 
-func set_game_time_enabled(value:bool) -> void:
+func set_game_time_enabled(value: bool) -> void:
 	enable_game_time = value
 	if tod:
 		tod.update_in_game = value
 
 
-func set_current_time(value:float) -> void:
+func set_current_time(value: float) -> void:
 	current_time = value
 	if tod and tod.total_hours != current_time:
 		tod.total_hours = value
@@ -146,7 +179,7 @@ func set_minutes_per_day(value):
 		tod.total_cycle_in_minutes = value
 
 
-func set_update_interval(value:float) -> void:
+func set_update_interval(value: float) -> void:
 	update_interval = value
 	if tod:
 		tod.update_interval = value
@@ -176,30 +209,56 @@ func _on_timeofday_updated(time: float) -> void:
 ## Exposure
 
 @export_group("Exposure")
+## Ratio of ambient light to sky light. See Environment.ambient_light_sky_contribution.
 @export_range(0,1,.005) var sky_contribution: float = 1.0: set = set_sky_contribution
+
+## Strength of ambient light. Works outside of Reflection Probe / GI volumes and sky_contribution < 1.
+## See Environment.ambient_light_energy.
 @export_range(0,16,.005) var ambient_energy: float = 1.0: set = set_ambient_energy
+
+## Enable different ambient light value for night time.
 @export var night_ambient: bool = true: set = set_night_ambient
+
+## Strength of ambient light at night. Sky_contribution must be < 1. See Environment.ambient_light_energy.
 @export_range(0,1,.005) var night_ambient_min: float = .7
+
+## Strength of refelcted light from the PhysicalSky. See PhysicalSkyMaterial.energy_multiplier
 @export_range(0,128,.005) var reflected_energy: float = 1.0: set = set_reflected_energy
+
+## Strength of skydome and fog.
 @export_range(0,16,.005) var skydome_energy: float = 1.3: set = set_skydome_energy
+
+## Exposure used for the tonemapper. See Evironment.tonemap_exposure
 @export_range(0,16,.005) var tonemap_exposure: float = 1.0: set = set_tonemap_exposure
+
+## Exposure of camera connected to Environment.camera_attributes.
 @export_range(0,16,.005) var camera_exposure: float = 1.0: set = set_camera_exposure
 
 @export_subgroup("Auto Exposure")
+
+## Enables CameraAttributes.auto_exposure_enabled.
 @export var auto_exposure: bool = false: set = set_auto_exposure_enabled
+
+## Sets CameraAttributes.auto_exposure_scale.
 @export_range(0.01,16,.005) var auto_exposure_scale: float = 0.2: set = set_auto_exposure_scale
+
+## Sets CameraAttributesPractical.auto_exposure_min_sensitivity.
 @export_range(0,1600,.5) var auto_exposure_min: float = 0.0: set = set_auto_exposure_min
+
+## Sets CameraAttributesPractical.auto_exposure_max_sensitivity.
 @export_range(30,64000,.5) var auto_exposure_max: float = 800.0: set = set_auto_exposure_max
+
+## Sets CameraAttributes.auto_exposure_speed.
 @export_range(0.1,64,.1) var auto_exposure_speed: float = 0.5: set = set_auto_exposure_speed
 
 
-func set_sky_contribution(value:float) -> void:
+func set_sky_contribution(value: float) -> void:
 	if environment:
 		sky_contribution = value
 		environment.ambient_light_sky_contribution = value
 
 
-func set_ambient_energy(value:float) -> void:
+func set_ambient_energy(value: float) -> void:
 	if environment:
 		ambient_energy = value
 		environment.ambient_light_energy = value
@@ -213,56 +272,56 @@ func set_night_ambient(value: bool) -> void:
 		set_sky_contribution(sky_contribution)
 
 
-func set_reflected_energy(value:float) -> void:
+func set_reflected_energy(value: float) -> void:
 	if environment:
 		reflected_energy = value
 		if environment.sky:
 			environment.sky.sky_material.energy_multiplier = value
 
 
-func set_skydome_energy(value:float) -> void:
+func set_skydome_energy(value: float) -> void:
 	if sky:
 		skydome_energy = value
 		sky.exposure = value
 
 
-func set_tonemap_exposure(value:float) -> void:
+func set_tonemap_exposure(value: float) -> void:
 	if environment:
 		tonemap_exposure = value
 		environment.tonemap_exposure = value
 
 
-func set_camera_exposure(value:float) -> void:
+func set_camera_exposure(value: float) -> void:
 	if camera_attributes:
 		camera_exposure = value
 		camera_attributes.exposure_multiplier = value
 
 
-func set_auto_exposure_enabled(value:bool) -> void:
+func set_auto_exposure_enabled(value: bool) -> void:
 	if camera_attributes:
 		auto_exposure = value
 		camera_attributes.auto_exposure_enabled = value
 
 
-func set_auto_exposure_scale(value:float) -> void:
+func set_auto_exposure_scale(value: float) -> void:
 	if camera_attributes:
 		auto_exposure_scale = value
 		camera_attributes.auto_exposure_scale = value
 
 
-func set_auto_exposure_min(value:float) -> void:
+func set_auto_exposure_min(value: float) -> void:
 	if camera_attributes:
 		auto_exposure_min = value
 		camera_attributes.auto_exposure_min_sensitivity = value
 
 
-func set_auto_exposure_max(value:float) -> void:
+func set_auto_exposure_max(value: float) -> void:
 	if camera_attributes:
 		auto_exposure_max = value
 		camera_attributes.auto_exposure_max_sensitivity = value
 
 
-func set_auto_exposure_speed(value:float) -> void:
+func set_auto_exposure_speed(value: float) -> void:
 	if camera_attributes:
 		auto_exposure_speed = value
 		camera_attributes.auto_exposure_speed = value
