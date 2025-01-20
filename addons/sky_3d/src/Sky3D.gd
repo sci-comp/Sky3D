@@ -22,8 +22,6 @@ var moon: DirectionalLight3D
 var tod: TimeOfDay
 ## The Skydome node.
 var sky: Skydome
-var _default_sun_energy: float
-var _default_moon_energy: float
 
 
 ## Enables all rendering and time tracking.
@@ -56,8 +54,6 @@ func set_sky_enabled(value: bool) -> void:
 		return
 	sky.sky_visible = value
 	sky.clouds_cumulus_visible = value
-	sky.sun_light_energy = _default_sun_energy if value else 0
-	sky.moon_light_energy = _default_moon_energy if value else 0
 
 
 ## Enables the Sun and Moon DirectionalLights.
@@ -448,8 +444,6 @@ func _initialize() -> void:
 		sky.sun_light_path = "../SunLight"
 		sky.moon_light_path = "../MoonLight"
 	sky.environment = environment
-	_default_sun_energy = sky.sun_light_energy
-	_default_moon_energy = sky.moon_light_energy
 
 	if has_node("TimeOfDay"):
 		tod = $TimeOfDay
