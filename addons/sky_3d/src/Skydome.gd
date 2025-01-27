@@ -1744,7 +1744,7 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "sun_altitude", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "-180.0, 180.0"})
 	ret.push_back({name = "sun_azimuth", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "-180.0, 180.0"})
 	ret.push_back({name = "sun_disk_color", type = TYPE_COLOR})
-	ret.push_back({name = "sun_disk_intensity", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 2.0"}) # Clamped 2.0 for prevent reflection probe artifacts.
+	ret.push_back({name = "sun_disk_intensity", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 100.0"})
 	ret.push_back({name = "sun_disk_size", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 0.5"})
 	ret.push_back({name = "sun_light_path", type = TYPE_NODE_PATH})
 	ret.push_back({name = "sun_light_color", type = TYPE_COLOR})

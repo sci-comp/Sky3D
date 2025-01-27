@@ -34,7 +34,7 @@ A dynamic day/night cycle for Godot Engine 4, written in GDScript.
 * Create or open a Scene.
 * Remove any existing `WorldEnvironment` node.
 * Create a new `Sky3D` node.
-* Customize the settings of the `Sky3D`, `Sky3D/Environment`, `TimeOfDay`, `Skydome`, `SunLight`, and `MoonLight` nodes. Some settings like light energy, color, and angle are driven by Sky3D and not changeable unless you disable `Sky3D.enable_editor_time` and/or `enable_game_time`. Other settings like shadow configuration are adjustable.
+* Customize the settings of the `Sky3D`, `Sky3D/Environment`, `TimeOfDay`, `Skydome`, `SunLight`, and `MoonLight` nodes. Some settings like light energy, color, and angle are driven by Sky3D and not directly changeable on the light nodes. You'll know if they are reset on time updates. Adjust those settings in `Sky3D` or `Skydome`.
 
 For support, join our [Discord server](https://tokisan.com/discord).
 
