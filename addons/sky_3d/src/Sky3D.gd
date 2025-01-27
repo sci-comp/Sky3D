@@ -234,6 +234,7 @@ func set_skydome_energy(value: float) -> void:
 	if sky:
 		skydome_energy = value
 		sky.exposure = value
+		sky.clouds_cumulus_intensity = value * .769 # (1/1.3 default sun energy)
 
 
 ## Exposure of camera connected to Environment.camera_attributes.
