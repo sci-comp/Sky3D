@@ -187,7 +187,8 @@ void vertex(){
 
 void fragment(){
 	float depthRaw = texture(DEPTH_TEXTURE, SCREEN_UV).r;
-
+	depthRaw = PROJECTION_MATRIX[3][2] > PROJECTION_MATRIX[2][2] ? depthRaw : depthRaw * 2.0 - 1.0;
+	
 	vec3 view; vec3 worldPos;
 	computeCoords(SCREEN_UV, depthRaw, camera_matrix, INV_PROJECTION_MATRIX, view, worldPos);
 	worldPos = normalize(worldPos);
