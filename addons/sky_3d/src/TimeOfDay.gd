@@ -65,22 +65,14 @@ func _ready() -> void:
 
 
 func _on_timeout() -> void:
-	var delta: float = .001 * (Time.get_ticks_msec() - _last_update)
-
-	if not system_sync:
-		__time_process(delta)
-		__repeat_full_cycle()
-		__check_cycle()
-	else:
+	if system_sync:
 		__get_date_time_os()
-	
-	__celestials_update_timer += delta;
-	if __celestials_update_timer > celestials_update_time:
-		__set_celestial_coords()
-		__celestials_update_timer = 0.0
-
+	else:
+		var delta: float = .001 * (Time.get_ticks_msec() - _last_update)
+		__progress_time(delta)
+	__update_celestial_coords()
 	_last_update = Time.get_ticks_msec()
-	
+
 
 func pause() -> void:
 	if is_instance_valid(_update_timer):
@@ -111,7 +103,7 @@ func set_dome_path(value: NodePath) -> void:
 		__dome = get_node_or_null(value) as Skydome
 	
 	__dome_found = false if __dome == null else true
-	__set_celestial_coords()
+	__update_celestial_coords()
 
 
 #####################
@@ -128,31 +120,49 @@ var year: int = 2025: set = set_year
 
 
 func set_total_hours(value: float) -> void:
-	total_hours = value
-	emit_signal("time_changed", value)
-	if Engine.is_editor_hint():
-		__set_celestial_coords()
+	if total_hours != value:
+		total_hours = value
+		if total_hours > 23.9999:
+			total_hours -= 24
+			day += 1
+		elif total_hours < 0.0000:
+			total_hours += 24
+			day -= 1
+		emit_signal("time_changed", total_hours)
+		__update_celestial_coords()
 
 
 func set_day(value: int) -> void:
-	day = value 
-	emit_signal("day_changed", value)
-	if Engine.is_editor_hint():
-		__set_celestial_coords()
+	if day != value:
+		day = value 
+		if day > max_days_per_month():
+			day = 1
+			month += 1
+		elif day < 1:
+			month -= 1
+			day = max_days_per_month()
+		emit_signal("day_changed", day)
+		__update_celestial_coords()
 
 
 func set_month(value: int) -> void:
-	month = value 
-	emit_signal("month_changed", value)
-	if Engine.is_editor_hint():
-		__set_celestial_coords()
+	if month != value:
+		month = value
+		if month > 12:
+			month = 1
+			year += 1
+		elif month < 1:
+			month = 12
+			year -= 1
+		emit_signal("month_changed", month)
+		__update_celestial_coords()
 
 
 func set_year(value: int) -> void:
-	year = value 
-	emit_signal("year_changed", value)
-	if Engine.is_editor_hint():
-		__set_celestial_coords()
+	if year != value:
+		year = value
+		emit_signal("year_changed", year)
+		__update_celestial_coords()
 
 
 func is_learp_year() -> bool:
@@ -193,8 +203,6 @@ var celestials_calculations: int = 1: set = set_celestials_calculations
 var latitude: float = 16.0: set = set_latitude
 var longitude: float = 108.0: set = set_longitude
 var utc: float = 7.0: set = set_utc
-var celestials_update_time: float = 0.0
-var __celestials_update_timer: float = 0.0
 var compute_moon_coords: bool = true: set = set_compute_moon_coords
 var compute_deep_space_coords: bool = true: set = set_compute_deep_space_coords
 var moon_coords_offset := Vector2(0.0, 0.0): set = set_moon_coords_offset
@@ -211,46 +219,39 @@ var __moon_orbital_elements := OrbitalElements.new()
 
 func set_celestials_calculations(value: int) -> void:
 	celestials_calculations = value
-	if Engine.is_editor_hint():
-		__set_celestial_coords()
+	__update_celestial_coords()
 	notify_property_list_changed()
 	
 
 func set_latitude(value: float) -> void:
 	latitude = value
-	if Engine.is_editor_hint():
-		__set_celestial_coords()
+	__update_celestial_coords()
 
 
 func set_longitude(value: float) -> void:
 	longitude = value
-	if Engine.is_editor_hint():
-		__set_celestial_coords()
+	__update_celestial_coords()
 
 
 func set_utc(value: float) -> void:
 	utc = value
-	if Engine.is_editor_hint():
-		__set_celestial_coords()
+	__update_celestial_coords()
 
 
 func set_compute_moon_coords(value: bool) -> void:
 	compute_moon_coords = value
-	if Engine.is_editor_hint():
-		__set_celestial_coords()
+	__update_celestial_coords()
 	notify_property_list_changed()
 	
 
 func set_compute_deep_space_coords(value: bool) -> void:
 	compute_deep_space_coords = value
-	if Engine.is_editor_hint():
-		__set_celestial_coords()
+	__update_celestial_coords()
 
 
 func set_moon_coords_offset(value: Vector2) -> void:
 	moon_coords_offset = value
-	if Engine.is_editor_hint():
-		__set_celestial_coords()
+	__update_celestial_coords()
 
 
 func __get_latitude_rad() -> float:
@@ -306,8 +307,8 @@ func get_unix_timestamp() -> int:
 	return Time.get_unix_time_from_datetime_dict(get_datetime_dict())
 
 
-func __time_process(delta: float) -> void:
-	if time_cycle_duration() != 0.0:
+func __progress_time(delta: float) -> void:
+	if not is_zero_approx(time_cycle_duration()):
 		set_total_hours(total_hours + delta / time_cycle_duration() * DateTimeUtil.TOTAL_HOURS)
 
 
@@ -319,47 +320,12 @@ func __get_date_time_os() -> void:
 	set_year(date_time_os.year)
 
 
-func __repeat_full_cycle() -> void:
-	if is_end_of_time() && total_hours >= 23.9999:
-		set_year(1); set_month(1); set_day(1)
-		set_total_hours(0.0)
-		
-	if is_begin_of_time() && total_hours < 0.0:
-		set_year(9999); set_month(12); set_day(31)
-		set_total_hours(23.9999)
-
-
-func __check_cycle() -> void:
-	if total_hours > 23.9999:
-		set_day(day + 1)
-		set_total_hours(0.0)
-	if total_hours < 0.0000:
-		set_day(day - 1)
-		set_total_hours(23.9999)
-	
-	if day > max_days_per_month():
-		set_month(month + 1)
-		set_day(1)
-	
-	if day < 1:
-		set_month(month - 1)
-		set_day(31)
-	
-	if month > 12:
-		set_year(year + 1)
-		set_month(1)
-	
-	if month < 1:
-		set_year(year - 1)
-		set_month(12)
-
-
 #####################
 ## Planetary
 #####################
 
 
-func __set_celestial_coords() -> void:
+func __update_celestial_coords() -> void:
 	if not __dome_found:
 		return
 
@@ -622,6 +588,5 @@ func _get_property_list() -> Array:
 	ret.push_back({name = "latitude", type=TYPE_FLOAT, hint=PROPERTY_HINT_RANGE, hint_string="-90.0, 90.0"})
 	ret.push_back({name = "longitude", type=TYPE_FLOAT, hint=PROPERTY_HINT_RANGE, hint_string="-180.0, 180.0"})
 	ret.push_back({name = "utc", type=TYPE_FLOAT, hint=PROPERTY_HINT_RANGE, hint_string="-12.0, 12.0"})
-	ret.push_back({name = "celestials_update_time", type=TYPE_FLOAT})
 	
 	return ret

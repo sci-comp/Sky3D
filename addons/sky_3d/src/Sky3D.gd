@@ -138,7 +138,7 @@ func set_current_time(value: float) -> void:
 
 
 ## The length of a full day in real minutes. +/-1440 (24 hours), forward or backwards.
-@export_range(-1440,1440,1) var minutes_per_day: float = 15.0 : set = set_minutes_per_day
+@export_range(-1440,1440,.1) var minutes_per_day: float = 15.0 : set = set_minutes_per_day
 
 func set_minutes_per_day(value):
 	minutes_per_day = value
@@ -155,6 +155,7 @@ func set_update_interval(value: float) -> void:
 		tod.update_interval = value
 
 
+## Tracks if the sun is above the horizon.
 var _is_day: bool = true
 
 
