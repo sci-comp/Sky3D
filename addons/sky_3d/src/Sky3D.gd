@@ -138,7 +138,7 @@ func set_current_time(value: float) -> void:
 
 
 ## The length of a full day in real minutes. +/-1440 (24 hours), forward or backwards.
-@export_range(-1440,1440,1) var minutes_per_day: float = 15.0 : set = set_minutes_per_day
+@export_range(-1440,1440,.1) var minutes_per_day: float = 15.0 : set = set_minutes_per_day
 
 func set_minutes_per_day(value):
 	minutes_per_day = value
@@ -155,17 +155,7 @@ func set_update_interval(value: float) -> void:
 		tod.update_interval = value
 
 
-@export var manual_time_management: bool = false : set = set_manual_time_management;
-
-func set_manual_time_management(value:bool) -> void:
-	manual_time_management = value
-	if tod:
-		tod._manual_time_management = value
-
-func manual_time_update() -> void:
-	if tod:
-		tod.manual_time_update()
-
+## Tracks if the sun is above the horizon.
 var _is_day: bool = true
 
 
@@ -192,7 +182,7 @@ func resume() -> void:
 
 
 func _on_timeofday_updated(time: float) -> void:
-	if tod and (Engine.is_editor_hint() or manual_time_management):
+	if tod:
 		minutes_per_day = tod.total_cycle_in_minutes
 		current_time = tod.total_hours
 		update_interval = tod.update_interval
@@ -511,7 +501,6 @@ const _clouds_texture: Texture2D = preload("res://addons/sky_3d/assets/resources
 const _clouds_cumulus_texture: Texture2D = preload("res://addons/sky_3d/assets/textures/noiseClouds.png")
 
 # Skydome
-const MAX_EXTRA_CULL_MARGIN: float = 16384.0
 const DEFAULT_POSITION:= Vector3(0.0000001, 0.0000001, 0.0000001)
 
 # Coords
