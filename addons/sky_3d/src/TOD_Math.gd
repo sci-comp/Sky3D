@@ -48,7 +48,7 @@ static func plerp_vec3(from: Vector3, to: Vector3, t: float) -> Vector3:
 static func plerp_color(from: Color, to: Color, t: float) -> Color:
 	var ret: Color
 	ret.r = (1 - t) * from.r + t * to.r
-	ret.g = (1 - t) * from.g + t * to.b
+	ret.g = (1 - t) * from.g + t * to.g
 	ret.b = (1 - t) * from.b + t * to.b
 	ret.a = (1 - t) * from.a + t * to.a	
 	return ret
