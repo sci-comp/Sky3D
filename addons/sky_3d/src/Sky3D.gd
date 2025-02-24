@@ -128,8 +128,8 @@ func set_game_time_enabled(value: bool) -> void:
 		tod.update_in_game = value
 
 
-## The time right now in hours, 0-24.
-@export_range(0.0, 24.0) var current_time: float = 8.0 : set = set_current_time
+## The time right now in hours, 0-23.99. Larger and smaller values will wrap
+@export_range(0.0, 23.99, .01, "or_greater", "or_less") var current_time: float = 8.0 : set = set_current_time
 
 func set_current_time(value: float) -> void:
 	current_time = value

@@ -122,10 +122,10 @@ var year: int = 2025: set = set_year
 func set_total_hours(value: float) -> void:
 	if total_hours != value:
 		total_hours = value
-		if total_hours > 23.9999:
+		while total_hours > 23.9999:
 			total_hours -= 24
 			day += 1
-		elif total_hours < 0.0000:
+		while total_hours < 0.0000:
 			total_hours += 24
 			day -= 1
 		emit_signal("time_changed", total_hours)
@@ -134,13 +134,13 @@ func set_total_hours(value: float) -> void:
 
 func set_day(value: int) -> void:
 	if day != value:
-		day = value 
-		if day > max_days_per_month():
-			day = 1
+		day = value
+		while day > max_days_per_month():
+			day -= max_days_per_month()
 			month += 1
-		elif day < 1:
+		while day < 1:
 			month -= 1
-			day = max_days_per_month()
+			day += max_days_per_month()
 		emit_signal("day_changed", day)
 		__update_celestial_coords()
 
@@ -148,11 +148,11 @@ func set_day(value: int) -> void:
 func set_month(value: int) -> void:
 	if month != value:
 		month = value
-		if month > 12:
-			month = 1
+		while month > 12:
+			month -= 12
 			year += 1
-		elif month < 1:
-			month = 12
+		while month < 1:
+			month += 12
 			year -= 1
 		emit_signal("month_changed", month)
 		__update_celestial_coords()
