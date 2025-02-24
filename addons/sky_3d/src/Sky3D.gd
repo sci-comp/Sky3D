@@ -394,9 +394,10 @@ func set_ambient_tween_time(value: float) -> void:
 #####################
 
 
-func _enter_tree() -> void:
-	_initialize()
-	update_day_night(true)
+func _notification(what: int) -> void:
+	# Must be after _init and before _enter_tree to properly set vars like 'sky' for setters
+	if what in [ NOTIFICATION_SCENE_INSTANTIATED, NOTIFICATION_ENTER_TREE ]:
+		_initialize()
 
 
 func _initialize() -> void:
@@ -423,7 +424,7 @@ func _initialize() -> void:
 	
 	if has_node("SunLight"):
 		sun = $SunLight
-	else:
+	elif is_inside_tree():
 		sun = DirectionalLight3D.new()
 		sun.name = "SunLight"
 		add_child(sun, true)
@@ -432,7 +433,7 @@ func _initialize() -> void:
 	
 	if has_node("MoonLight"):
 		moon = $MoonLight
-	else:
+	elif is_inside_tree():
 		moon = DirectionalLight3D.new()
 		moon.name = "MoonLight"
 		add_child(moon, true)
@@ -441,25 +442,30 @@ func _initialize() -> void:
 
 	if has_node("Skydome"):
 		sky = $Skydome
-	else:
+		sky.environment = environment
+	elif is_inside_tree():
 		sky = Skydome.new()
 		sky.name = "Skydome"
 		add_child(sky, true)
 		sky.owner = get_tree().edited_scene_root
 		sky.sun_light_path = "../SunLight"
 		sky.moon_light_path = "../MoonLight"
-	sky.environment = environment
+		sky.environment = environment
 
 	if has_node("TimeOfDay"):
 		tod = $TimeOfDay
-	else:
+	elif is_inside_tree():
 		tod = TimeOfDay.new()
 		tod.name = "TimeOfDay"
 		add_child(tod, true)
 		tod.owner = get_tree().edited_scene_root
 		tod.dome_path = "../Skydome"
-	if not tod.time_changed.is_connected(_on_timeofday_updated):
+	if tod and not tod.time_changed.is_connected(_on_timeofday_updated):
 		tod.time_changed.connect(_on_timeofday_updated)
+
+
+func _enter_tree() -> void:
+	update_day_night(true)
 
 
 func _set(property: StringName, value: Variant) -> bool:
