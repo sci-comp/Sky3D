@@ -346,12 +346,12 @@ func __update_celestial_coords() -> void:
 		
 		CelestialCalculationsMode.Realistic:
 			__compute_realistic_sun_coords()
-			__dome.sun_altitude = __sun_coords.y * TOD_Math.RAD_TO_DEG
-			__dome.sun_azimuth = __sun_coords.x * TOD_Math.RAD_TO_DEG
+			__dome.sun_altitude = -__sun_coords.y * TOD_Math.RAD_TO_DEG
+			__dome.sun_azimuth = -__sun_coords.x * TOD_Math.RAD_TO_DEG
 			if compute_moon_coords:
 				__compute_realistic_moon_coords()
-				__dome.moon_altitude = __moon_coords.y * TOD_Math.RAD_TO_DEG
-				__dome.moon_azimuth = __moon_coords.x * TOD_Math.RAD_TO_DEG
+				__dome.moon_altitude = -__moon_coords.y * TOD_Math.RAD_TO_DEG
+				__dome.moon_azimuth = -__moon_coords.x * TOD_Math.RAD_TO_DEG
 			
 			if compute_deep_space_coords:
 				var x = Quaternion.from_euler(Vector3( (90 + latitude) * TOD_Math.DEG_TO_RAD, 0.0, 0.0) )
