@@ -296,5 +296,4 @@ void fragment(){
 	col.rgb = tonemapPhoto(col.rgb, _color_correction_params.y, _color_correction_params.x);
 
 	ALBEDO = col.rgb;
-	DEPTH = 0.0;
 }

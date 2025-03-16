@@ -51,7 +51,7 @@ func set_sky_enabled(value: bool) -> void:
 	sky_enabled = value
 	if not sky:
 		return
-	sky.sky_visible = value
+	#sky.sky_visible = value
 	sky.clouds_cumulus_visible = clouds_enabled and value
 
 
@@ -64,17 +64,8 @@ func set_lights_enabled(value: bool) -> void:
 		return
 	sky.sun_light_enable = value
 	sky.moon_light_enable = value
-	sky.__sun_light_node.visible = value && sky.__sun_light_node.light_energy > 0
-	sky.__moon_light_node.visible = value && sky.__moon_light_node.light_energy > 0
-
-
-## Enables the screen space fog shader.
-@export var fog_enabled: bool = true : set = set_fog_enabled
-
-func set_fog_enabled(value: bool) -> void:
-	fog_enabled = value
-	if sky:
-		sky.fog_visible = value
+	sky.__sun_light_node.visible = value
+	sky.__moon_light_node.visible = value
 
 
 ## Enables the 2D and cumulus cloud layers.
@@ -85,22 +76,20 @@ func set_clouds_enabled(value: bool) -> void:
 	if not sky:
 		return
 	sky.clouds_cumulus_visible = value
+	sky.clouds_cumulus_thickness = float(value) * 0.0243
 	sky.clouds_thickness = float(value) * 1.7
-	# TODO should create an on/off in skydome so disabling this doesn't change the enabled value
 
 
 ## Disables rendering of sky, fog, and lights
 func hide_sky() -> void:
 	sky_enabled = false
 	lights_enabled = false
-	fog_enabled = false
 
 
 ## Enables rendering of sky, fog, and lights
 func show_sky() -> void:
 	sky_enabled = true
 	lights_enabled = true
-	fog_enabled = true
 
 
 #####################
@@ -128,7 +117,7 @@ func set_game_time_enabled(value: bool) -> void:
 		tod.update_in_game = value
 
 
-## The time right now in hours, 0-23.99. Larger and smaller values will wrap
+## The current in-game time in hours from 0.0 to 23.99. Smaller or larger values than the range will wrap.
 @export_range(0.0, 23.99, .01, "or_greater", "or_less") var current_time: float = 8.0 : set = set_current_time
 
 func set_current_time(value: float) -> void:
@@ -137,7 +126,10 @@ func set_current_time(value: float) -> void:
 		tod.total_hours = value
 
 
-## The length of a full day in real minutes. +/-1440 (24 hours), forward or backwards.
+## The length of a full in-game day in real-world minutes.[br]
+## For example, setting this to [param 15] means a full in-game day takes 15 real-world minutes.[br]
+## Only valid if automatic time progression is enabled.[br]
+## Negative values moves time backwards.
 @export_range(-1440,1440,.1) var minutes_per_day: float = 15.0 : set = set_minutes_per_day
 
 func set_minutes_per_day(value):
@@ -146,7 +138,9 @@ func set_minutes_per_day(value):
 		tod.total_cycle_in_minutes = value
 
 
-## Frequency of updates. Set to 0.016 for 60fps.
+## Frequency of sky updates, per second. The smaller the number, the more frequent the updates and
+## the smoother the animation. Set to [param 0.016] for 60fps, for example.[br][br]
+## [b]Note:[/b] Setting this value too small may cause unwanted behavior. See [member Timer.wait_time].
 @export_range(0.016, 10.0) var update_interval: float = 0.1 : set = set_update_interval
 
 func set_update_interval(value: float) -> void:
@@ -194,22 +188,20 @@ func update_day_night(force: bool = false) -> void:
 	if not (sky and environment):
 		return
 
-	# If day transitioning to night		
+	# If day transitioning to night
 	if abs(sky.sun_altitude) > 87 and (_is_day or force):
 		_is_day = false
 		var tween: Tween = get_tree().create_tween()
 		tween.set_parallel(true)
 		var contrib: float = minf(night_ambient_min, sky_contribution) if night_ambient else sky_contribution
 		tween.tween_property(environment, "ambient_light_sky_contribution", contrib, ambient_tween_time)
-		tween.tween_property(environment.sky.sky_material, "energy_multiplier", 1., ambient_tween_time)
 
-	# Else if night transitioning to day		
+	# Else if night transitioning to day
 	elif abs(sky.sun_altitude) <= 87 and (not _is_day or force):
 		_is_day = true
 		var tween: Tween = get_tree().create_tween()
 		tween.set_parallel(true)
 		tween.tween_property(environment, "ambient_light_sky_contribution", sky_contribution, ambient_tween_time)
-		tween.tween_property(environment.sky.sky_material, "energy_multiplier", reflected_energy, ambient_tween_time)
 
 
 #####################
@@ -265,16 +257,6 @@ func set_sun_shadow_opacity(value: float) -> void:
 		sun.shadow_opacity = value
 		
 
-## Strength of refelcted light from the PhysicalSky. See PhysicalSkyMaterial.energy_multiplier
-@export_range(0,128,.005) var reflected_energy: float = 1.0: set = set_reflected_energy
-
-func set_reflected_energy(value: float) -> void:
-	if environment:
-		reflected_energy = value
-		if environment.sky:
-			environment.sky.sky_material.energy_multiplier = value
-
-			
 ## Ratio of ambient light to sky light. See Environment.ambient_light_sky_contribution.
 @export_range(0,1,.005) var sky_contribution: float = 1.0: set = set_sky_contribution
 
@@ -406,8 +388,8 @@ func _initialize() -> void:
 		environment = Environment.new()
 		environment.background_mode = Environment.BG_SKY
 		environment.sky = Sky.new()
-		environment.sky.sky_material = PhysicalSkyMaterial.new()
-		environment.sky.sky_material.use_debanding = false
+		environment.sky.sky_material = ShaderMaterial.new()
+		environment.sky.sky_material.shader = _new_sky_shader
 		environment.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 		environment.ambient_light_sky_contribution = 0.7
 		environment.ambient_light_energy = 1.0
@@ -489,13 +471,7 @@ const MOON_INSTANCE:= "MoonRender"
 const CLOUDS_C_INSTANCE:= "_CloudsCumulusI"
 
 # Shaders
-const _sky_shader: Shader = preload("res://addons/sky_3d/shaders/Sky.gdshader")
-const _pv_sky_shader: Shader = preload("res://addons/sky_3d/shaders/PerVertexSky.gdshader")
-const _clouds_cumulus_shader: Shader = preload("res://addons/sky_3d/shaders/CloudsCumulus.gdshader")
-const _fog_shader: Shader = preload("res://addons/sky_3d/shaders/AtmFog.gdshader")
-
-# Scenes
-const _moon_render: PackedScene = preload("res://addons/sky_3d/assets/resources/MoonRender.tscn")
+const _new_sky_shader: Shader = preload("res://addons/sky_3d/shaders/SkyMaterial.gdshader")
 
 # Textures
 const _moon_texture: Texture2D = preload("res://addons/sky_3d/assets/thirdparty/textures/moon/MoonMap.png")
@@ -507,81 +483,101 @@ const _clouds_texture: Texture2D = preload("res://addons/sky_3d/assets/resources
 const _clouds_cumulus_texture: Texture2D = preload("res://addons/sky_3d/assets/textures/noiseClouds.png")
 
 # Skydome
-const DEFAULT_POSITION:= Vector3(0.0000001, 0.0000001, 0.0000001)
+const DEFAULT_POSITION: Vector3 = Vector3(0.0000001, 0.0000001, 0.0000001)
 
 # Coords
-const SUN_DIR_P:= "_sun_direction"
-const MOON_DIR_P:= "_moon_direction"
-const MOON_MATRIX:= "_moon_matrix"
+const SUN_DIR_P: String = "_sun_direction"
+const MOON_DIR_P: String = "_moon_direction"
+const MOON_MATRIX: String = "_moon_matrix"
 
 # General
-const TEXTURE_P:= "_texture"
-const COLOR_CORRECTION_P:= "_color_correction_params"
-const GROUND_COLOR_P:= "_ground_color"
-const NOISE_TEX:= "_noise_tex"
-const HORIZON_LEVEL = "_horizon_level"
+const TEXTURE_P: String = "_texture"
+const COLOR_CORRECTION_P: String = "_color_correction_params"
+const GROUND_COLOR_P: String = "_ground_color"
+const NOISE_TEX: String = "_noise_tex"
+const HORIZON_LEVEL: String = "_horizon_level"
 
 # Atmosphere
-const ATM_DARKNESS_P:= "_atm_darkness"
-const ATM_BETA_RAY_P:= "_atm_beta_ray"
-const ATM_SUN_INTENSITY_P:= "_atm_sun_intensity"
-const ATM_DAY_TINT_P:= "_atm_day_tint"
-const ATM_HORIZON_LIGHT_TINT_P:= "_atm_horizon_light_tint"
+const ATM_DARKNESS_P: String = "_atm_darkness"
+const ATM_BETA_RAY_P: String = "_atm_beta_ray"
+const ATM_SUN_INTENSITY_P: String = "_atm_sun_intensity"
+const ATM_DAY_TINT_P: String = "_atm_day_tint"
+const ATM_HORIZON_LIGHT_TINT_P: String = "_atm_horizon_light_tint"
 
-const ATM_NIGHT_TINT_P:= "_atm_night_tint"
-const ATM_LEVEL_PARAMS_P:= "_atm_level_params"
-const ATM_THICKNESS_P:= "_atm_thickness"
-const ATM_BETA_MIE_P:= "_atm_beta_mie"
+const ATM_NIGHT_TINT_P: String = "_atm_night_tint"
+const ATM_LEVEL_PARAMS_P: String = "_atm_level_params"
+const ATM_THICKNESS_P: String = "_atm_thickness"
+const ATM_BETA_MIE_P: String = "_atm_beta_mie"
 
-const ATM_SUN_MIE_TINT_P:= "_atm_sun_mie_tint"
-const ATM_SUN_MIE_INTENSITY_P:= "_atm_sun_mie_intensity"
-const ATM_SUN_PARTIAL_MIE_PHASE_P:= "_atm_sun_partial_mie_phase"
+const ATM_SUN_MIE_TINT_P: String = "_atm_sun_mie_tint"
+const ATM_SUN_MIE_INTENSITY_P: String = "_atm_sun_mie_intensity"
+const ATM_SUN_PARTIAL_MIE_PHASE_P: String = "_atm_sun_partial_mie_phase"
 
-const ATM_MOON_MIE_TINT_P:= "_atm_moon_mie_tint"
-const ATM_MOON_MIE_INTENSITY_P:= "_atm_moon_mie_intensity"
-const ATM_MOON_PARTIAL_MIE_PHASE_P:= "_atm_moon_partial_mie_phase"
+const ATM_MOON_MIE_TINT_P: String = "_atm_moon_mie_tint"
+const ATM_MOON_MIE_INTENSITY_P: String = "_atm_moon_mie_intensity"
+const ATM_MOON_PARTIAL_MIE_PHASE_P: String = "_atm_moon_partial_mie_phase"
 
 # Fog
-const ATM_FOG_DENSITY_P:= "_fog_density"
-const ATM_FOG_RAYLEIGH_DEPTH_P:= "_fog_rayleigh_depth"
-const ATM_FOG_MIE_DEPTH_P:= "_fog_mie_depth"
-const ATM_FOG_FALLOFF:= "_fog_falloff"
-const ATM_FOG_START:= "_fog_start"
-const ATM_FOG_END:= "_fog_end"
+const ATM_FOG_DENSITY_P: String = "_fog_density"
+const ATM_FOG_RAYLEIGH_DEPTH_P: String = "_fog_rayleigh_depth"
+const ATM_FOG_MIE_DEPTH_P: String = "_fog_mie_depth"
+const ATM_FOG_FALLOFF: String = "_fog_falloff"
+const ATM_FOG_START: String = "_fog_start"
+const ATM_FOG_END: String = "_fog_end"
 
 # Near Space
-const SUN_DISK_COLOR_P:= "_sun_disk_color"
-const SUN_DISK_INTENSITY_P:= "_sun_disk_intensity"
-const SUN_DISK_SIZE_P:= "_sun_disk_size"
-const MOON_COLOR_P:= "_moon_color"
-const MOON_SIZE_P:= "_moon_size"
-const MOON_TEXTURE_P:= "_moon_texture"
+const SUN_DISK_COLOR_P: String = "_sun_disk_color"
+const SUN_DISK_INTENSITY_P: String = "_sun_disk_intensity"
+const SUN_DISK_SIZE_P: String = "_sun_disk_size"
+const MOON_COLOR_P: String = "_moon_color"
+const MOON_SIZE_P: String = "_moon_size"
+const MOON_TEXTURE_P: String = "_moon_texture"
 
 # Deep Space
-const DEEP_SPACE_MATRIX_P:= "_deep_space_matrix"
-const BG_COL_P:= "_background_color"
-const BG_TEXTURE_P:= "_background_texture"
-const STARS_COLOR_P:= "_stars_field_color"
-const STARS_TEXTURE_P:= "_stars_field_texture"
-const STARS_SC_P:= "_stars_scintillation"
-const STARS_SC_SPEED_P:= "_stars_scintillation_speed"
+const DEEP_SPACE_MATRIX_P: String = "_deep_space_matrix"
+const BG_COL_P: String = "_background_color"
+const BG_TEXTURE_P: String = "_background_texture"
+const STARS_COLOR_P: String = "_stars_field_color"
+const STARS_TEXTURE_P: String = "_stars_field_texture"
+const STARS_SC_P: String = "_stars_scintillation"
+const STARS_SC_SPEED_P: String = "_stars_scintillation_speed"
 
 # Clouds
-const CLOUDS_THICKNESS:= "_clouds_thickness"
-const CLOUDS_COVERAGE:= "_clouds_coverage"
-const CLOUDS_ABSORPTION:= "_clouds_absorption"
-const CLOUDS_SKY_TINT_FADE:= "_clouds_sky_tint_fade"
-const CLOUDS_INTENSITY:= "_clouds_intensity"
-const CLOUDS_SIZE:= "_clouds_size"
-const CLOUDS_NOISE_FREQ:= "_clouds_noise_freq"
+const CLOUDS_THICKNESS: String = "_clouds_thickness"
+const CLOUDS_COVERAGE: String = "_clouds_coverage"
+const CLOUDS_ABSORPTION: String = "_clouds_absorption"
+const CLOUDS_SKY_TINT_FADE: String = "_clouds_sky_tint_fade"
+const CLOUDS_INTENSITY: String = "_clouds_intensity"
+const CLOUDS_SIZE: String = "_clouds_size"
+const CLOUDS_NOISE_FREQ: String = "_clouds_noise_freq"
 
-const CLOUDS_UV:= "_clouds_uv"
-const CLOUDS_DIRECTION:= "_clouds_direction"
-const CLOUDS_SPEED:= "_clouds_speed"
-const CLOUDS_TEXTURE:= "_clouds_texture"
+const CLOUDS_UV: String = "_clouds_uv"
+const CLOUDS_DIRECTION: String = "_clouds_direction"
+const CLOUDS_SPEED: String = "_clouds_speed"
+const CLOUDS_TEXTURE: String = "_clouds_texture"
 
-const CLOUDS_DAY_COLOR:= "_clouds_day_color"
-const CLOUDS_HORIZON_LIGHT_COLOR:= "_clouds_horizon_light_color"
-const CLOUDS_NIGHT_COLOR:= "_clouds_night_color"
-const CLOUDS_MIE_INTENSITY:= "_clouds_mie_intensity"
-const CLOUDS_PARTIAL_MIE_PHASE:= "_clouds_partial_mie_phase"
+const CLOUDS_DAY_COLOR: String = "_clouds_day_color"
+const CLOUDS_HORIZON_LIGHT_COLOR: String = "_clouds_horizon_light_color"
+const CLOUDS_NIGHT_COLOR: String = "_clouds_night_color"
+const CLOUDS_MIE_INTENSITY: String = "_clouds_mie_intensity"
+const CLOUDS_PARTIAL_MIE_PHASE: String = "_clouds_partial_mie_phase"
+
+# Cumulus Clouds
+const CUMULUS_CLOUDS_THICKNESS: String = "_cumulus_clouds_thickness"
+const CUMULUS_CLOUDS_COVERAGE: String = "_cumulus_clouds_coverage"
+const CUMULUS_CLOUDS_ABSORPTION: String = "_cumulus_clouds_absorption"
+const CUMULUS_CLOUDS_SKY_TINT_FADE: String = "_cumulus_clouds_sky_tint_fade"
+const CUMULUS_CLOUDS_INTENSITY: String = "_cumulus_clouds_intensity"
+const CUMULUS_CLOUDS_SIZE: String = "_cumulus_clouds_size"
+const CUMULUS_CLOUDS_NOISE_FREQ: String = "_cumulus_clouds_noise_freq"
+
+const CUMULUS_CLOUDS_UV: String = "_cumulus_clouds_uv"
+const CUMULUS_CLOUDS_DIRECTION: String = "_cumulus_clouds_direction"
+const CUMULUS_CLOUDS_SPEED: String = "_cumulus_clouds_speed"
+const CUMULUS_CLOUDS_TEXTURE: String = "_cumulus_clouds_texture"
+
+const CUMULUS_CLOUDS_DAY_COLOR: String = "_cumulus_clouds_day_color"
+const CUMULUS_CLOUDS_HORIZON_LIGHT_COLOR: String = "_cumulus_clouds_horizon_light_color"
+const CUMULUS_CLOUDS_NIGHT_COLOR: String = "_cumulus_clouds_night_color"
+const CUMULUS_CLOUDS_MIE_INTENSITY: String = "_cumulus_clouds_mie_intensity"
+const CUMULUS_CLOUDS_PARTIAL_MIE_PHASE: String = "_cumulus_clouds_partial_mie_phase"

@@ -165,7 +165,7 @@ func set_year(value: int) -> void:
 		__update_celestial_coords()
 
 
-func is_learp_year() -> bool:
+func is_leap_year() -> bool:
 	return DateTimeUtil.compute_leap_year(year)
 
 
@@ -174,7 +174,7 @@ func max_days_per_month() -> int:
 		1, 3, 5, 7, 8, 10, 12:
 			return 31
 		2:
-			return 29 if is_learp_year() else 28
+			return 29 if is_leap_year() else 28
 	return 30
 	
 
