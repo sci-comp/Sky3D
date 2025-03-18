@@ -9,10 +9,7 @@ uniform vec2 _color_correction_params = vec2(0.0, 1.3);
 uniform vec4 _ground_color: source_color = vec4(0.3, 0.3, 0.3, 1.0);
 uniform float _horizon_level = 0.0;
 
-// uniforms
-uniform vec3 _sun_direction; // Deprecated for sky shader. Now directly depends on LIGHT0_DIRECTION.
-uniform vec3 _moon_direction; // Deprecated for sky shader. Now directly depends on LIGHT1_DIRECTION.
-
+// Moon and Deep Space
 uniform float _moon_size = 0.07;
 uniform mat3 _moon_matrix; // Set externally via GDScript.
 uniform mat3 _deep_space_matrix; // Set externally via GDScript for star map rotation.

@@ -24,7 +24,6 @@ enum MoonResolution {
 
 
 var is_scene_built: bool
-#var sky_mesh: MeshInstance3D
 var sky_sphere: SphereMesh
 var moon_render: Node
 var clouds_cumulus_mesh: MeshInstance3D
@@ -43,8 +42,6 @@ func _ready() -> void:
 	# General
 	update_color_correction_params()
 	update_ground_color()
-	update_sky_layers()
-	update_sky_render_priority()
 	update_horizon_level()
 	
 	# Coords
@@ -78,8 +75,6 @@ func _ready() -> void:
 	update_moon_light_path()
 	update_moon_size()
 	set_enable_set_moon_texture(enable_set_moon_texture)
-	update_moon_texture()
-	update_moon_resolution()
 
 	# Near space lighting
 	update_sun_light_color()
@@ -155,8 +150,7 @@ func build_scene() -> void:
 
 var tonemap_level: float = 0.0: set = set_tonemap_level
 var exposure: float = 1.3: set = set_exposure
-var ground_color:= Color(0.3, 0.3, 0.3, 1.0): set = set_ground_color
-var sky_layers: int = 4: set = set_sky_layers
+var ground_color: Color = Color(0.3, 0.3, 0.3, 1.0): set = set_ground_color
 var horizon_level: float = 0.0: set = set_horizon_level
 
 	
@@ -194,27 +188,6 @@ func update_ground_color() -> void:
 	if !is_scene_built:
 		return
 	sky_material.set_shader_parameter(Sky3D.GROUND_COLOR_P, ground_color)
-		
-
-func set_sky_layers(value: int) -> void:
-	if sky_layers == value:
-		return
-	sky_layers = value
-	update_sky_layers()
-
-
-func update_sky_layers() -> void:
-	if !is_scene_built:
-		return
-	#sky_mesh.layers = sky_layers
-	#clouds_cumulus_mesh.layers = sky_layers
-	
-
-func update_sky_render_priority() -> void:
-	if !is_scene_built:
-		return
-	#sky_material.render_priority = sky_render_priority
-	#clouds_cumulus_material.render_priority = sky_render_priority + 1
 	
 
 func set_horizon_level(value: float) -> void:
@@ -237,7 +210,7 @@ func update_horizon_level() -> void:
 var sun_azimuth: float = 0.0: set = set_sun_azimuth
 var sun_altitude: float = -27.387: set = set_sun_altitude
 var __finish_set_sun_pos: bool = false
-var __sun_transform:= Transform3D()
+var __sun_transform: Transform3D = Transform3D()
 
 
 func set_sun_azimuth(value: float) -> void:
@@ -259,7 +232,7 @@ func get_sun_transform() -> Transform3D:
 
 
 func sun_direction() -> Vector3:
-	return __sun_transform.origin - Sky3D.DEFAULT_POSITION
+	return __sun_transform.origin
 
 
 func update_sun_coords() -> void:
@@ -275,13 +248,11 @@ func update_sun_coords() -> void:
 		__finish_set_sun_pos = true
 	
 	if __finish_set_sun_pos:
-		__sun_transform = __sun_transform.looking_at(Sky3D.DEFAULT_POSITION, Vector3.LEFT)
+		__sun_transform = __sun_transform.looking_at(Vector3.ZERO, Vector3.LEFT)
 	
 	__set_day_state(altitude)
 	emit_signal("sun_transform_changed", __sun_transform)
 	emit_signal("sun_transform_changed", sun_direction())
-	
-	sky_material.set_shader_parameter(Sky3D.SUN_DIR_P, sun_direction())
 	
 	if __sun_light_node != null:
 		__sun_light_node.transform = __sun_transform
@@ -300,7 +271,7 @@ func update_sun_coords() -> void:
 var moon_azimuth: float = 5.0: set = set_moon_azimuth
 var moon_altitude: float = -80.0: set = set_moon_altitude
 var __finish_set_moon_pos = false
-var __moon_transform:= Transform3D()
+var __moon_transform: Transform3D = Transform3D()
 
 
 func set_moon_azimuth(value: float) -> void:
@@ -322,7 +293,7 @@ func get_moon_transform() -> Transform3D:
 
 
 func moon_direction() -> Vector3:
-	return __moon_transform.origin - Sky3D.DEFAULT_POSITION
+	return __moon_transform.origin
 
 
 func update_moon_coords() -> void:
@@ -338,13 +309,12 @@ func update_moon_coords() -> void:
 		__finish_set_moon_pos = true
 	
 	if __finish_set_moon_pos:
-		__moon_transform = __moon_transform.looking_at(Sky3D.DEFAULT_POSITION, Vector3.LEFT)
+		__moon_transform = __moon_transform.looking_at(Vector3.ZERO, Vector3.LEFT)
 		pass
 	
 	emit_signal("moon_transform_changed", __moon_transform)
 	emit_signal("moon_direction_changed", moon_direction())
 	
-	sky_material.set_shader_parameter(Sky3D.MOON_DIR_P, moon_direction())
 	sky_material.set_shader_parameter(Sky3D.MOON_MATRIX, get_parent().moon.get_global_transform().basis.inverse())
 	
 	if __moon_light_node != null:
@@ -363,14 +333,14 @@ func update_moon_coords() -> void:
 #####################
 
 var atm_quality: int = 1: set = set_atm_quality
-var atm_wavelenghts:= Vector3(680.0, 550.0, 440.0): set = set_atm_wavelenghts
+var atm_wavelengths: Vector3 = Vector3(680.0, 550.0, 440.0): set = set_atm_wavelengths
 var atm_darkness: float = 0.5: set = set_atm_darkness
 var atm_sun_intensity: float = 18.0: set = set_atm_sun_intensity
-var atm_day_tint:= Color(0.807843, 0.909804, 1.0): set = set_atm_day_tint
-var atm_horizon_light_tint:= Color(0.980392, 0.635294, 0.462745, 1.0): set = set_atm_horizon_light_tint
+var atm_day_tint: Color = Color(0.807843, 0.909804, 1.0): set = set_atm_day_tint
+var atm_horizon_light_tint: Color = Color(0.980392, 0.635294, 0.462745, 1.0): set = set_atm_horizon_light_tint
 var atm_enable_moon_scatter_mode: bool = false: set = set_atm_enable_moon_scatter_mode
-var atm_night_tint:= Color(0.168627, 0.2, 0.25098, 1.0): set = set_atm_night_tint
-var atm_level_params:= Vector3(1.0, 0.0, 0.0): set = set_atm_level_params
+var atm_night_tint: Color = Color(0.168627, 0.2, 0.25098, 1.0): set = set_atm_night_tint
+var atm_level_params: Vector3 = Vector3(1.0, 0.0, 0.0): set = set_atm_level_params
 var atm_thickness: float = 0.7: set = set_atm_thickness
 var atm_mie: float = 0.07: set = set_atm_mie
 var atm_turbidity: float = 0.001: set = set_atm_turbidity
@@ -398,10 +368,10 @@ func update_atm_quality() -> void:
 		sky_material.shader = Sky3D._new_sky_shader
 
 
-func set_atm_wavelenghts(value : Vector3) -> void:
-	if value == atm_wavelenghts:
+func set_atm_wavelengths(value : Vector3) -> void:
+	if value == atm_wavelengths:
 		return
-	atm_wavelenghts = value
+	atm_wavelengths = value
 	update_beta_ray()
 	
 
@@ -409,7 +379,7 @@ func update_beta_ray() -> void:
 	if !is_scene_built:
 		return
 
-	var wll = ScatterLib.compute_wavelenghts_lambda(atm_wavelenghts)
+	var wll = ScatterLib.compute_wavelenghts_lambda(atm_wavelengths)
 	var wls = ScatterLib.compute_wavlenghts(wll)
 	var betaRay = ScatterLib.compute_beta_ray(wls)
 	sky_material.set_shader_parameter(Sky3D.ATM_BETA_RAY_P, betaRay)
@@ -639,14 +609,14 @@ func fog_atm_night_intensity() -> float:
 ## Near space
 #####################
 
-var sun_disk_color:= Color(0.996094, 0.541334, 0.140076): set = set_sun_disk_color
+var sun_disk_color: Color = Color(0.996094, 0.541334, 0.140076): set = set_sun_disk_color
 var sun_disk_intensity: float = 2.0: set = set_sun_disk_intensity
 var sun_disk_size: float = 0.015: set = set_sun_disk_size
-var moon_color:= Color.WHITE: set = set_moon_color
+var moon_color: Color = Color.WHITE: set = set_moon_color
 var moon_size: float = 0.07: set = set_moon_size
 var enable_set_moon_texture = false: set = set_enable_set_moon_texture
 var moon_texture: Texture2D = null: set = set_moon_texture
-var moon_resolution: int = MoonResolution.R256: set = set_moon_resolution
+#var moon_resolution: int = MoonResolution.R256: set = set_moon_resolution
 
 
 func set_sun_disk_color(value: Color) -> void:
@@ -725,30 +695,6 @@ func set_moon_texture(value: Texture2D) -> void:
 	if value == moon_texture:
 		return
 	moon_texture = value
-	update_moon_texture()
-	
-
-# DEPRECATED: This used to be part of the physical moon mesh instantiation.
-# Moon texture is now set directly on the sky shader.
-func update_moon_texture() -> void:
-	if !is_scene_built:
-		return
-	#moon_material.set_shader_parameter(Sky3D.TEXTURE_P, moon_texture)
-
-
-# DEPRECATED: This used to be part of the physical moon mesh instantiation.
-func set_moon_resolution(value: int) -> void:
-	if value == moon_resolution:
-		return
-	moon_resolution = value
-	update_moon_resolution()
-
-
-# DEPRECATED: This used to be part of the physical moon mesh instantiation.
-func update_moon_resolution() -> void:
-	if !is_scene_built:
-		return
-	sky_material.set_shader_parameter(Sky3D.MOON_TEXTURE_P, Sky3D._moon_texture)
 
 	
 #####################
@@ -759,8 +705,8 @@ func update_moon_resolution() -> void:
 # Original sun horizon (1.0, 0.384314, 0.243137, 1.0)
 
 @export var sun_light_enable: bool = true
-var sun_light_color:= Color.WHITE : set = set_sun_light_color 
-var sun_horizon_light_color:= Color(.98, 0.523, 0.294, 1.0): set = set_sun_horizon_light_color
+var sun_light_color: Color = Color.WHITE : set = set_sun_light_color 
+var sun_horizon_light_color: Color = Color(.98, 0.523, 0.294, 1.0): set = set_sun_horizon_light_color
 var sun_light_energy: float = 1.0: set = set_sun_light_energy
 var __sun_light_node: DirectionalLight3D = null
 var sun_light_path: NodePath: set = set_sun_light_path
@@ -820,7 +766,7 @@ func update_sun_light_path() -> void:
 #####################
 
 @export var moon_light_enable: bool = true
-var moon_light_color:= Color(0.572549, 0.776471, 0.956863, 1.0): set = set_moon_light_color
+var moon_light_color: Color = Color(0.572549, 0.776471, 0.956863, 1.0): set = set_moon_light_color
 var moon_light_energy: float = 0.3: set = set_moon_light_energy
 var moon_light_path: NodePath: set = set_moon_light_path
 var __moon_light_node: DirectionalLight3D
@@ -873,10 +819,10 @@ func update_moon_light_path() -> void:
 ## Deep space
 #####################
 
-var deep_space_euler:= Vector3(-0.752, 2.56, 0.0): set = set_deep_space_euler
-var deep_space_quat:= Quaternion.IDENTITY: set = set_deep_space_quat
+var deep_space_euler: Vector3 = Vector3(-0.752, 2.56, 0.0): set = set_deep_space_euler
+var deep_space_quat: Quaternion = Quaternion.IDENTITY: set = set_deep_space_quat
 var __deep_space_basis: Basis
-var background_color:= Color(0.709804, 0.709804, 0.709804, 0.854902): set = set_background_color
+var background_color: Color = Color(0.709804, 0.709804, 0.709804, 0.854902): set = set_background_color
 
 
 func set_deep_space_euler(value: Vector3) -> void:
@@ -920,7 +866,7 @@ func update_background_color() -> void:
 
 var set_background_texture: bool = false: set = set_set_background_texture
 var background_texture: Texture2D = null: set = _set_background_texture
-var stars_field_color:= Color.WHITE: set = set_stars_field_color
+var stars_field_color: Color = Color.WHITE: set = set_stars_field_color
 var set_stars_field_texture: bool = false: set = set_set_stars_field_texture
 func set_set_background_texture(value: bool) -> void:
 	set_background_texture = value
@@ -1014,8 +960,8 @@ var clouds_absorption: float = 2.0: set = set_clouds_absorption
 var clouds_sky_tint_fade: float = 0.5: set = set_clouds_sky_tint_fade
 var clouds_intensity: float = 10.0: set = set_clouds_intensity
 var clouds_size: float = 2.0: set = set_clouds_size
-var clouds_uv:= Vector2(0.16, 0.11): set = set_clouds_uv
-var clouds_direction:= Vector2(0.25, 0.25): set = set_clouds_direction
+var clouds_uv: Vector2 = Vector2(0.16, 0.11): set = set_clouds_uv
+var clouds_direction: Vector2 = Vector2(0.25, 0.25): set = set_clouds_direction
 var clouds_speed: float = 0.07: set = set_clouds_speed
 var set_clouds_texture: bool = false: set = set_set_clouds_texture
 var clouds_texture: Texture2D = null: set = _set_clouds_texture
@@ -1163,9 +1109,9 @@ func update_clouds_texture() -> void:
 #####################
 
 var clouds_cumulus_visible: bool = true: set = set_clouds_cumulus_visible
-var clouds_cumulus_day_color:= Color(0.823529, 0.87451, 1.0, 1.0): set = set_clouds_cumulus_day_color
-var clouds_cumulus_horizon_light_color:= Color(.98, 0.43, 0.15, 1.0): set = set_clouds_cumulus_horizon_light_color
-var clouds_cumulus_night_color:= Color(0.090196, 0.094118, 0.129412, 1.0): set = set_clouds_cumulus_night_color
+var clouds_cumulus_day_color: Color = Color(0.823529, 0.87451, 1.0, 1.0): set = set_clouds_cumulus_day_color
+var clouds_cumulus_horizon_light_color: Color = Color(.98, 0.43, 0.15, 1.0): set = set_clouds_cumulus_horizon_light_color
+var clouds_cumulus_night_color: Color = Color(0.090196, 0.094118, 0.129412, 1.0): set = set_clouds_cumulus_night_color
 var clouds_cumulus_thickness: float = 0.0243: set = set_clouds_cumulus_thickness
 var clouds_cumulus_coverage: float = 0.55: set = set_clouds_cumulus_coverage
 var clouds_cumulus_absorption: float = 2.0: set = set_clouds_cumulus_absorption
@@ -1174,7 +1120,7 @@ var clouds_cumulus_intensity: float = 1.0: set = set_clouds_cumulus_intensity
 var clouds_cumulus_mie_intensity: float = 1.0: set = set_clouds_cumulus_mie_intensity
 var clouds_cumulus_mie_anisotropy: float = 0.206: set = set_clouds_cumulus_mie_anisotropy
 var clouds_cumulus_size: float = 0.5: set = set_clouds_cumulus_size
-var clouds_cumulus_direction:= Vector3(0.25, 0.1, 0.25): set = set_clouds_cumulus_direction
+var clouds_cumulus_direction: Vector3 = Vector3(0.25, 0.1, 0.25): set = set_clouds_cumulus_direction
 var clouds_cumulus_speed: float = 0.05: set = set_clouds_cumulus_speed
 var set_clouds_cumulus_texture: bool = false: set = set_set_clouds_cumulus_texture
 var clouds_cumulus_texture: Texture2D = null: set = _set_clouds_cumulus_texture
@@ -1434,142 +1380,246 @@ func __set_day_state(v: float, threshold: float = 1.80) -> void:
 		emit_signal("day_night_changed", __day)
 
 
-func _get_property_list() -> Array:
-	var ret:= Array() 
-	ret.push_back({name = "Skydome", type = TYPE_NIL, usage = PROPERTY_USAGE_CATEGORY})
+func _get_property_list() -> Array[Dictionary]:
+	var properties: Array[Dictionary] = []
+	 
+	properties.push_back({name = "Skydome", type = TYPE_NIL, usage = PROPERTY_USAGE_CATEGORY})
 	
 	# Global
-	ret.push_back({name = "Global", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
-	ret.push_back({name = "sky_visible", type = TYPE_BOOL})
-	ret.push_back({name = "dome_radius", type = TYPE_FLOAT})
-	ret.push_back({name = "tonemap_level", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
-	ret.push_back({name = "exposure", type = TYPE_FLOAT})
-	ret.push_back({name = "ground_color", type = TYPE_COLOR})
-	ret.push_back({name = "sky_layers", type = TYPE_INT, hint = PROPERTY_HINT_LAYERS_3D_RENDER})
-	ret.push_back({name = "sky_render_priority", type = TYPE_INT, hint = PROPERTY_HINT_RANGE, hint_string = "-128, 127"})
-	ret.push_back({name = "horizon_level", type = TYPE_FLOAT})
+	properties.push_back({name = "Global", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
+	properties.push_back({name = "tonemap_level", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
+	properties.push_back({name = "exposure", type = TYPE_FLOAT})
+	properties.push_back({name = "ground_color", type = TYPE_COLOR})
+	properties.push_back({name = "horizon_level", type = TYPE_FLOAT})
 	
 	# Sun
-	ret.push_back({name = "Sun", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
-	ret.push_back({name = "sun_altitude", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "-180.0, 180.0"})
-	ret.push_back({name = "sun_azimuth", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "-180.0, 180.0"})
-	ret.push_back({name = "sun_disk_color", type = TYPE_COLOR})
-	ret.push_back({name = "sun_disk_intensity", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 100.0"})
-	ret.push_back({name = "sun_disk_size", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 0.5"})
-	ret.push_back({name = "sun_light_path", type = TYPE_NODE_PATH})
-	ret.push_back({name = "sun_light_color", type = TYPE_COLOR})
-	ret.push_back({name = "sun_horizon_light_color", type = TYPE_COLOR})
-	ret.push_back({name = "sun_light_energy", type = TYPE_FLOAT})
+	properties.push_back({name = "Sun", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
+	properties.push_back({name = "sun_altitude", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "-180.0, 180.0"})
+	properties.push_back({name = "sun_azimuth", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "-180.0, 180.0"})
+	properties.push_back({name = "sun_disk_color", type = TYPE_COLOR})
+	properties.push_back({name = "sun_disk_intensity", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 100.0"})
+	properties.push_back({name = "sun_disk_size", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 0.5"})
+	properties.push_back({name = "sun_light_path", type = TYPE_NODE_PATH})
+	properties.push_back({name = "sun_light_color", type = TYPE_COLOR})
+	properties.push_back({name = "sun_horizon_light_color", type = TYPE_COLOR})
+	properties.push_back({name = "sun_light_energy", type = TYPE_FLOAT})
 	
 	# Moon
-	ret.push_back({name = "Moon", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
-	ret.push_back({name = "moon_altitude", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "-180.0, 180.0"})
-	ret.push_back({name = "moon_azimuth", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "-180.0, 180.0"})
-	ret.push_back({name = "moon_color", type = TYPE_COLOR})
-	ret.push_back({name = "moon_size", type = TYPE_FLOAT})
-	ret.push_back({name = "enable_set_moon_texture", type = TYPE_BOOL})
+	properties.push_back({name = "Moon", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
+	properties.push_back({name = "moon_altitude", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "-180.0, 180.0"})
+	properties.push_back({name = "moon_azimuth", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "-180.0, 180.0"})
+	properties.push_back({name = "moon_color", type = TYPE_COLOR})
+	properties.push_back({name = "moon_size", type = TYPE_FLOAT})
 	
-	if enable_set_moon_texture:
-		ret.push_back({name = "moon_texture", type = TYPE_OBJECT, hint = PROPERTY_HINT_FILE, hint_string = "Texture2D"})
+	properties.push_back({name = "moon_texture", type = TYPE_OBJECT, hint = PROPERTY_HINT_FILE, hint_string = "Texture2D"})
 	
-	ret.push_back({name = "moon_resolution", type = TYPE_INT, hint = PROPERTY_HINT_ENUM, hint_string = "64, 128, 256, 512, 1024"})
-	ret.push_back({name = "moon_light_path", type = TYPE_NODE_PATH})
+	properties.push_back({name = "moon_light_path", type = TYPE_NODE_PATH})
 	
-	ret.push_back({name = "moon_light_color", type = TYPE_COLOR})
-	ret.push_back({name = "moon_light_energy", type = TYPE_FLOAT})
+	properties.push_back({name = "moon_light_color", type = TYPE_COLOR})
+	properties.push_back({name = "moon_light_energy", type = TYPE_FLOAT})
 	
 	# Deep space
-	ret.push_back({name = "DeepSpace", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
-	ret.push_back({name = "deep_space_euler", type = TYPE_VECTOR3})
-	ret.push_back({name = "background_color", type = TYPE_COLOR})
-	ret.push_back({name = "set_background_texture", type = TYPE_BOOL})
+	properties.push_back({name = "DeepSpace", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
+	properties.push_back({name = "deep_space_euler", type = TYPE_VECTOR3})
+	properties.push_back({name = "background_color", type = TYPE_COLOR})
 	
-	if set_background_texture:
-		ret.push_back({name = "background_texture", type = TYPE_OBJECT, hint = PROPERTY_HINT_GLOBAL_FILE, hint_string = "Texture2D"})
+	properties.push_back({name = "background_texture", type = TYPE_OBJECT, hint = PROPERTY_HINT_GLOBAL_FILE, hint_string = "Texture2D"})
 	
-	ret.push_back({name = "stars_field_color", type = TYPE_COLOR})
-	ret.push_back({name = "set_stars_field_texture", type = TYPE_BOOL})
+	properties.push_back({name = "stars_field_color", type = TYPE_COLOR})
 	
-	if set_stars_field_texture:
-		ret.push_back({name = "stats_field_texture", type = TYPE_OBJECT, hint = PROPERTY_HINT_FILE, hint_string = "Texture2D"})
+	properties.push_back({name = "stars_field_texture", type = TYPE_OBJECT, hint = PROPERTY_HINT_FILE, hint_string = "Texture2D"})
 	
-	ret.push_back({name = "stars_scintillation", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
-	ret.push_back({name = "stars_scintillation_speed", type = TYPE_FLOAT})
+	properties.push_back({name = "stars_scintillation", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
+	properties.push_back({name = "stars_scintillation_speed", type = TYPE_FLOAT})
 	
 	# Atmosphere
-	ret.push_back({name = "Atmosphere", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP, hint_string = "atm_"})
-	ret.push_back({name = "atm_quality", type = TYPE_INT, hint = PROPERTY_HINT_ENUM, hint_string = "PerPixel,PerVertex"})
-	ret.push_back({name = "atm_wavelenghts", type = TYPE_VECTOR3})
-	ret.push_back({name = "atm_darkness", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
-	ret.push_back({name = "atm_sun_intensity", type = TYPE_FLOAT})
-	ret.push_back({name = "atm_day_tint", type = TYPE_COLOR})
-	ret.push_back({name = "atm_horizon_light_tint", type = TYPE_COLOR})
-	ret.push_back({name = "atm_enable_moon_scatter_mode", type = TYPE_BOOL})
-	ret.push_back({name = "atm_night_tint", type = TYPE_COLOR})
-	ret.push_back({name = "atm_level_params", type = TYPE_VECTOR3})
-	ret.push_back({name = "atm_thickness", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 100.0"})
-	ret.push_back({name = "atm_mie", type = TYPE_FLOAT})
-	ret.push_back({name = "atm_turbidity", type = TYPE_FLOAT})
-	ret.push_back({name = "atm_sun_mie_tint", type = TYPE_COLOR})
-	ret.push_back({name = "atm_sun_mie_intensity", type = TYPE_FLOAT})
-	ret.push_back({name = "atm_sun_mie_anisotropy", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 0.9999999"})
+	properties.push_back({name = "Atmosphere", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP, hint_string = "atm_"})
+	properties.push_back({name = "atm_wavelengths", type = TYPE_VECTOR3})
+	properties.push_back({name = "atm_darkness", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
+	properties.push_back({name = "atm_sun_intensity", type = TYPE_FLOAT})
+	properties.push_back({name = "atm_day_tint", type = TYPE_COLOR})
+	properties.push_back({name = "atm_horizon_light_tint", type = TYPE_COLOR})
+	properties.push_back({name = "atm_enable_moon_scatter_mode", type = TYPE_BOOL})
+	properties.push_back({name = "atm_night_tint", type = TYPE_COLOR})
+	properties.push_back({name = "atm_level_params", type = TYPE_VECTOR3})
+	properties.push_back({name = "atm_thickness", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 100.0"})
+	properties.push_back({name = "atm_mie", type = TYPE_FLOAT})
+	properties.push_back({name = "atm_turbidity", type = TYPE_FLOAT})
+	properties.push_back({name = "atm_sun_mie_tint", type = TYPE_COLOR})
+	properties.push_back({name = "atm_sun_mie_intensity", type = TYPE_FLOAT})
+	properties.push_back({name = "atm_sun_mie_anisotropy", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 0.9999999"})
 	
-	ret.push_back({name = "atm_moon_mie_tint", type = TYPE_COLOR})
-	ret.push_back({name = "atm_moon_mie_intensity", type = TYPE_FLOAT})
-	ret.push_back({name = "atm_moon_mie_anisotropy", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 0.9999999"})
-	
-	# Fog
-	ret.push_back({name = "Fog", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP, hint_string = "fog_"})
-	ret.push_back({name = "fog_visible", type = TYPE_BOOL})
-	ret.push_back({name = "fog_atm_level_params_offset", type = TYPE_VECTOR3})
-	ret.push_back({name = "fog_density", type = TYPE_FLOAT, hint = PROPERTY_HINT_EXP_EASING, hint_string = "0.0, 1.0"})
-	ret.push_back({name = "fog_rayleigh_depth", type = TYPE_FLOAT, hint = PROPERTY_HINT_EXP_EASING, hint_string = "0.0, 1.0"})
-	ret.push_back({name = "fog_mie_depth", type = TYPE_FLOAT, hint = PROPERTY_HINT_EXP_EASING, hint_string = "0.0, 1.0"})
-	ret.push_back({name = "fog_falloff", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 10.0"})
-	ret.push_back({name = "fog_start", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 5000.0"})
-	ret.push_back({name = "fog_end", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 5000.0"})
-	ret.push_back({name = "fog_layers", type = TYPE_INT, hint = PROPERTY_HINT_LAYERS_3D_RENDER})
-	ret.push_back({name = "fog_render_priority", type = TYPE_INT})
+	properties.push_back({name = "atm_moon_mie_tint", type = TYPE_COLOR})
+	properties.push_back({name = "atm_moon_mie_intensity", type = TYPE_FLOAT})
+	properties.push_back({name = "atm_moon_mie_anisotropy", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 0.9999999"})
 	
 	# 2D Clouds
-	ret.push_back({name = "2D Clouds", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
-	ret.push_back({name = "clouds_thickness", type = TYPE_FLOAT})
-	ret.push_back({name = "clouds_coverage", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
-	ret.push_back({name = "clouds_absorption", type = TYPE_FLOAT})
-	ret.push_back({name = "clouds_sky_tint_fade", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
-	ret.push_back({name = "clouds_intensity", type = TYPE_FLOAT})
-	ret.push_back({name = "clouds_size", type = TYPE_FLOAT})
-	ret.push_back({name = "clouds_uv", type = TYPE_VECTOR2})
-	ret.push_back({name = "clouds_direction", type = TYPE_VECTOR2})
-	ret.push_back({name = "clouds_speed", type = TYPE_FLOAT})
-	ret.push_back({name = "set_clouds_texture", type = TYPE_BOOL})
+	properties.push_back({name = "2D Clouds", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
+	properties.push_back({name = "clouds_thickness", type = TYPE_FLOAT})
+	properties.push_back({name = "clouds_coverage", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
+	properties.push_back({name = "clouds_absorption", type = TYPE_FLOAT})
+	properties.push_back({name = "clouds_sky_tint_fade", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
+	properties.push_back({name = "clouds_intensity", type = TYPE_FLOAT})
+	properties.push_back({name = "clouds_size", type = TYPE_FLOAT})
+	properties.push_back({name = "clouds_uv", type = TYPE_VECTOR2})
+	properties.push_back({name = "clouds_direction", type = TYPE_VECTOR2})
+	properties.push_back({name = "clouds_speed", type = TYPE_FLOAT})
+	properties.push_back({name = "set_clouds_texture", type = TYPE_BOOL})
 	
-	if set_clouds_texture:
-		ret.push_back({name = "clouds_texture", type = TYPE_OBJECT, hint = PROPERTY_HINT_FILE, hint_string = "Texture2D"})
+	properties.push_back({name = "clouds_texture", type = TYPE_OBJECT, hint = PROPERTY_HINT_FILE, hint_string = "Texture2D"})
 	
 	# Clouds cumulus
-	ret.push_back({name = "Clouds Cumulus", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
-	ret.push_back({name = "clouds_cumulus_visible", type = TYPE_BOOL})
-	ret.push_back({name = "clouds_cumulus_day_color", type = TYPE_COLOR})
-	ret.push_back({name = "clouds_cumulus_horizon_light_color", type = TYPE_COLOR})
-	ret.push_back({name = "clouds_cumulus_night_color", type = TYPE_COLOR})
-	ret.push_back({name = "clouds_cumulus_thickness", type = TYPE_FLOAT})
-	ret.push_back({name = "clouds_cumulus_coverage", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
-	ret.push_back({name = "clouds_cumulus_absorption", type = TYPE_FLOAT})
-	ret.push_back({name = "clouds_cumulus_noise_freq", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 3.0"})
-	ret.push_back({name = "clouds_cumulus_intensity", type = TYPE_FLOAT})
-	ret.push_back({name = "clouds_cumulus_mie_intensity", type = TYPE_FLOAT})
-	ret.push_back({name = "clouds_cumulus_mie_anisotropy", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 0.999999"})
-	ret.push_back({name = "clouds_cumulus_size", type = TYPE_FLOAT})
-	ret.push_back({name = "clouds_cumulus_direction", type = TYPE_VECTOR3})
-	ret.push_back({name = "clouds_cumulus_speed", type = TYPE_FLOAT})
-	ret.push_back({name = "set_clouds_cumulus_texture", type = TYPE_BOOL})
+	properties.push_back({name = "Clouds Cumulus", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
+	properties.push_back({name = "clouds_cumulus_visible", type = TYPE_BOOL})
+	properties.push_back({name = "clouds_cumulus_day_color", type = TYPE_COLOR})
+	properties.push_back({name = "clouds_cumulus_horizon_light_color", type = TYPE_COLOR})
+	properties.push_back({name = "clouds_cumulus_night_color", type = TYPE_COLOR})
+	properties.push_back({name = "clouds_cumulus_thickness", type = TYPE_FLOAT})
+	properties.push_back({name = "clouds_cumulus_coverage", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 1.0"})
+	properties.push_back({name = "clouds_cumulus_absorption", type = TYPE_FLOAT})
+	properties.push_back({name = "clouds_cumulus_noise_freq", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 3.0"})
+	properties.push_back({name = "clouds_cumulus_intensity", type = TYPE_FLOAT})
+	properties.push_back({name = "clouds_cumulus_mie_intensity", type = TYPE_FLOAT})
+	properties.push_back({name = "clouds_cumulus_mie_anisotropy", type = TYPE_FLOAT, hint = PROPERTY_HINT_RANGE, hint_string = "0.0, 0.999999"})
+	properties.push_back({name = "clouds_cumulus_size", type = TYPE_FLOAT})
+	properties.push_back({name = "clouds_cumulus_direction", type = TYPE_VECTOR3})
+	properties.push_back({name = "clouds_cumulus_speed", type = TYPE_FLOAT})
+	properties.push_back({name = "set_clouds_cumulus_texture", type = TYPE_BOOL})
 	
-	if set_clouds_cumulus_texture:
-		ret.push_back({name = "clouds_cumulus_texture", type = TYPE_OBJECT, hint = PROPERTY_HINT_FILE, hint_string = "Texture2D"})
+	properties.push_back({name = "clouds_cumulus_texture", type = TYPE_OBJECT, hint = PROPERTY_HINT_FILE, hint_string = "Texture2D"})
 	
 	# Lighting
-	ret.push_back({name = "Lighting", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
-	ret.push_back({name = "environment", type = TYPE_OBJECT, hint = PROPERTY_HINT_RESOURCE_TYPE, hint_string = "Resource"})
+	properties.push_back({name = "Lighting", type = TYPE_NIL, usage = PROPERTY_USAGE_GROUP})
+	properties.push_back({name = "environment", type = TYPE_OBJECT, hint = PROPERTY_HINT_RESOURCE_TYPE, hint_string = "Resource"})
 	
-	return ret
+	return properties
+
+func _property_can_revert(property: StringName) -> bool:
+	match property:
+		"tonemap_level": return true
+		"exposure": return true
+		"ground_color": return true
+		"sky_render_priority": return true
+		"horizon_level": return true
+		"sun_disk_color": return true
+		"sun_disk_intensity": return true
+		"sun_disk_size": return true
+		"sun_light_path": return true
+		"sun_light_color": return true
+		"sun_horizon_light_color": return true
+		"sun_light_energy": return true
+		"moon_color": return true
+		"moon_size": return true
+		"moon_light_color": return true
+		"moon_light_energy": return true
+		"background_color": return true
+		"stars_field_color": return true
+		"stars_scintillation": return true
+		"stars_scintillation_speed": return true
+		"atm_quality": return true
+		"atm_wavelengths": return true
+		"atm_darkness": return true
+		"atm_sun_intensity": return true
+		"atm_day_tint": return true
+		"atm_horizon_light_tint": return true
+		"atm_enable_moon_scatter_mode": return true
+		"atm_night_tint": return true
+		"atm_level_params": return true
+		"atm_thickness": return true
+		"atm_mie": return true
+		"atm_turbidity": return true
+		"atm_sun_mie_tint": return true
+		"atm_sun_mie_intensity": return true
+		"atm_sun_mie_anisotropy": return true
+		"atm_moon_mie_tint": return true
+		"atm_moon_mie_intensity": return true
+		"atm_moon_mie_anisotropy": return true
+		"clouds_thickness": return true
+		"clouds_coverage": return true
+		"clouds_absorption": return true
+		"clouds_sky_tint_fade": return true
+		"clouds_intensity": return true
+		"clouds_size": return true
+		"clouds_uv": return true
+		"clouds_direction": return true
+		"clouds_speed": return true
+		"clouds_cumulus_visible": return true
+		"clouds_cumulus_day_color": return true
+		"clouds_cumulus_horizon_light_color": return true
+		"clouds_cumulus_night_color": return true
+		"clouds_cumulus_thickness": return true
+		"clouds_cumulus_coverage": return true
+		"clouds_cumulus_absorption": return true
+		"clouds_cumulus_noise_freq": return true
+		"clouds_cumulus_intensity": return true
+		"clouds_cumulus_mie_intensity": return true
+		"clouds_cumulus_mie_anisotropy": return true
+		"clouds_cumulus_size": return true
+		"clouds_cumulus_direction": return true
+		"clouds_cumulus_speed": return true
+	return false
+	
+func _property_get_revert(property: StringName) -> Variant:
+	match property:
+		"tonemap_level": return 0.0
+		"exposure": return 1.3
+		"ground_color": return Color(0.3, 0.3, 0.3, 1.0)
+		"horizon_level": return 0.0
+		"sun_disk_color": return Color(0.996094, 0.541334, 0.140076)
+		"sun_disk_intensity": return 2.0
+		"sun_disk_size": return 0.015
+		"sun_light_path": return NodePath("../SunLight")
+		"sun_light_color": return Color(1.0, 1.0, 1.0, 1.0)
+		"sun_horizon_light_color": return Color(0.98, 0.523, 0.294, 1.0)
+		"sun_light_energy": return 1.0
+		"moon_color": return Color(0.1, 0.1, 0.1, 1.0)
+		"moon_size": return 0.07
+		"moon_light_color": return Color(0.573, 0.776, 0.957, 1.0)
+		"moon_light_energy": return 0.3
+		"background_color": return Color(0.71, 0.71, 0.71, 0.855)
+
+		"stars_field_color": return Color(1.0, 1.0, 1.0, 1.0)
+		"stars_scintillation": return 0.75
+		"stars_scintillation_speed": return 0.01
+		
+		"atm_wavelengths": return Vector3(680.0, 550.0, 440.0)
+		"atm_darkness": return 0.5
+		"atm_sun_intensity": return 18.0
+		"atm_day_tint": return Color(0.807843, 0.909804, 1.0)
+		"atm_horizon_light_tint": return Color(0.980392, 0.635294, 0.462745, 1.0)
+		"atm_enable_moon_scatter_mode": return false
+		"atm_night_tint": return Color(0.168627, 0.2, 0.25098, 1.0)
+		"atm_level_params": return Vector3(1.0, 0.0, 0.0)
+		"atm_thickness": return 0.7
+		"atm_mie": return 0.07
+		"atm_turbidity": return 0.001
+		"atm_sun_mie_tint": return Color(1.0, 1.0, 1.0, 1.0)
+		"atm_sun_mie_intensity": return 1.0
+		"atm_sun_mie_anisotropy": return 0.8
+		"atm_moon_mie_tint": return Color(0.137255, 0.184314, 0.292196)
+		"atm_moon_mie_intensity": return 0.7
+		"atm_moon_mie_anisotropy": return 0.8
+		"clouds_thickness": return 1.7
+		"clouds_coverage": return 0.5
+		"clouds_absorption": return 2.0
+		"clouds_sky_tint_fade": return 0.5
+		"clouds_intensity": return 10.0
+		"clouds_size": return 2.0
+		"clouds_uv": return Vector2(0.16, 0.11)
+		"clouds_direction": return Vector2(0.25, 0.25)
+		"clouds_speed": return 0.07
+		"clouds_cumulus_visible": return true
+		"clouds_cumulus_day_color": return Color(0.823529, 0.87451, 1.0, 1.0)
+		"clouds_cumulus_horizon_light_color": return Color(.98, 0.43, 0.15, 1.0)
+		"clouds_cumulus_night_color": return Color(0.090196, 0.094118, 0.129412, 1.0)
+		"clouds_cumulus_thickness": return 0.0243
+		"clouds_cumulus_coverage": return 0.55
+		"clouds_cumulus_absorption": return 2.0
+		"clouds_cumulus_noise_freq": return 2.7
+		"clouds_cumulus_intensity": return 1.0
+		"clouds_cumulus_mie_intensity": return 1.0
+		"clouds_cumulus_mie_anisotropy": return 0.206
+		"clouds_cumulus_size": return 0.5
+		"clouds_cumulus_direction": return Vector3(0.25, 0.1, 0.25)
+		"clouds_cumulus_speed": return 0.05
+	return null
