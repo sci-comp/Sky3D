@@ -654,7 +654,7 @@ func fog_atm_night_intensity() -> float:
 @export_group("Screen Space Fog")
 
 @export var fog_visible: bool = true: set = set_fog_visible
-@export var fog_atm_level_params_offset:= Vector3(0.0, 0.0, -1.0): set = set_fog_atm_level_params_offset
+@export var fog_atm_level_params_offset: Vector3 = Vector3(0.0, 0.0, -1.0): set = set_fog_atm_level_params_offset
 @export_exp_easing() var fog_density: float = 0.0007: set = set_fog_density
 @export_range(0.0, 5000.0) var fog_start: float = 0.0: set = set_fog_start
 @export_range(0.0, 5000.0)  var fog_end: float = 1000: set = set_fog_end
