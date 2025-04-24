@@ -414,9 +414,12 @@ func _initialize() -> void:
 		environment.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 		environment.tonemap_mode = Environment.TONE_MAPPER_ACES
 		environment.tonemap_white = 6
-		sky_material = environment.sky.sky_material # Set a reference to the sky material for easy access.
 		emit_signal("environment_changed", environment)
-	
+
+	# Set a reference to the sky material for easy access.
+	if environment:
+		sky_material = environment.sky.sky_material
+		
 	# Create default camera attributes
 	if camera_attributes == null:
 		camera_attributes = CameraAttributesPractical.new()

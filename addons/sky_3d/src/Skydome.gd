@@ -238,6 +238,7 @@ func update_horizon_level() -> void:
 var __finish_set_sun_pos: bool = false
 var __sun_transform: Transform3D = Transform3D()
 
+
 func set_sun_azimuth(value: float) -> void:
 	if value == sun_azimuth:
 		return
