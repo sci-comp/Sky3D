@@ -95,6 +95,7 @@ func set_clouds_enabled(value: bool) -> void:
 func hide_sky() -> void:
 	sky_enabled = false
 	lights_enabled = false
+	fog_enabled = false
 	clouds_enabled = false
 
 
@@ -102,6 +103,7 @@ func hide_sky() -> void:
 func show_sky() -> void:
 	sky_enabled = true
 	lights_enabled = true
+	fog_enabled = true
 	clouds_enabled = true
 
 
@@ -276,7 +278,7 @@ func set_reflected_energy(value: float) -> void:
 		reflected_energy = value
 		if sky_material:
 			sky_material.set_shader_parameter(Sky3D.REFLECTED_ENERGY, value)
-		
+
 
 ## Ratio of ambient light to sky light. See Environment.ambient_light_sky_contribution.
 @export_range(0, 1, 0.005) var sky_contribution: float = 1.0: set = set_sky_contribution
@@ -420,7 +422,7 @@ func _initialize() -> void:
 	if environment.sky == null or environment.sky.sky_material is PhysicalSkyMaterial:
 		environment.sky = Sky.new()
 		environment.sky.sky_material = ShaderMaterial.new()
-		environment.sky.sky_material.shader = _new_sky_shader
+		environment.sky.sky_material.shader = _sky_shader
 		
 	# Set a reference to the sky material for easy access.
 	sky_material = environment.sky.sky_material
@@ -495,7 +497,7 @@ func _set(property: StringName, value: Variant) -> bool:
 const FOG_INSTANCE: String = "_FogMeshI"
 
 # Shaders
-const _new_sky_shader: Shader = preload("res://addons/sky_3d/shaders/SkyMaterial.gdshader")
+const _sky_shader: Shader = preload("res://addons/sky_3d/shaders/SkyMaterial.gdshader")
 const _fog_shader: Shader = preload("res://addons/sky_3d/shaders/AtmFog.gdshader")
 
 # Textures
