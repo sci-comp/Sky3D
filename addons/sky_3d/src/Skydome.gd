@@ -233,6 +233,16 @@ func update_horizon_level() -> void:
 
 var __finish_set_sun_pos: bool = false
 var __sun_transform: Transform3D = Transform3D()
+var sun_light_enabled: bool = true: set = set_sun_light_enabled
+
+
+func set_sun_light_enabled(value: bool) -> void:
+	sun_light_enabled = value
+	if value:
+		update_sun_coords()
+	else:		
+		__sun_light_node.light_energy = 0.0
+		__sun_light_node.shadow_enabled = false
 
 
 func set_sun_azimuth(value: float) -> void:
@@ -307,6 +317,16 @@ func update_sun_coords() -> void:
 
 var __finish_set_moon_pos: bool = false
 var __moon_transform: Transform3D = Transform3D()
+var moon_light_enabled: bool = true: set = set_moon_light_enabled
+
+
+func set_moon_light_enabled(value: bool) -> void:
+	moon_light_enabled = value
+	if value:
+		update_moon_coords()
+	else:
+		__moon_light_node.light_energy = 0.0
+		__moon_light_node.shadow_enabled = false
 
 
 func set_moon_azimuth(value: float) -> void:
@@ -919,7 +939,7 @@ func set_sun_light_color(value: Color) -> void:
 func update_sun_light_color() -> void:
 	if __sun_light_node == null:
 		return
-	var sun_light_altitude_mult: float = TOD_Math.saturate(sun_direction().y * 2)
+	var sun_light_altitude_mult: float = TOD_Math.saturate(sun_direction().y * 2.0)
 	__sun_light_node.light_color = TOD_Math.plerp_color(sun_horizon_light_color, sun_light_color, sun_light_altitude_mult)
 
 
@@ -938,11 +958,18 @@ func set_sun_light_energy(value: float) -> void:
 	
 
 func update_sun_light_energy() -> void:
-	if __sun_light_node != null:
-		# Light energy should depend on how much of the sun disk is visible.
-		var y: float = sun_direction().y
-		var sun_light_factor: float = TOD_Math.saturate((y + sun_disk_size) / (2 * sun_disk_size));
-		__sun_light_node.light_energy = TOD_Math.lerp_f(0.0, sun_light_energy, sun_light_factor)
+	if __sun_light_node == null or not sun_light_enabled:
+		return
+	
+	# Light energy should depend on how much of the sun disk is visible.
+	var y: float = sun_direction().y
+	var sun_light_factor: float = TOD_Math.saturate((y + sun_disk_size) / (2.0 * sun_disk_size));
+	__sun_light_node.light_energy = TOD_Math.lerp_f(0.0, sun_light_energy, sun_light_factor)
+	
+	if is_equal_approx(__sun_light_node.light_energy, 0.0) and __sun_light_node.shadow_enabled:
+		__sun_light_node.shadow_enabled = false
+	elif __sun_light_node.light_energy > 0.0 and not __sun_light_node.shadow_enabled:
+		__sun_light_node.shadow_enabled = true
 
 
 func set_sun_light_path(value: NodePath) -> void:
@@ -985,14 +1012,19 @@ func set_moon_light_energy(value: float) -> void:
 
 
 func update_moon_light_energy() -> void:
-	if __moon_light_node == null:
+	if __moon_light_node == null or not moon_light_enabled:
 		return
 	
 	var l: float = TOD_Math.lerp_f(0.0, moon_light_energy, __moon_light_altitude_mult)
-	l*= atm_moon_phases_mult()
+	l *= atm_moon_phases_mult()
 	
 	var fade: float = (1.0 - sun_direction().y) * 0.5
 	__moon_light_node.light_energy = l * Sky3D._sun_moon_curve_fade.sample_baked(fade)
+	
+	if is_equal_approx(__moon_light_node.light_energy, 0.0) and __moon_light_node.shadow_enabled:
+		__moon_light_node.shadow_enabled = false
+	elif __moon_light_node.light_energy > 0.0 and not __moon_light_node.shadow_enabled:
+		__moon_light_node.shadow_enabled = true
 
 
 func set_moon_light_path(value: NodePath) -> void:
