@@ -15,6 +15,11 @@ var _update_timer: Timer
 var _last_update: int = 0
 
 
+#####################
+## Global 
+#####################
+
+@export_group("Global")
 @export var update_in_game: bool = true :
 	set(value):
 		update_in_game = value
@@ -93,7 +98,7 @@ func resume() -> void:
 #####################
 
 var _sky_dome: Skydome = null
-var dome_path: NodePath: set = set_dome_path
+@export var dome_path: NodePath: set = set_dome_path
 
 
 func set_dome_path(value: NodePath) -> void:
@@ -107,13 +112,14 @@ func set_dome_path(value: NodePath) -> void:
 ## DateTime
 #####################
 
+@export_group("DateTime")
+@export var system_sync: bool = false
+@export var total_cycle_in_minutes: float = 15.0
+@export_range(0.,23.99) var total_hours: float = 7.0 : set = set_total_hours
+@export_range(0,31) var day: int = 1: set = set_day
+@export_range(0,12) var month: int = 1: set = set_month
+@export_range(-9999,9999) var year: int = 2025: set = set_year
 var date_time_os: Dictionary
-var system_sync: bool = false
-var total_cycle_in_minutes: float = 15.0
-var total_hours: float = 7.0 : set = set_total_hours
-var day: int = 1: set = set_day
-var month: int = 1: set = set_month
-var year: int = 2025: set = set_year
 
 
 func set_total_hours(value: float) -> void:
@@ -191,18 +197,15 @@ func is_end_of_time() -> bool:
 ## Planetary
 #####################
 
-enum CelestialCalculationsMode{
-	Simple = 0,
-	Realistic
-}
-
-var celestials_calculations: int = 1: set = set_celestials_calculations
-var latitude: float = 16.0: set = set_latitude
-var longitude: float = 108.0: set = set_longitude
-var utc: float = 7.0: set = set_utc
-var compute_moon_coords: bool = true: set = set_compute_moon_coords
-var compute_deep_space_coords: bool = true: set = set_compute_deep_space_coords
-var moon_coords_offset: Vector2 = Vector2(0.0, 0.0): set = set_moon_coords_offset
+@export_group("Planetary And Location")
+enum CelestialMode { SIMPLE, REALISTIC }
+@export var celestials_calculations: CelestialMode = CelestialMode.REALISTIC: set = set_celestials_calculations
+@export_range(-90,90) var latitude: float = 16.0: set = set_latitude
+@export_range(-180,180) var longitude: float = 108.0: set = set_longitude
+@export_range(-12,14,.25) var utc: float = 7.0: set = set_utc
+@export var compute_moon_coords: bool = true: set = set_compute_moon_coords
+@export var compute_deep_space_coords: bool = true: set = set_compute_deep_space_coords
+@export var moon_coords_offset: Vector2 = Vector2(0.0, 0.0): set = set_moon_coords_offset
 var __sun_coords: Vector2 = Vector2.ZERO
 var __moon_coords: Vector2 = Vector2.ZERO
 var __sun_distance: float
@@ -327,7 +330,7 @@ func __update_celestial_coords() -> void:
 		return
 
 	match celestials_calculations:
-		CelestialCalculationsMode.Simple:
+		CelestialMode.SIMPLE:
 			__compute_simple_sun_coords()
 			_sky_dome.sun_altitude = __sun_coords.y
 			_sky_dome.sun_azimuth = __sun_coords.x
@@ -343,7 +346,7 @@ func __update_celestial_coords() -> void:
 				if _sky_dome.is_scene_built:
 					_sky_dome.sky_material.set_shader_parameter(Sky3D.SKY_TILT, deg_to_rad(90 - latitude))
 		
-		CelestialCalculationsMode.Realistic:
+		CelestialMode.REALISTIC:
 			__compute_realistic_sun_coords()
 			_sky_dome.sun_altitude = -__sun_coords.y * TOD_Math.RAD_TO_DEG
 			_sky_dome.sun_azimuth = -__sun_coords.x * TOD_Math.RAD_TO_DEG
@@ -562,34 +565,3 @@ func __compute_realistic_moon_coords() -> void:
 	# Azimuth and altitude
 	__moon_coords.x = atan2(yhor, xhor) + PI
 	__moon_coords.y = (PI *0.5) - atan2(zhor, sqrt(xhor * xhor + yhor * yhor)) # Mathf.Asin(zhor)
-
-
-func _get_property_list() -> Array:
-	var ret: Array 
-	ret.push_back({name = "Time Of Day", type=TYPE_NIL, usage=PROPERTY_USAGE_CATEGORY})
-	
-	ret.push_back({name = "Target", type=TYPE_NIL, usage=PROPERTY_USAGE_GROUP})
-	ret.push_back({name = "dome_path", type=TYPE_NODE_PATH})
-	
-	ret.push_back({name = "DateTime", type=TYPE_NIL, usage=PROPERTY_USAGE_GROUP})
-	ret.push_back({name = "system_sync", type=TYPE_BOOL})
-		
-	ret.push_back({name = "total_cycle_in_minutes", type=TYPE_FLOAT})
-	ret.push_back({name = "total_hours", type=TYPE_FLOAT, hint=PROPERTY_HINT_RANGE, hint_string="0.0, 24.0"})
-	ret.push_back({name = "day", type=TYPE_INT, hint=PROPERTY_HINT_RANGE, hint_string="0, 31"})
-	ret.push_back({name = "month", type=TYPE_INT, hint=PROPERTY_HINT_RANGE, hint_string="0, 12"})
-	ret.push_back({name = "year", type=TYPE_INT, hint=PROPERTY_HINT_RANGE, hint_string="-9999, 9999"})
-
-	ret.push_back({name = "Planetary And Location", type=TYPE_NIL, usage=PROPERTY_USAGE_GROUP})
-	ret.push_back({name = "celestials_calculations", type=TYPE_INT, hint=PROPERTY_HINT_ENUM, hint_string="Simple, Realistic"})
-	ret.push_back({name = "compute_moon_coords", type=TYPE_BOOL})
-
-	if celestials_calculations == 0 && compute_moon_coords:
-		ret.push_back({name = "moon_coords_offset", type=TYPE_VECTOR2})
-		
-	ret.push_back({name = "compute_deep_space_coords", type=TYPE_BOOL})
-	ret.push_back({name = "latitude", type=TYPE_FLOAT, hint=PROPERTY_HINT_RANGE, hint_string="-90.0, 90.0"})
-	ret.push_back({name = "longitude", type=TYPE_FLOAT, hint=PROPERTY_HINT_RANGE, hint_string="-180.0, 180.0"})
-	ret.push_back({name = "utc", type=TYPE_FLOAT, hint=PROPERTY_HINT_RANGE, hint_string="-12.0, 12.0"})
-	
-	return ret

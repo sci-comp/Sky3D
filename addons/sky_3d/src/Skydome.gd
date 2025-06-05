@@ -1561,7 +1561,6 @@ func __update_environment() -> void:
 	col.a = 1.
 	col.v = clamp(col.v, .35, 1.)
 	environment.ambient_light_color = col
-	
 
 
 #####################
