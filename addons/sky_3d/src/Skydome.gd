@@ -117,7 +117,7 @@ func _ready() -> void:
 	update_clouds_cumulus_texture()
 	
 	# Environment
-	__update_environment()
+	_update_environment()
 
 
 func build_scene() -> void:
@@ -145,13 +145,13 @@ func build_scene() -> void:
 	fog_material.shader = Sky3D._fog_shader
 	fog_material.render_priority = 127
 	fog_mesh.material_override = fog_material
-	__setup_mesh_instance(fog_mesh, Vector3.ZERO)
+	_setup_mesh_instance(fog_mesh, Vector3.ZERO)
 	add_child(fog_mesh)
 
 	is_scene_built = true
 	
 	
-func __setup_mesh_instance(target: MeshInstance3D, origin: Vector3) -> void:
+func _setup_mesh_instance(target: MeshInstance3D, origin: Vector3) -> void:
 	target.transform.origin = origin
 	target.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	target.custom_aabb = AABB(Vector3(-1e31, -1e31, -1e31), Vector3(2e31, 2e31, 2e31))
@@ -187,8 +187,8 @@ func update_color_correction_params() -> void:
 	var p: Vector2
 	p.x = tonemap_level
 	p.y = exposure
-	sky_material.set_shader_parameter(Sky3D.COLOR_CORRECTION_P, p)
-	fog_material.set_shader_parameter(Sky3D.COLOR_CORRECTION_P, p)
+	sky_material.set_shader_parameter(Sky3D.COLOR_CORRECTION, p)
+	fog_material.set_shader_parameter(Sky3D.COLOR_CORRECTION, p)
 
 func set_ground_color(value: Color) -> void:
 	if value == ground_color:
@@ -200,7 +200,7 @@ func set_ground_color(value: Color) -> void:
 func update_ground_color() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.GROUND_COLOR_P, ground_color)
+	sky_material.set_shader_parameter(Sky3D.GROUND_COLOR, ground_color)
 	
 
 func set_horizon_level(value: float) -> void:
@@ -231,8 +231,8 @@ func update_horizon_level() -> void:
 @export_range(-180.0, 180.0, 0.00001) var sun_azimuth: float = 0.0: set = set_sun_azimuth
 @export_range(-180.0, 180.0, 0.00001) var sun_altitude: float = -27.387: set = set_sun_altitude
 
-var __finish_set_sun_pos: bool = false
-var __sun_transform: Transform3D = Transform3D()
+var _finish_set_sun_pos: bool = false
+var _sun_transform := Transform3D()
 var sun_light_enabled: bool = true: set = set_sun_light_enabled
 
 
@@ -241,8 +241,8 @@ func set_sun_light_enabled(value: bool) -> void:
 	if value:
 		update_sun_coords()
 	else:		
-		__sun_light_node.light_energy = 0.0
-		__sun_light_node.shadow_enabled = false
+		_sun_light_node.light_energy = 0.0
+		_sun_light_node.shadow_enabled = false
 
 
 func set_sun_azimuth(value: float) -> void:
@@ -260,11 +260,11 @@ func set_sun_altitude(value: float) -> void:
 
 
 func get_sun_transform() -> Transform3D:
-	return __sun_transform
+	return _sun_transform
 
 
 func sun_direction() -> Vector3:
-	return __sun_transform.origin
+	return _sun_transform.origin
 
 
 func update_sun_coords() -> void:
@@ -274,28 +274,28 @@ func update_sun_coords() -> void:
 	var azimuth: float = sun_azimuth * TOD_Math.DEG_TO_RAD
 	var altitude: float = sun_altitude * TOD_Math.DEG_TO_RAD
 	
-	__finish_set_sun_pos = false
-	if not __finish_set_sun_pos:
-		__sun_transform.origin = TOD_Math.to_orbit(altitude, azimuth)
-		__finish_set_sun_pos = true
+	_finish_set_sun_pos = false
+	if not _finish_set_sun_pos:
+		_sun_transform.origin = TOD_Math.to_orbit(altitude, azimuth)
+		_finish_set_sun_pos = true
 	
-	if __finish_set_sun_pos:
-		__sun_transform = __sun_transform.looking_at(Vector3.ZERO, Vector3.LEFT)
+	if _finish_set_sun_pos:
+		_sun_transform = _sun_transform.looking_at(Vector3.ZERO, Vector3.LEFT)
 	
-	__set_day_state(altitude)
-	emit_signal("sun_transform_changed", __sun_transform)
+	_set_day_state(altitude)
+	emit_signal("sun_transform_changed", _sun_transform)
 	emit_signal("sun_transform_changed", sun_direction())
 	
-	fog_material.set_shader_parameter(Sky3D.SUN_DIR_P, sun_direction())
+	fog_material.set_shader_parameter(Sky3D.SUN_DIR, sun_direction())
 	
-	if __sun_light_node != null:
-		__sun_light_node.transform = __sun_transform
+	if _sun_light_node != null:
+		_sun_light_node.transform = _sun_transform
 	
 	update_night_intensity()
 	update_sun_light_color()
 	update_sun_light_energy()
 	update_moon_light_energy()
-	__update_environment()
+	_update_environment()
 
 
 #####################
@@ -315,8 +315,8 @@ func update_sun_coords() -> void:
 @export_range(-180.0, 180.0, 0.00001) var moon_azimuth: float = 5.0: set = set_moon_azimuth
 @export_range(-180.0, 180.0, 0.00001) var moon_altitude: float = -80.0: set = set_moon_altitude
 
-var __finish_set_moon_pos: bool = false
-var __moon_transform: Transform3D = Transform3D()
+var _finish_set_moon_pos: bool = false
+var _moon_transform: Transform3D = Transform3D()
 var moon_light_enabled: bool = true: set = set_moon_light_enabled
 
 
@@ -325,8 +325,8 @@ func set_moon_light_enabled(value: bool) -> void:
 	if value:
 		update_moon_coords()
 	else:
-		__moon_light_node.light_energy = 0.0
-		__moon_light_node.shadow_enabled = false
+		_moon_light_node.light_energy = 0.0
+		_moon_light_node.shadow_enabled = false
 
 
 func set_moon_azimuth(value: float) -> void:
@@ -344,11 +344,11 @@ func set_moon_altitude(value: float) -> void:
 	
 
 func get_moon_transform() -> Transform3D:
-	return __moon_transform
+	return _moon_transform
 
 
 func moon_direction() -> Vector3:
-	return __moon_transform.origin
+	return _moon_transform.origin
 
 
 func update_moon_coords() -> void:
@@ -358,31 +358,31 @@ func update_moon_coords() -> void:
 	var azimuth: float = moon_azimuth * TOD_Math.DEG_TO_RAD
 	var altitude: float = moon_altitude * TOD_Math.DEG_TO_RAD
 	
-	__finish_set_moon_pos = false
-	if not __finish_set_moon_pos:
-		__moon_transform.origin = TOD_Math.to_orbit(altitude, azimuth)
-		__finish_set_moon_pos = true
+	_finish_set_moon_pos = false
+	if not _finish_set_moon_pos:
+		_moon_transform.origin = TOD_Math.to_orbit(altitude, azimuth)
+		_finish_set_moon_pos = true
 	
-	if __finish_set_moon_pos:
-		__moon_transform = __moon_transform.looking_at(Vector3.ZERO, Vector3.LEFT)
+	if _finish_set_moon_pos:
+		_moon_transform = _moon_transform.looking_at(Vector3.ZERO, Vector3.LEFT)
 		pass
 	
-	emit_signal("moon_transform_changed", __moon_transform)
+	emit_signal("moon_transform_changed", _moon_transform)
 	emit_signal("moon_direction_changed", moon_direction())
 	
 	var moon_basis: Basis = get_parent().moon.get_global_transform().basis.inverse()
 	sky_material.set_shader_parameter(Sky3D.MOON_MATRIX, moon_basis)
-	fog_material.set_shader_parameter(Sky3D.MOON_DIR_P, moon_direction())
+	fog_material.set_shader_parameter(Sky3D.MOON_DIR, moon_direction())
 	
-	if __moon_light_node != null:
-		__moon_light_node.transform = __moon_transform
+	if _moon_light_node != null:
+		_moon_light_node.transform = _moon_transform
 	
-	__moon_light_altitude_mult = TOD_Math.saturate(moon_direction().y)
+	_moon_light_altitude_mult = TOD_Math.saturate(moon_direction().y)
 	
 	update_night_intensity()
 	set_moon_light_color(moon_light_color)
 	update_moon_light_energy()
-	__update_environment()
+	_update_environment()
 
 
 #####################
@@ -428,8 +428,8 @@ func update_beta_ray() -> void:
 	var wll: Vector3 = ScatterLib.compute_wavelenghts_lambda(atm_wavelengths)
 	var wls: Vector3 = ScatterLib.compute_wavlenghts(wll)
 	var betaRay: Vector3 = ScatterLib.compute_beta_ray(wls)
-	sky_material.set_shader_parameter(Sky3D.ATM_BETA_RAY_P, betaRay)
-	fog_material.set_shader_parameter(Sky3D.ATM_BETA_RAY_P, betaRay)
+	sky_material.set_shader_parameter(Sky3D.ATM_BETA_RAY, betaRay)
+	fog_material.set_shader_parameter(Sky3D.ATM_BETA_RAY, betaRay)
 
 	
 func set_atm_darkness(value: float) -> void:
@@ -442,8 +442,8 @@ func set_atm_darkness(value: float) -> void:
 func update_atm_darkness() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_DARKNESS_P, atm_darkness)
-	fog_material.set_shader_parameter(Sky3D.ATM_DARKNESS_P, atm_darkness)
+	sky_material.set_shader_parameter(Sky3D.ATM_DARKNESS, atm_darkness)
+	fog_material.set_shader_parameter(Sky3D.ATM_DARKNESS, atm_darkness)
 
 
 func set_atm_sun_intensity(value: float) -> void:
@@ -456,8 +456,8 @@ func set_atm_sun_intensity(value: float) -> void:
 func update_atm_sun_intensity() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_SUN_INTENSITY_P, atm_sun_intensity)
-	fog_material.set_shader_parameter(Sky3D.ATM_SUN_INTENSITY_P, atm_sun_intensity)
+	sky_material.set_shader_parameter(Sky3D.ATM_SUN_INTENSITY, atm_sun_intensity)
+	fog_material.set_shader_parameter(Sky3D.ATM_SUN_INTENSITY, atm_sun_intensity)
 
 
 func set_atm_day_tint(value: Color) -> void:
@@ -470,8 +470,8 @@ func set_atm_day_tint(value: Color) -> void:
 func update_atm_day_tint() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_DAY_TINT_P, atm_day_tint)
-	fog_material.set_shader_parameter(Sky3D.ATM_DAY_TINT_P, atm_day_tint)
+	sky_material.set_shader_parameter(Sky3D.ATM_DAY_TINT, atm_day_tint)
+	fog_material.set_shader_parameter(Sky3D.ATM_DAY_TINT, atm_day_tint)
 
 
 func set_atm_horizon_light_tint(value: Color) -> void:
@@ -484,8 +484,8 @@ func set_atm_horizon_light_tint(value: Color) -> void:
 func update_atm_horizon_light_tint() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_HORIZON_LIGHT_TINT_P, atm_horizon_light_tint)
-	fog_material.set_shader_parameter(Sky3D.ATM_HORIZON_LIGHT_TINT_P, atm_horizon_light_tint)
+	sky_material.set_shader_parameter(Sky3D.ATM_HORIZON_LIGHT_TINT, atm_horizon_light_tint)
+	fog_material.set_shader_parameter(Sky3D.ATM_HORIZON_LIGHT_TINT, atm_horizon_light_tint)
 
 
 func set_atm_enable_moon_scatter_mode(value: bool) -> void:
@@ -507,8 +507,8 @@ func update_night_intensity() -> void:
 		return
 
 	var tint: Color = atm_night_tint * atm_night_intensity()
-	sky_material.set_shader_parameter(Sky3D.ATM_NIGHT_TINT_P, tint)
-	fog_material.set_shader_parameter(Sky3D.ATM_NIGHT_TINT_P, atm_night_tint * fog_atm_night_intensity())
+	sky_material.set_shader_parameter(Sky3D.ATM_NIGHT_TINT, tint)
+	fog_material.set_shader_parameter(Sky3D.ATM_NIGHT_TINT, atm_night_tint * fog_atm_night_intensity())
 	set_atm_moon_mie_intensity(atm_moon_mie_intensity)
 
 
@@ -522,8 +522,8 @@ func set_atm_level_params(value: Vector3) -> void:
 func update_atm_level_params() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_LEVEL_PARAMS_P, atm_level_params)
-	fog_material.set_shader_parameter(Sky3D.ATM_LEVEL_PARAMS_P, atm_level_params + fog_atm_level_params_offset)
+	sky_material.set_shader_parameter(Sky3D.ATM_LEVEL_PARAMS, atm_level_params)
+	fog_material.set_shader_parameter(Sky3D.ATM_LEVEL_PARAMS, atm_level_params + fog_atm_level_params_offset)
 
 
 func set_atm_thickness(value: float) -> void:
@@ -536,8 +536,8 @@ func set_atm_thickness(value: float) -> void:
 func update_atm_thickness() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_THICKNESS_P, atm_thickness)
-	fog_material.set_shader_parameter(Sky3D.ATM_THICKNESS_P, atm_thickness)
+	sky_material.set_shader_parameter(Sky3D.ATM_THICKNESS, atm_thickness)
+	fog_material.set_shader_parameter(Sky3D.ATM_THICKNESS, atm_thickness)
 
 
 func set_atm_mie(value: float) -> void:
@@ -559,8 +559,8 @@ func update_beta_mie() -> void:
 		return
 
 	var bm: Vector3 = ScatterLib.compute_beta_mie(atm_mie, atm_turbidity)
-	sky_material.set_shader_parameter(Sky3D.ATM_BETA_MIE_P, bm)
-	fog_material.set_shader_parameter(Sky3D.ATM_BETA_MIE_P, bm)
+	sky_material.set_shader_parameter(Sky3D.ATM_BETA_MIE, bm)
+	fog_material.set_shader_parameter(Sky3D.ATM_BETA_MIE, bm)
 
 
 func set_atm_sun_mie_tint(value: Color) -> void:
@@ -573,8 +573,8 @@ func set_atm_sun_mie_tint(value: Color) -> void:
 func update_atm_sun_mie_tint() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_SUN_MIE_TINT_P, atm_sun_mie_tint)
-	fog_material.set_shader_parameter(Sky3D.ATM_SUN_MIE_TINT_P, atm_sun_mie_tint)
+	sky_material.set_shader_parameter(Sky3D.ATM_SUN_MIE_TINT, atm_sun_mie_tint)
+	fog_material.set_shader_parameter(Sky3D.ATM_SUN_MIE_TINT, atm_sun_mie_tint)
 
 
 func set_atm_sun_mie_intensity(value: float) -> void:
@@ -587,8 +587,8 @@ func set_atm_sun_mie_intensity(value: float) -> void:
 func update_atm_sun_mie_intensity() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_SUN_MIE_INTENSITY_P, atm_sun_mie_intensity)
-	fog_material.set_shader_parameter(Sky3D.ATM_SUN_MIE_INTENSITY_P, atm_sun_mie_intensity)
+	sky_material.set_shader_parameter(Sky3D.ATM_SUN_MIE_INTENSITY, atm_sun_mie_intensity)
+	fog_material.set_shader_parameter(Sky3D.ATM_SUN_MIE_INTENSITY, atm_sun_mie_intensity)
 
 
 func set_atm_sun_mie_anisotropy(value: float) -> void:
@@ -602,8 +602,8 @@ func update_atm_sun_mie_anisotropy() -> void:
 	if !is_scene_built:
 		return
 	var partial: Vector3 = ScatterLib.get_partial_mie_phase(atm_sun_mie_anisotropy)
-	sky_material.set_shader_parameter(Sky3D.ATM_SUN_PARTIAL_MIE_PHASE_P, partial)
-	fog_material.set_shader_parameter(Sky3D.ATM_SUN_PARTIAL_MIE_PHASE_P, partial)
+	sky_material.set_shader_parameter(Sky3D.ATM_SUN_PARTIAL_MIE_PHASE, partial)
+	fog_material.set_shader_parameter(Sky3D.ATM_SUN_PARTIAL_MIE_PHASE, partial)
 
 
 func set_atm_moon_mie_tint(value: Color) -> void:
@@ -616,8 +616,8 @@ func set_atm_moon_mie_tint(value: Color) -> void:
 func update_atm_moon_mie_tint() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_MOON_MIE_TINT_P, atm_moon_mie_tint)
-	fog_material.set_shader_parameter(Sky3D.ATM_MOON_MIE_TINT_P, atm_moon_mie_tint)
+	sky_material.set_shader_parameter(Sky3D.ATM_MOON_MIE_TINT, atm_moon_mie_tint)
+	fog_material.set_shader_parameter(Sky3D.ATM_MOON_MIE_TINT, atm_moon_mie_tint)
 
 
 func set_atm_moon_mie_intensity(value: float) -> void:
@@ -630,8 +630,8 @@ func set_atm_moon_mie_intensity(value: float) -> void:
 func update_atm_moon_mie_intensity() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_MOON_MIE_INTENSITY_P, atm_moon_mie_intensity * atm_moon_phases_mult())
-	fog_material.set_shader_parameter(Sky3D.ATM_MOON_MIE_INTENSITY_P, atm_moon_mie_intensity * atm_moon_phases_mult())
+	sky_material.set_shader_parameter(Sky3D.ATM_MOON_MIE_INTENSITY, atm_moon_mie_intensity * atm_moon_phases_mult())
+	fog_material.set_shader_parameter(Sky3D.ATM_MOON_MIE_INTENSITY, atm_moon_mie_intensity * atm_moon_phases_mult())
 
 
 func set_atm_moon_mie_anisotropy(value: float) -> void:
@@ -645,8 +645,8 @@ func update_atm_moon_mie_anisotropy() -> void:
 	if !is_scene_built:
 		return
 	var partial: Vector3 = ScatterLib.get_partial_mie_phase(atm_moon_mie_anisotropy)
-	sky_material.set_shader_parameter(Sky3D.ATM_MOON_PARTIAL_MIE_PHASE_P, partial)
-	fog_material.set_shader_parameter(Sky3D.ATM_MOON_PARTIAL_MIE_PHASE_P, partial)
+	sky_material.set_shader_parameter(Sky3D.ATM_MOON_PARTIAL_MIE_PHASE, partial)
+	fog_material.set_shader_parameter(Sky3D.ATM_MOON_PARTIAL_MIE_PHASE, partial)
 
 
 func atm_moon_phases_mult() -> float:
@@ -707,7 +707,7 @@ func set_fog_atm_level_params_offset(value: Vector3) -> void:
 func update_fog_atm_level_params_offset() -> void:
 	if !is_scene_built:
 		return
-	fog_material.set_shader_parameter(Sky3D.ATM_LEVEL_PARAMS_P, atm_level_params + fog_atm_level_params_offset)
+	fog_material.set_shader_parameter(Sky3D.ATM_LEVEL_PARAMS, atm_level_params + fog_atm_level_params_offset)
 
 
 func set_fog_density(value: float) -> void:
@@ -720,7 +720,7 @@ func set_fog_density(value: float) -> void:
 func update_fog_density() -> void:
 	if !is_scene_built:
 		return
-	fog_material.set_shader_parameter(Sky3D.ATM_FOG_DENSITY_P, fog_density)
+	fog_material.set_shader_parameter(Sky3D.ATM_FOG_DENSITY, fog_density)
 
 
 func set_fog_start(value: float) -> void:
@@ -759,7 +759,7 @@ func set_fog_rayleigh_depth(value: float) -> void:
 func update_fog_rayleigh_depth() -> void:
 	if !is_scene_built:
 		return
-	fog_material.set_shader_parameter(Sky3D.ATM_FOG_RAYLEIGH_DEPTH_P, fog_rayleigh_depth)
+	fog_material.set_shader_parameter(Sky3D.ATM_FOG_RAYLEIGH_DEPTH, fog_rayleigh_depth)
 
 
 func set_fog_mie_depth(value: float) -> void:
@@ -772,7 +772,7 @@ func set_fog_mie_depth(value: float) -> void:
 func update_fog_mie_depth() -> void:
 	if !is_scene_built:
 		return
-	fog_material.set_shader_parameter(Sky3D.ATM_FOG_MIE_DEPTH_P, fog_mie_depth)
+	fog_material.set_shader_parameter(Sky3D.ATM_FOG_MIE_DEPTH, fog_mie_depth)
 
 
 func set_fog_falloff(value: float) -> void:
@@ -827,7 +827,7 @@ func set_sun_disk_color(value: Color) -> void:
 func update_sun_disk_color() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.SUN_DISK_COLOR_P, sun_disk_color)
+	sky_material.set_shader_parameter(Sky3D.SUN_DISK_COLOR, sun_disk_color)
 
 
 func set_sun_disk_intensity(value: float) -> void:
@@ -840,7 +840,7 @@ func set_sun_disk_intensity(value: float) -> void:
 func update_sun_disk_intensity() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.SUN_DISK_INTENSITY_P, sun_disk_intensity)
+	sky_material.set_shader_parameter(Sky3D.SUN_DISK_INTENSITY, sun_disk_intensity)
 
 
 func set_sun_disk_size(value: float) -> void:
@@ -853,7 +853,7 @@ func set_sun_disk_size(value: float) -> void:
 func update_sun_disk_size() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.SUN_DISK_SIZE_P, sun_disk_size)
+	sky_material.set_shader_parameter(Sky3D.SUN_DISK_SIZE, sun_disk_size)
 
 
 func set_moon_color(value: Color) -> void:
@@ -866,7 +866,7 @@ func set_moon_color(value: Color) -> void:
 func update_moon_color() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.MOON_COLOR_P, moon_color)
+	sky_material.set_shader_parameter(Sky3D.MOON_COLOR, moon_color)
 
 
 func set_moon_size(value: float) -> void:
@@ -879,7 +879,7 @@ func set_moon_size(value: float) -> void:
 func update_moon_size() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.MOON_SIZE_P, moon_size)
+	sky_material.set_shader_parameter(Sky3D.MOON_SIZE, moon_size)
 
 
 func set_moon_texture(value: Texture2D) -> void:
@@ -913,7 +913,7 @@ func set_flip_moon_texture_v(value: bool) -> void:
 func update_moon_texture() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.MOON_TEXTURE_P, moon_texture)
+	sky_material.set_shader_parameter(Sky3D.MOON_TEXTURE, moon_texture)
 	sky_material.set_shader_parameter(Sky3D.MOON_TEXTURE_ALIGN, moon_texture_alignment)
 	sky_material.set_shader_parameter(Sky3D.MOON_TEXTURE_FLIP_U, flip_moon_texture_u)
 	sky_material.set_shader_parameter(Sky3D.MOON_TEXTURE_FLIP_V, flip_moon_texture_v)
@@ -926,7 +926,7 @@ func update_moon_texture() -> void:
 # Original sun light (0.984314, 0.843137, 0.788235)
 # Original sun horizon (1.0, 0.384314, 0.243137, 1.0)
 
-var __sun_light_node: DirectionalLight3D = null
+var _sun_light_node: DirectionalLight3D = null
 
 
 func set_sun_light_color(value: Color) -> void:
@@ -937,10 +937,10 @@ func set_sun_light_color(value: Color) -> void:
 	
 
 func update_sun_light_color() -> void:
-	if __sun_light_node == null:
+	if _sun_light_node == null:
 		return
 	var sun_light_altitude_mult: float = TOD_Math.saturate(sun_direction().y * 2.0)
-	__sun_light_node.light_color = TOD_Math.plerp_color(sun_horizon_light_color, sun_light_color, sun_light_altitude_mult)
+	_sun_light_node.light_color = TOD_Math.plerp_color(sun_horizon_light_color, sun_light_color, sun_light_altitude_mult)
 
 
 func set_sun_horizon_light_color(value: Color) -> void:
@@ -958,18 +958,18 @@ func set_sun_light_energy(value: float) -> void:
 	
 
 func update_sun_light_energy() -> void:
-	if __sun_light_node == null or not sun_light_enabled:
+	if _sun_light_node == null or not sun_light_enabled:
 		return
 	
 	# Light energy should depend on how much of the sun disk is visible.
 	var y: float = sun_direction().y
 	var sun_light_factor: float = TOD_Math.saturate((y + sun_disk_size) / (2.0 * sun_disk_size));
-	__sun_light_node.light_energy = TOD_Math.lerp_f(0.0, sun_light_energy, sun_light_factor)
+	_sun_light_node.light_energy = TOD_Math.lerp_f(0.0, sun_light_energy, sun_light_factor)
 	
-	if is_equal_approx(__sun_light_node.light_energy, 0.0) and __sun_light_node.shadow_enabled:
-		__sun_light_node.shadow_enabled = false
-	elif __sun_light_node.light_energy > 0.0 and not __sun_light_node.shadow_enabled:
-		__sun_light_node.shadow_enabled = true
+	if is_equal_approx(_sun_light_node.light_energy, 0.0) and _sun_light_node.shadow_enabled:
+		_sun_light_node.shadow_enabled = false
+	elif _sun_light_node.light_energy > 0.0 and not _sun_light_node.shadow_enabled:
+		_sun_light_node.shadow_enabled = true
 
 
 func set_sun_light_path(value: NodePath) -> void:
@@ -980,17 +980,17 @@ func set_sun_light_path(value: NodePath) -> void:
 	
 func update_sun_light_path() -> void:
 	if sun_light_path != null:
-		__sun_light_node = get_node_or_null(sun_light_path) as DirectionalLight3D
+		_sun_light_node = get_node_or_null(sun_light_path) as DirectionalLight3D
 	else:
-		__sun_light_node = null
+		_sun_light_node = null
 
 
 #####################
 ## Moon
 #####################
 
-var __moon_light_node: DirectionalLight3D
-var __moon_light_altitude_mult: float = 0.0
+var _moon_light_node: DirectionalLight3D
+var _moon_light_altitude_mult: float = 0.0
 
 
 func set_moon_light_color(value: Color) -> void:
@@ -1001,9 +1001,9 @@ func set_moon_light_color(value: Color) -> void:
 	
 
 func update_moon_light_color() -> void:
-	if __moon_light_node == null:
+	if _moon_light_node == null:
 		return
-	__moon_light_node.light_color = moon_light_color
+	_moon_light_node.light_color = moon_light_color
 		
 
 func set_moon_light_energy(value: float) -> void:
@@ -1012,19 +1012,19 @@ func set_moon_light_energy(value: float) -> void:
 
 
 func update_moon_light_energy() -> void:
-	if __moon_light_node == null or not moon_light_enabled:
+	if _moon_light_node == null or not moon_light_enabled:
 		return
 	
-	var l: float = TOD_Math.lerp_f(0.0, moon_light_energy, __moon_light_altitude_mult)
+	var l: float = TOD_Math.lerp_f(0.0, moon_light_energy, _moon_light_altitude_mult)
 	l *= atm_moon_phases_mult()
 	
 	var fade: float = (1.0 - sun_direction().y) * 0.5
-	__moon_light_node.light_energy = l * Sky3D._sun_moon_curve_fade.sample_baked(fade)
+	_moon_light_node.light_energy = l * Sky3D._sun_moon_curve_fade.sample_baked(fade)
 	
-	if is_equal_approx(__moon_light_node.light_energy, 0.0) and __moon_light_node.shadow_enabled:
-		__moon_light_node.shadow_enabled = false
-	elif __moon_light_node.light_energy > 0.0 and not __moon_light_node.shadow_enabled:
-		__moon_light_node.shadow_enabled = true
+	if is_equal_approx(_moon_light_node.light_energy, 0.0) and _moon_light_node.shadow_enabled:
+		_moon_light_node.shadow_enabled = false
+	elif _moon_light_node.light_energy > 0.0 and not _moon_light_node.shadow_enabled:
+		_moon_light_node.shadow_enabled = true
 
 
 func set_moon_light_path(value: NodePath) -> void:
@@ -1035,9 +1035,9 @@ func set_moon_light_path(value: NodePath) -> void:
 
 func update_moon_light_path() -> void:
 	if moon_light_path != null:
-		__moon_light_node = get_node_or_null(moon_light_path) as DirectionalLight3D
+		_moon_light_node = get_node_or_null(moon_light_path) as DirectionalLight3D
 	else:
-		__moon_light_node = null
+		_moon_light_node = null
 
 
 #####################
@@ -1055,7 +1055,7 @@ var deep_space_euler: Vector3 = Vector3(0, 0, 0.0): set = set_deep_space_euler #
 @export var stars_scintillation_speed: float = 0.01: set = set_stars_scintillation_speed
 
 var deep_space_quat: Quaternion = Quaternion.IDENTITY: set = set_deep_space_quat
-var __deep_space_basis: Basis
+var _deep_space_basis: Basis
 
 
 func set_starmap_alignment(value: Vector3) -> void:
@@ -1066,9 +1066,9 @@ func set_starmap_alignment(value: Vector3) -> void:
 
 func set_deep_space_euler(value: Vector3) -> void:
 	deep_space_euler = value
-	__deep_space_basis = Basis.from_euler(value)
+	_deep_space_basis = Basis.from_euler(value)
 	update_deep_space_basis()
-	var quat: Quaternion = __deep_space_basis.get_rotation_quaternion()
+	var quat: Quaternion = _deep_space_basis.get_rotation_quaternion()
 	if deep_space_quat.angle_to(quat) < 0.01:
 		return
 	deep_space_quat = quat
@@ -1076,9 +1076,9 @@ func set_deep_space_euler(value: Vector3) -> void:
 
 func set_deep_space_quat(value: Quaternion) -> void:
 	deep_space_quat = value
-	__deep_space_basis = Basis(value)
+	_deep_space_basis = Basis(value)
 	update_deep_space_basis()
-	var euler: Vector3 = __deep_space_basis.get_euler()
+	var euler: Vector3 = _deep_space_basis.get_euler()
 	if deep_space_euler.angle_to(euler) < 0.01:
 		return
 	deep_space_euler = euler
@@ -1087,7 +1087,7 @@ func set_deep_space_quat(value: Quaternion) -> void:
 func update_deep_space_basis() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.DEEP_SPACE_MATRIX_P, __deep_space_basis)
+	sky_material.set_shader_parameter(Sky3D.DEEP_SPACE_MATRIX, _deep_space_basis)
 
 
 func set_background_color(value: Color) -> void:
@@ -1100,13 +1100,13 @@ func set_background_color(value: Color) -> void:
 func update_background_color() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.BG_COL_P, background_color)
+	sky_material.set_shader_parameter(Sky3D.BG_COL, background_color)
 
 
 func update_background_texture() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.BG_TEXTURE_P, background_texture)
+	sky_material.set_shader_parameter(Sky3D.BG_TEXTURE, background_texture)
 
 
 func _set_background_texture(value: Texture2D) -> void:
@@ -1119,7 +1119,7 @@ func _set_background_texture(value: Texture2D) -> void:
 func update_stars_field_color() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.STARS_COLOR_P, stars_field_color)
+	sky_material.set_shader_parameter(Sky3D.STARS_COLOR, stars_field_color)
 
 
 func set_stars_field_color(value: Color) -> void:
@@ -1132,7 +1132,7 @@ func set_stars_field_color(value: Color) -> void:
 func update_stars_field_texture() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.STARS_TEXTURE_P, stars_field_texture)
+	sky_material.set_shader_parameter(Sky3D.STARS_TEXTURE, stars_field_texture)
 
 
 func _set_stars_field_texture(value: Texture2D) -> void:
@@ -1145,7 +1145,7 @@ func _set_stars_field_texture(value: Texture2D) -> void:
 func update_stars_scintillation() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.STARS_SC_P, stars_scintillation)
+	sky_material.set_shader_parameter(Sky3D.STARS_SC, stars_scintillation)
 
 
 func set_stars_scintillation(value: float) -> void:
@@ -1158,7 +1158,7 @@ func set_stars_scintillation(value: float) -> void:
 func update_stars_scintillation_speed() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.STARS_SC_SPEED_P, stars_scintillation_speed)
+	sky_material.set_shader_parameter(Sky3D.STARS_SC_SPEED, stars_scintillation_speed)
 
 
 func set_stars_scintillation_speed(value: float) -> void:
@@ -1542,22 +1542,22 @@ func update_clouds_cumulus_texture() -> void:
 ## Environment
 #####################
 
-var __enable_environment: bool = false
+var _enable_environment: bool = false
 var environment: Environment = null: set = set_environment
 
 
 func set_environment(value: Environment) -> void:
 	environment = value
-	__enable_environment = true if environment != null else false
-	if __enable_environment:
-		__update_environment()
+	_enable_environment = true if environment != null else false
+	if _enable_environment:
+		_update_environment()
 
 
-func __update_environment() -> void:
-	if not __enable_environment or not __sun_light_node:
+func _update_environment() -> void:
+	if not _enable_environment or not _sun_light_node:
 		return
 	var factor: float = TOD_Math.saturate(-sun_direction().y + 0.60)
-	var col: Color = TOD_Math.plerp_color(__sun_light_node.light_color, atm_night_tint * atm_night_intensity(), factor)
+	var col: Color = TOD_Math.plerp_color(_sun_light_node.light_color, atm_night_tint * atm_night_intensity(), factor)
 	col.a = 1.
 	col.v = clamp(col.v, .35, 1.)
 	environment.ambient_light_color = col
@@ -1567,18 +1567,18 @@ func __update_environment() -> void:
 ## Lighting
 #####################
 
-var __day: bool: get = is_day
+var _day: bool: get = is_day
 
 
 func is_day() -> bool:
-	return __day == true
+	return _day == true
 
 
-func __set_day_state(v: float, threshold: float = 1.80) -> void:
+func _set_day_state(v: float, threshold: float = 1.80) -> void:
 	# Signal when day has changed to night and vice versa.
-	if __day == true and abs(v) > threshold:
-		__day = false
-		emit_signal("day_night_changed", __day)
-	elif __day == false and abs(v) <= threshold:
-		__day = true
-		emit_signal("day_night_changed", __day)
+	if _day == true and abs(v) > threshold:
+		_day = false
+		emit_signal("day_night_changed", _day)
+	elif _day == false and abs(v) <= threshold:
+		_day = true
+		emit_signal("day_night_changed", _day)

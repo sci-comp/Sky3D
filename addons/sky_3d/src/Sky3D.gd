@@ -60,6 +60,17 @@ func set_sky_enabled(value: bool) -> void:
 	sky.clouds_visible = clouds_enabled and value
 
 
+## Enables the 2D and cumulus cloud layers.
+@export var clouds_enabled: bool = true : set = set_clouds_enabled
+
+func set_clouds_enabled(value: bool) -> void:
+	clouds_enabled = value
+	if not sky:
+		return
+	sky.clouds_cumulus_visible = value
+	sky.clouds_visible = value
+
+
 ## Enables the Sun and Moon DirectionalLights.
 @export var lights_enabled: bool = true : set = set_lights_enabled
 
@@ -79,17 +90,6 @@ func set_fog_enabled(value: bool) -> void:
 	fog_enabled = value
 	if sky:
 		sky.fog_visible = value
-
-
-## Enables the 2D and cumulus cloud layers.
-@export var clouds_enabled: bool = true : set = set_clouds_enabled
-
-func set_clouds_enabled(value: bool) -> void:
-	clouds_enabled = value
-	if not sky:
-		return
-	sky.clouds_cumulus_visible = value
-	sky.clouds_visible = value
 
 
 ## Disables rendering of sky, fog, and lights
@@ -134,7 +134,7 @@ func set_game_time_enabled(value: bool) -> void:
 
 
 ## The current in-game time in hours from 0.0 to 23.99. Smaller or larger values than the range will wrap.
-@export_range(0.0, 23.99, 0.01, "or_greater", "or_less") var current_time: float = 8.0 : set = set_current_time
+@export_range(0.0, 23.99, 0.01) var current_time: float = 8.0 : set = set_current_time
 
 func set_current_time(value: float) -> void:
 	current_time = value
@@ -511,68 +511,68 @@ const _clouds_texture: Texture2D = preload("res://addons/sky_3d/assets/resources
 const _clouds_cumulus_texture: Texture2D = preload("res://addons/sky_3d/assets/textures/noiseClouds.png")
 
 # Coords
-const SUN_DIR_P: String = "_sun_direction"
-const MOON_DIR_P: String = "_moon_direction"
+const SUN_DIR: String = "_sun_direction"
+const MOON_DIR: String = "_moon_direction"
 const MOON_MATRIX: String = "_moon_matrix"
 
 # General
 const SKY_VISIBLE: String = "_sky_visible"
-const TEXTURE_P: String = "_texture"
-const COLOR_CORRECTION_P: String = "_color_correction_params"
-const GROUND_COLOR_P: String = "_ground_color"
+const TEXTURE: String = "_texture"
+const COLOR_CORRECTION: String = "_color_correction_params"
+const GROUND_COLOR: String = "_ground_color"
 const NOISE_TEX: String = "_noise_tex"
 const HORIZON_LEVEL: String = "_horizon_level"
 
 # Atmosphere
-const ATM_DARKNESS_P: String = "_atm_darkness"
-const ATM_BETA_RAY_P: String = "_atm_beta_ray"
-const ATM_SUN_INTENSITY_P: String = "_atm_sun_intensity"
-const ATM_DAY_TINT_P: String = "_atm_day_tint"
-const ATM_HORIZON_LIGHT_TINT_P: String = "_atm_horizon_light_tint"
+const ATM_DARKNESS: String = "_atm_darkness"
+const ATM_BETA_RAY: String = "_atm_beta_ray"
+const ATM_SUN_INTENSITY: String = "_atm_sun_intensity"
+const ATM_DAY_TINT: String = "_atm_day_tint"
+const ATM_HORIZON_LIGHT_TINT: String = "_atm_horizon_light_tint"
 
-const ATM_NIGHT_TINT_P: String = "_atm_night_tint"
-const ATM_LEVEL_PARAMS_P: String = "_atm_level_params"
-const ATM_THICKNESS_P: String = "_atm_thickness"
-const ATM_BETA_MIE_P: String = "_atm_beta_mie"
+const ATM_NIGHT_TINT: String = "_atm_night_tint"
+const ATM_LEVEL_PARAMS: String = "_atm_level_params"
+const ATM_THICKNESS: String = "_atm_thickness"
+const ATM_BETA_MIE: String = "_atm_beta_mie"
 
-const ATM_SUN_MIE_TINT_P: String = "_atm_sun_mie_tint"
-const ATM_SUN_MIE_INTENSITY_P: String = "_atm_sun_mie_intensity"
-const ATM_SUN_PARTIAL_MIE_PHASE_P: String = "_atm_sun_partial_mie_phase"
+const ATM_SUN_MIE_TINT: String = "_atm_sun_mie_tint"
+const ATM_SUN_MIE_INTENSITY: String = "_atm_sun_mie_intensity"
+const ATM_SUN_PARTIAL_MIE_PHASE: String = "_atm_sun_partial_mie_phase"
 
-const ATM_MOON_MIE_TINT_P: String = "_atm_moon_mie_tint"
-const ATM_MOON_MIE_INTENSITY_P: String = "_atm_moon_mie_intensity"
-const ATM_MOON_PARTIAL_MIE_PHASE_P: String = "_atm_moon_partial_mie_phase"
+const ATM_MOON_MIE_TINT: String = "_atm_moon_mie_tint"
+const ATM_MOON_MIE_INTENSITY: String = "_atm_moon_mie_intensity"
+const ATM_MOON_PARTIAL_MIE_PHASE: String = "_atm_moon_partial_mie_phase"
 
 # Fog
-const ATM_FOG_DENSITY_P: String = "_fog_density"
-const ATM_FOG_RAYLEIGH_DEPTH_P: String = "_fog_rayleigh_depth"
-const ATM_FOG_MIE_DEPTH_P: String = "_fog_mie_depth"
+const ATM_FOG_DENSITY: String = "_fog_density"
+const ATM_FOG_RAYLEIGH_DEPTH: String = "_fog_rayleigh_depth"
+const ATM_FOG_MIE_DEPTH: String = "_fog_mie_depth"
 const ATM_FOG_FALLOFF: String = "_fog_falloff"
 const ATM_FOG_START: String = "_fog_start"
 const ATM_FOG_END: String = "_fog_end"
 
 # Near Space
-const SUN_DISK_COLOR_P: String = "_sun_disk_color"
-const SUN_DISK_INTENSITY_P: String = "_sun_disk_intensity"
-const SUN_DISK_SIZE_P: String = "_sun_disk_size"
-const MOON_COLOR_P: String = "_moon_color"
-const MOON_SIZE_P: String = "_moon_size"
-const MOON_TEXTURE_P: String = "_moon_texture"
+const SUN_DISK_COLOR: String = "_sun_disk_color"
+const SUN_DISK_INTENSITY: String = "_sun_disk_intensity"
+const SUN_DISK_SIZE: String = "_sun_disk_size"
+const MOON_COLOR: String = "_moon_color"
+const MOON_SIZE: String = "_moon_size"
+const MOON_TEXTURE: String = "_moon_texture"
 const MOON_TEXTURE_ALIGN: String = "_moon_texture_alignment"
 const MOON_TEXTURE_FLIP_U: String = "_moon_texture_flip_u"
 const MOON_TEXTURE_FLIP_V: String = "_moon_texture_flip_v"
 
 # Deep Space
-const DEEP_SPACE_MATRIX_P: String = "_deep_space_matrix"
+const DEEP_SPACE_MATRIX: String = "_deep_space_matrix"
 const SKY_ALIGNMENT: String = "_sky_alignment"
 const SKY_ROTATION: String = "_sky_rotation"
 const SKY_TILT: String = "_sky_tilt"
-const BG_COL_P: String = "_background_color"
-const BG_TEXTURE_P: String = "_background_texture"
-const STARS_COLOR_P: String = "_stars_field_color"
-const STARS_TEXTURE_P: String = "_stars_field_texture"
-const STARS_SC_P: String = "_stars_scintillation"
-const STARS_SC_SPEED_P: String = "_stars_scintillation_speed"
+const BG_COL: String = "_background_color"
+const BG_TEXTURE: String = "_background_texture"
+const STARS_COLOR: String = "_stars_field_color"
+const STARS_TEXTURE: String = "_stars_field_texture"
+const STARS_SC: String = "_stars_scintillation"
+const STARS_SC_SPEED: String = "_stars_scintillation_speed"
 
 # Clouds
 const CLOUDS_VISIBLE: String = "_clouds_visible"
