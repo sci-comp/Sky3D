@@ -127,14 +127,14 @@ func build_scene() -> void:
 	# Sky Material
 	# Necessary for now until we can pull everything off the Skydome node.
 	sky_material = get_parent().environment.sky.sky_material
-	sky_material.set_shader_parameter(Sky3D.NOISE_TEX, Sky3D._stars_field_noise)
+	sky_material.set_shader_parameter("noise_tex", Sky3D.stars_field_noise)
 	
 	# Set cumulus cloud global to point to the sky material.
 	# Necessary for now until we can pull everything off the Skydome node.
 	clouds_cumulus_material = sky_material
 	
 	fog_mesh = MeshInstance3D.new()
-	fog_mesh.name = Sky3D.FOG_INSTANCE
+	fog_mesh.name = "_FogMeshI"
 	var fog_screen_quad = QuadMesh.new()
 	var size: Vector2
 	size.x = 2.0
@@ -142,7 +142,7 @@ func build_scene() -> void:
 	fog_screen_quad.size = size
 	fog_mesh.mesh = fog_screen_quad
 	fog_material = ShaderMaterial.new()
-	fog_material.shader = Sky3D._fog_shader
+	fog_material.shader = Sky3D.fog_shader
 	fog_material.render_priority = 127
 	fog_mesh.material_override = fog_material
 	_setup_mesh_instance(fog_mesh, Vector3.ZERO)
@@ -187,8 +187,8 @@ func update_color_correction_params() -> void:
 	var p: Vector2
 	p.x = tonemap_level
 	p.y = exposure
-	sky_material.set_shader_parameter(Sky3D.COLOR_CORRECTION, p)
-	fog_material.set_shader_parameter(Sky3D.COLOR_CORRECTION, p)
+	sky_material.set_shader_parameter("color_correction_params", p)
+	fog_material.set_shader_parameter("color_correction_params", p)
 
 func set_ground_color(value: Color) -> void:
 	if value == ground_color:
@@ -200,7 +200,7 @@ func set_ground_color(value: Color) -> void:
 func update_ground_color() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.GROUND_COLOR, ground_color)
+	sky_material.set_shader_parameter("ground_color", ground_color)
 	
 
 func set_horizon_level(value: float) -> void:
@@ -213,7 +213,7 @@ func set_horizon_level(value: float) -> void:
 func update_horizon_level() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.HORIZON_LEVEL, horizon_level)
+	sky_material.set_shader_parameter("horizon_level", horizon_level)
 
 
 #####################
@@ -286,7 +286,7 @@ func update_sun_coords() -> void:
 	emit_signal("sun_transform_changed", _sun_transform)
 	emit_signal("sun_transform_changed", sun_direction())
 	
-	fog_material.set_shader_parameter(Sky3D.SUN_DIR, sun_direction())
+	fog_material.set_shader_parameter("sun_direction", sun_direction())
 	
 	if _sun_light_node != null:
 		_sun_light_node.transform = _sun_transform
@@ -303,7 +303,7 @@ func update_sun_coords() -> void:
 #####################
 
 @export_group("Moon")
-@export var moon_texture: Texture2D = Sky3D._moon_texture: set = set_moon_texture
+@export var moon_texture: Texture2D = Sky3D.moon_texture: set = set_moon_texture
 @export var moon_texture_alignment: Vector3 = Vector3(7.0, 1.4, 4.8): set = set_moon_texture_alignment
 @export var flip_moon_texture_u: bool = false: set = set_flip_moon_texture_u
 @export var flip_moon_texture_v: bool = false: set = set_flip_moon_texture_v
@@ -371,8 +371,8 @@ func update_moon_coords() -> void:
 	emit_signal("moon_direction_changed", moon_direction())
 	
 	var moon_basis: Basis = get_parent().moon.get_global_transform().basis.inverse()
-	sky_material.set_shader_parameter(Sky3D.MOON_MATRIX, moon_basis)
-	fog_material.set_shader_parameter(Sky3D.MOON_DIR, moon_direction())
+	sky_material.set_shader_parameter("moon_matrix", moon_basis)
+	fog_material.set_shader_parameter("moon_direction", moon_direction())
 	
 	if _moon_light_node != null:
 		_moon_light_node.transform = _moon_transform
@@ -411,7 +411,7 @@ func update_moon_coords() -> void:
 func update_atm_quality() -> void:
 	if !is_scene_built:
 		return
-	sky_material.shader = Sky3D._sky_shader
+	sky_material.shader = Sky3D.sky_shader
 
 
 func set_atm_wavelengths(value : Vector3) -> void:
@@ -428,8 +428,8 @@ func update_beta_ray() -> void:
 	var wll: Vector3 = ScatterLib.compute_wavelenghts_lambda(atm_wavelengths)
 	var wls: Vector3 = ScatterLib.compute_wavlenghts(wll)
 	var betaRay: Vector3 = ScatterLib.compute_beta_ray(wls)
-	sky_material.set_shader_parameter(Sky3D.ATM_BETA_RAY, betaRay)
-	fog_material.set_shader_parameter(Sky3D.ATM_BETA_RAY, betaRay)
+	sky_material.set_shader_parameter("atm_beta_ray", betaRay)
+	fog_material.set_shader_parameter("atm_beta_ray", betaRay)
 
 	
 func set_atm_darkness(value: float) -> void:
@@ -442,8 +442,8 @@ func set_atm_darkness(value: float) -> void:
 func update_atm_darkness() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_DARKNESS, atm_darkness)
-	fog_material.set_shader_parameter(Sky3D.ATM_DARKNESS, atm_darkness)
+	sky_material.set_shader_parameter("atm_darkness", atm_darkness)
+	fog_material.set_shader_parameter("atm_darkness", atm_darkness)
 
 
 func set_atm_sun_intensity(value: float) -> void:
@@ -456,8 +456,8 @@ func set_atm_sun_intensity(value: float) -> void:
 func update_atm_sun_intensity() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_SUN_INTENSITY, atm_sun_intensity)
-	fog_material.set_shader_parameter(Sky3D.ATM_SUN_INTENSITY, atm_sun_intensity)
+	sky_material.set_shader_parameter("atm_sun_intensity", atm_sun_intensity)
+	fog_material.set_shader_parameter("atm_sun_intensity", atm_sun_intensity)
 
 
 func set_atm_day_tint(value: Color) -> void:
@@ -470,8 +470,8 @@ func set_atm_day_tint(value: Color) -> void:
 func update_atm_day_tint() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_DAY_TINT, atm_day_tint)
-	fog_material.set_shader_parameter(Sky3D.ATM_DAY_TINT, atm_day_tint)
+	sky_material.set_shader_parameter("atm_day_tint", atm_day_tint)
+	fog_material.set_shader_parameter("atm_day_tint", atm_day_tint)
 
 
 func set_atm_horizon_light_tint(value: Color) -> void:
@@ -484,8 +484,8 @@ func set_atm_horizon_light_tint(value: Color) -> void:
 func update_atm_horizon_light_tint() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_HORIZON_LIGHT_TINT, atm_horizon_light_tint)
-	fog_material.set_shader_parameter(Sky3D.ATM_HORIZON_LIGHT_TINT, atm_horizon_light_tint)
+	sky_material.set_shader_parameter("atm_horizon_light_tint", atm_horizon_light_tint)
+	fog_material.set_shader_parameter("atm_horizon_light_tint", atm_horizon_light_tint)
 
 
 func set_atm_enable_moon_scatter_mode(value: bool) -> void:
@@ -507,8 +507,8 @@ func update_night_intensity() -> void:
 		return
 
 	var tint: Color = atm_night_tint * atm_night_intensity()
-	sky_material.set_shader_parameter(Sky3D.ATM_NIGHT_TINT, tint)
-	fog_material.set_shader_parameter(Sky3D.ATM_NIGHT_TINT, atm_night_tint * fog_atm_night_intensity())
+	sky_material.set_shader_parameter("atm_night_tint", tint)
+	fog_material.set_shader_parameter("atm_night_tint", atm_night_tint * fog_atm_night_intensity())
 	set_atm_moon_mie_intensity(atm_moon_mie_intensity)
 
 
@@ -522,8 +522,8 @@ func set_atm_level_params(value: Vector3) -> void:
 func update_atm_level_params() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_LEVEL_PARAMS, atm_level_params)
-	fog_material.set_shader_parameter(Sky3D.ATM_LEVEL_PARAMS, atm_level_params + fog_atm_level_params_offset)
+	sky_material.set_shader_parameter("atm_level_params", atm_level_params)
+	fog_material.set_shader_parameter("atm_level_params", atm_level_params + fog_atm_level_params_offset)
 
 
 func set_atm_thickness(value: float) -> void:
@@ -536,8 +536,8 @@ func set_atm_thickness(value: float) -> void:
 func update_atm_thickness() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_THICKNESS, atm_thickness)
-	fog_material.set_shader_parameter(Sky3D.ATM_THICKNESS, atm_thickness)
+	sky_material.set_shader_parameter("atm_thickness", atm_thickness)
+	fog_material.set_shader_parameter("atm_thickness", atm_thickness)
 
 
 func set_atm_mie(value: float) -> void:
@@ -559,8 +559,8 @@ func update_beta_mie() -> void:
 		return
 
 	var bm: Vector3 = ScatterLib.compute_beta_mie(atm_mie, atm_turbidity)
-	sky_material.set_shader_parameter(Sky3D.ATM_BETA_MIE, bm)
-	fog_material.set_shader_parameter(Sky3D.ATM_BETA_MIE, bm)
+	sky_material.set_shader_parameter("atm_beta_mie", bm)
+	fog_material.set_shader_parameter("atm_beta_mie", bm)
 
 
 func set_atm_sun_mie_tint(value: Color) -> void:
@@ -573,8 +573,8 @@ func set_atm_sun_mie_tint(value: Color) -> void:
 func update_atm_sun_mie_tint() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_SUN_MIE_TINT, atm_sun_mie_tint)
-	fog_material.set_shader_parameter(Sky3D.ATM_SUN_MIE_TINT, atm_sun_mie_tint)
+	sky_material.set_shader_parameter("atm_sun_mie_tint", atm_sun_mie_tint)
+	fog_material.set_shader_parameter("atm_sun_mie_tint", atm_sun_mie_tint)
 
 
 func set_atm_sun_mie_intensity(value: float) -> void:
@@ -587,8 +587,8 @@ func set_atm_sun_mie_intensity(value: float) -> void:
 func update_atm_sun_mie_intensity() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_SUN_MIE_INTENSITY, atm_sun_mie_intensity)
-	fog_material.set_shader_parameter(Sky3D.ATM_SUN_MIE_INTENSITY, atm_sun_mie_intensity)
+	sky_material.set_shader_parameter("atm_sun_mie_intensity", atm_sun_mie_intensity)
+	fog_material.set_shader_parameter("atm_sun_mie_intensity", atm_sun_mie_intensity)
 
 
 func set_atm_sun_mie_anisotropy(value: float) -> void:
@@ -602,8 +602,8 @@ func update_atm_sun_mie_anisotropy() -> void:
 	if !is_scene_built:
 		return
 	var partial: Vector3 = ScatterLib.get_partial_mie_phase(atm_sun_mie_anisotropy)
-	sky_material.set_shader_parameter(Sky3D.ATM_SUN_PARTIAL_MIE_PHASE, partial)
-	fog_material.set_shader_parameter(Sky3D.ATM_SUN_PARTIAL_MIE_PHASE, partial)
+	sky_material.set_shader_parameter("atm_sun_partial_mie_phase", partial)
+	fog_material.set_shader_parameter("atm_sun_partial_mie_phase", partial)
 
 
 func set_atm_moon_mie_tint(value: Color) -> void:
@@ -616,8 +616,8 @@ func set_atm_moon_mie_tint(value: Color) -> void:
 func update_atm_moon_mie_tint() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_MOON_MIE_TINT, atm_moon_mie_tint)
-	fog_material.set_shader_parameter(Sky3D.ATM_MOON_MIE_TINT, atm_moon_mie_tint)
+	sky_material.set_shader_parameter("atm_moon_mie_tint", atm_moon_mie_tint)
+	fog_material.set_shader_parameter("atm_moon_mie_tint", atm_moon_mie_tint)
 
 
 func set_atm_moon_mie_intensity(value: float) -> void:
@@ -630,8 +630,8 @@ func set_atm_moon_mie_intensity(value: float) -> void:
 func update_atm_moon_mie_intensity() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.ATM_MOON_MIE_INTENSITY, atm_moon_mie_intensity * atm_moon_phases_mult())
-	fog_material.set_shader_parameter(Sky3D.ATM_MOON_MIE_INTENSITY, atm_moon_mie_intensity * atm_moon_phases_mult())
+	sky_material.set_shader_parameter("atm_moon_mie_intensity", atm_moon_mie_intensity * atm_moon_phases_mult())
+	fog_material.set_shader_parameter("atm_moon_mie_intensity", atm_moon_mie_intensity * atm_moon_phases_mult())
 
 
 func set_atm_moon_mie_anisotropy(value: float) -> void:
@@ -645,8 +645,8 @@ func update_atm_moon_mie_anisotropy() -> void:
 	if !is_scene_built:
 		return
 	var partial: Vector3 = ScatterLib.get_partial_mie_phase(atm_moon_mie_anisotropy)
-	sky_material.set_shader_parameter(Sky3D.ATM_MOON_PARTIAL_MIE_PHASE, partial)
-	fog_material.set_shader_parameter(Sky3D.ATM_MOON_PARTIAL_MIE_PHASE, partial)
+	sky_material.set_shader_parameter("atm_moon_partial_mie_phase", partial)
+	fog_material.set_shader_parameter("atm_moon_partial_mie_phase", partial)
 
 
 func atm_moon_phases_mult() -> float:
@@ -707,7 +707,7 @@ func set_fog_atm_level_params_offset(value: Vector3) -> void:
 func update_fog_atm_level_params_offset() -> void:
 	if !is_scene_built:
 		return
-	fog_material.set_shader_parameter(Sky3D.ATM_LEVEL_PARAMS, atm_level_params + fog_atm_level_params_offset)
+	fog_material.set_shader_parameter("atm_level_params", atm_level_params + fog_atm_level_params_offset)
 
 
 func set_fog_density(value: float) -> void:
@@ -720,7 +720,7 @@ func set_fog_density(value: float) -> void:
 func update_fog_density() -> void:
 	if !is_scene_built:
 		return
-	fog_material.set_shader_parameter(Sky3D.ATM_FOG_DENSITY, fog_density)
+	fog_material.set_shader_parameter("fog_density", fog_density)
 
 
 func set_fog_start(value: float) -> void:
@@ -733,7 +733,7 @@ func set_fog_start(value: float) -> void:
 func update_fog_start() -> void:
 	if !is_scene_built:
 		return
-	fog_material.set_shader_parameter(Sky3D.ATM_FOG_START, fog_start)
+	fog_material.set_shader_parameter("fog_start", fog_start)
 	
 
 func set_fog_end(value: float) -> void:
@@ -746,7 +746,7 @@ func set_fog_end(value: float) -> void:
 func update_fog_end() -> void:
 	if !is_scene_built:
 		return
-	fog_material.set_shader_parameter(Sky3D.ATM_FOG_END, fog_end)
+	fog_material.set_shader_parameter("fog_end", fog_end)
 
 
 func set_fog_rayleigh_depth(value: float) -> void:
@@ -759,7 +759,7 @@ func set_fog_rayleigh_depth(value: float) -> void:
 func update_fog_rayleigh_depth() -> void:
 	if !is_scene_built:
 		return
-	fog_material.set_shader_parameter(Sky3D.ATM_FOG_RAYLEIGH_DEPTH, fog_rayleigh_depth)
+	fog_material.set_shader_parameter("fog_rayleigh_depth", fog_rayleigh_depth)
 
 
 func set_fog_mie_depth(value: float) -> void:
@@ -772,7 +772,7 @@ func set_fog_mie_depth(value: float) -> void:
 func update_fog_mie_depth() -> void:
 	if !is_scene_built:
 		return
-	fog_material.set_shader_parameter(Sky3D.ATM_FOG_MIE_DEPTH, fog_mie_depth)
+	fog_material.set_shader_parameter("fog_mie_depth", fog_mie_depth)
 
 
 func set_fog_falloff(value: float) -> void:
@@ -785,7 +785,7 @@ func set_fog_falloff(value: float) -> void:
 func update_fog_falloff() -> void:
 	if !is_scene_built:
 		return
-	fog_material.set_shader_parameter(Sky3D.ATM_FOG_FALLOFF, fog_falloff)
+	fog_material.set_shader_parameter("fog_falloff", fog_falloff)
 
 
 func set_fog_layers(value: int) -> void:
@@ -827,7 +827,7 @@ func set_sun_disk_color(value: Color) -> void:
 func update_sun_disk_color() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.SUN_DISK_COLOR, sun_disk_color)
+	sky_material.set_shader_parameter("sun_disk_color", sun_disk_color)
 
 
 func set_sun_disk_intensity(value: float) -> void:
@@ -840,7 +840,7 @@ func set_sun_disk_intensity(value: float) -> void:
 func update_sun_disk_intensity() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.SUN_DISK_INTENSITY, sun_disk_intensity)
+	sky_material.set_shader_parameter("sun_disk_intensity", sun_disk_intensity)
 
 
 func set_sun_disk_size(value: float) -> void:
@@ -853,7 +853,7 @@ func set_sun_disk_size(value: float) -> void:
 func update_sun_disk_size() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.SUN_DISK_SIZE, sun_disk_size)
+	sky_material.set_shader_parameter("sun_disk_size", sun_disk_size)
 
 
 func set_moon_color(value: Color) -> void:
@@ -866,7 +866,7 @@ func set_moon_color(value: Color) -> void:
 func update_moon_color() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.MOON_COLOR, moon_color)
+	sky_material.set_shader_parameter("moon_color", moon_color)
 
 
 func set_moon_size(value: float) -> void:
@@ -879,7 +879,7 @@ func set_moon_size(value: float) -> void:
 func update_moon_size() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.MOON_SIZE, moon_size)
+	sky_material.set_shader_parameter("moon_size", moon_size)
 
 
 func set_moon_texture(value: Texture2D) -> void:
@@ -913,10 +913,10 @@ func set_flip_moon_texture_v(value: bool) -> void:
 func update_moon_texture() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.MOON_TEXTURE, moon_texture)
-	sky_material.set_shader_parameter(Sky3D.MOON_TEXTURE_ALIGN, moon_texture_alignment)
-	sky_material.set_shader_parameter(Sky3D.MOON_TEXTURE_FLIP_U, flip_moon_texture_u)
-	sky_material.set_shader_parameter(Sky3D.MOON_TEXTURE_FLIP_V, flip_moon_texture_v)
+	sky_material.set_shader_parameter("moon_texture", moon_texture)
+	sky_material.set_shader_parameter("moon_texture_alignment", moon_texture_alignment)
+	sky_material.set_shader_parameter("moon_texture_flip_u", flip_moon_texture_u)
+	sky_material.set_shader_parameter("moon_texture_flip_v", flip_moon_texture_v)
 
 	
 #####################
@@ -1019,7 +1019,7 @@ func update_moon_light_energy() -> void:
 	l *= atm_moon_phases_mult()
 	
 	var fade: float = (1.0 - sun_direction().y) * 0.5
-	_moon_light_node.light_energy = l * Sky3D._sun_moon_curve_fade.sample_baked(fade)
+	_moon_light_node.light_energy = l * Sky3D.sun_moon_curve_fade.sample_baked(fade)
 	
 	if is_equal_approx(_moon_light_node.light_energy, 0.0) and _moon_light_node.shadow_enabled:
 		_moon_light_node.shadow_enabled = false
@@ -1048,9 +1048,9 @@ func update_moon_light_path() -> void:
 var deep_space_euler: Vector3 = Vector3(0, 0, 0.0): set = set_deep_space_euler # DEPRECATED
 @export var starmap_alignment: Vector3 = Vector3(2.6555, -0.23935, 0.4505): set = set_starmap_alignment # Default values work for most star maps in galactic coordinate format.
 @export var background_color: Color = Color(0.709804, 0.709804, 0.709804, 0.854902): set = set_background_color
-@export var background_texture: Texture2D = Sky3D._background_texture: set = _set_background_texture
+@export var background_texture: Texture2D = Sky3D.background_texture: set = _set_background_texture
 @export var stars_field_color: Color = Color.WHITE: set = set_stars_field_color
-@export var stars_field_texture: Texture2D = Sky3D._stars_field_texture: set = _set_stars_field_texture
+@export var stars_field_texture: Texture2D = Sky3D.stars_field_texture: set = _set_stars_field_texture
 @export_range(0.0, 1.0, 0.001) var stars_scintillation: float = 0.75: set = set_stars_scintillation
 @export var stars_scintillation_speed: float = 0.01: set = set_stars_scintillation_speed
 
@@ -1061,7 +1061,7 @@ var _deep_space_basis: Basis
 func set_starmap_alignment(value: Vector3) -> void:
 	starmap_alignment = value
 	if sky_material:
-		sky_material.set_shader_parameter(Sky3D.SKY_ALIGNMENT, value)
+		sky_material.set_shader_parameter("sky_alignment", value)
 
 
 func set_deep_space_euler(value: Vector3) -> void:
@@ -1087,7 +1087,7 @@ func set_deep_space_quat(value: Quaternion) -> void:
 func update_deep_space_basis() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.DEEP_SPACE_MATRIX, _deep_space_basis)
+	sky_material.set_shader_parameter("deep_space_matrix", _deep_space_basis)
 
 
 func set_background_color(value: Color) -> void:
@@ -1100,13 +1100,13 @@ func set_background_color(value: Color) -> void:
 func update_background_color() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.BG_COL, background_color)
+	sky_material.set_shader_parameter("background_color", background_color)
 
 
 func update_background_texture() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.BG_TEXTURE, background_texture)
+	sky_material.set_shader_parameter("background_texture", background_texture)
 
 
 func _set_background_texture(value: Texture2D) -> void:
@@ -1119,7 +1119,7 @@ func _set_background_texture(value: Texture2D) -> void:
 func update_stars_field_color() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.STARS_COLOR, stars_field_color)
+	sky_material.set_shader_parameter("stars_field_color", stars_field_color)
 
 
 func set_stars_field_color(value: Color) -> void:
@@ -1132,7 +1132,7 @@ func set_stars_field_color(value: Color) -> void:
 func update_stars_field_texture() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.STARS_TEXTURE, stars_field_texture)
+	sky_material.set_shader_parameter("stars_field_texture", stars_field_texture)
 
 
 func _set_stars_field_texture(value: Texture2D) -> void:
@@ -1145,7 +1145,7 @@ func _set_stars_field_texture(value: Texture2D) -> void:
 func update_stars_scintillation() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.STARS_SC, stars_scintillation)
+	sky_material.set_shader_parameter("stars_scintillation", stars_scintillation)
 
 
 func set_stars_scintillation(value: float) -> void:
@@ -1158,7 +1158,7 @@ func set_stars_scintillation(value: float) -> void:
 func update_stars_scintillation_speed() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.STARS_SC_SPEED, stars_scintillation_speed)
+	sky_material.set_shader_parameter("stars_scintillation_speed", stars_scintillation_speed)
 
 
 func set_stars_scintillation_speed(value: float) -> void:
@@ -1183,14 +1183,14 @@ func set_stars_scintillation_speed(value: float) -> void:
 @export var clouds_uv: Vector2 = Vector2(0.16, 0.11): set = set_clouds_uv
 @export var clouds_direction: Vector2 = Vector2(0.25, 0.25): set = set_clouds_direction
 @export var clouds_speed: float = 0.07: set = set_clouds_speed
-@export var clouds_texture: Texture2D = Sky3D._clouds_texture: set = _set_clouds_texture
+@export var clouds_texture: Texture2D = Sky3D.clouds_texture: set = _set_clouds_texture
 
 
 func set_clouds_visible(value: bool) -> void:
 	if !is_scene_built or value == clouds_visible:
 		return
 	clouds_visible = value
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_VISIBLE, value)
+	sky_material.set_shader_parameter("clouds_visible", value)
 
 
 func set_clouds_thickness(value: float) -> void:
@@ -1203,7 +1203,7 @@ func set_clouds_thickness(value: float) -> void:
 func update_clouds_thickness() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_THICKNESS, clouds_thickness)
+	sky_material.set_shader_parameter("clouds_thickness", clouds_thickness)
 
 
 func set_clouds_coverage(value: float) -> void:
@@ -1216,7 +1216,7 @@ func set_clouds_coverage(value: float) -> void:
 func update_clouds_coverage() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_COVERAGE, clouds_coverage)
+	sky_material.set_shader_parameter("clouds_coverage", clouds_coverage)
 
 
 func set_clouds_absorption(value: float) -> void:
@@ -1229,7 +1229,7 @@ func set_clouds_absorption(value: float) -> void:
 func update_clouds_absorption() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_ABSORPTION, clouds_absorption)
+	sky_material.set_shader_parameter("clouds_absorption", clouds_absorption)
 
 
 func set_clouds_sky_tint_fade(value: float) -> void:
@@ -1242,7 +1242,7 @@ func set_clouds_sky_tint_fade(value: float) -> void:
 func update_clouds_sky_tint_fade() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_SKY_TINT_FADE, clouds_sky_tint_fade)
+	sky_material.set_shader_parameter("clouds_sky_tint_fade", clouds_sky_tint_fade)
 
 
 func set_clouds_intensity(value: float) -> void:
@@ -1255,7 +1255,7 @@ func set_clouds_intensity(value: float) -> void:
 func update_clouds_intensity() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_INTENSITY, clouds_intensity)
+	sky_material.set_shader_parameter("clouds_intensity", clouds_intensity)
 
 
 func set_clouds_size(value: float) -> void:
@@ -1268,7 +1268,7 @@ func set_clouds_size(value: float) -> void:
 func update_clouds_size() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_SIZE, clouds_size)
+	sky_material.set_shader_parameter("clouds_size", clouds_size)
 
 
 func set_clouds_uv(value: Vector2) -> void:
@@ -1281,7 +1281,7 @@ func set_clouds_uv(value: Vector2) -> void:
 func update_clouds_uv() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_UV, clouds_uv)
+	sky_material.set_shader_parameter("clouds_uv", clouds_uv)
 
 
 func set_clouds_direction(value: Vector2) -> void:
@@ -1294,7 +1294,7 @@ func set_clouds_direction(value: Vector2) -> void:
 func update_clouds_direction() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_DIRECTION, clouds_direction)
+	sky_material.set_shader_parameter("clouds_direction", clouds_direction)
 
 
 func set_clouds_speed(value: float) -> void:
@@ -1307,7 +1307,7 @@ func set_clouds_speed(value: float) -> void:
 func update_clouds_speed() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_SPEED, clouds_speed)
+	sky_material.set_shader_parameter("clouds_speed", clouds_speed)
 
 
 func _set_clouds_texture(value: Texture2D) -> void:
@@ -1320,7 +1320,7 @@ func _set_clouds_texture(value: Texture2D) -> void:
 func update_clouds_texture() -> void:
 	if !is_scene_built:
 		return
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_TEXTURE, clouds_texture)
+	sky_material.set_shader_parameter("clouds_texture", clouds_texture)
 
 
 #####################
@@ -1342,14 +1342,14 @@ func update_clouds_texture() -> void:
 @export var clouds_cumulus_size: float = 0.5: set = set_clouds_cumulus_size
 @export var clouds_cumulus_direction: Vector3 = Vector3(0.25, 0.1, 0.25): set = set_clouds_cumulus_direction
 @export var clouds_cumulus_speed: float = 0.05: set = set_clouds_cumulus_speed
-@export var clouds_cumulus_texture: Texture2D = Sky3D._clouds_cumulus_texture: set = _set_clouds_cumulus_texture
+@export var clouds_cumulus_texture: Texture2D = Sky3D.clouds_cumulus_texture: set = _set_clouds_cumulus_texture
 
 
 func set_clouds_cumulus_visible(value: bool) -> void:
 	if !is_scene_built or value == clouds_cumulus_visible:
 		return
 	clouds_cumulus_visible = value
-	sky_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_VISIBLE, value)
+	sky_material.set_shader_parameter("cumulus_clouds_visible", value)
 	
 
 func set_clouds_cumulus_day_color(value: Color) -> void:
@@ -1362,8 +1362,8 @@ func set_clouds_cumulus_day_color(value: Color) -> void:
 func update_clouds_cumulus_day_color() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_DAY_COLOR, clouds_cumulus_day_color)
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_DAY_COLOR, clouds_cumulus_day_color)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_day_color", clouds_cumulus_day_color)
+	sky_material.set_shader_parameter("clouds_day_color", clouds_cumulus_day_color)
 
 
 func set_clouds_cumulus_horizon_light_color(value: Color) -> void:
@@ -1376,8 +1376,8 @@ func set_clouds_cumulus_horizon_light_color(value: Color) -> void:
 func update_clouds_cumulus_horizon_light_color() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_HORIZON_LIGHT_COLOR, clouds_cumulus_horizon_light_color)
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_HORIZON_LIGHT_COLOR, clouds_cumulus_horizon_light_color)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_horizon_light_color", clouds_cumulus_horizon_light_color)
+	sky_material.set_shader_parameter("clouds_horizon_light_color", clouds_cumulus_horizon_light_color)
 
 
 func set_clouds_cumulus_night_color(value: Color) -> void:
@@ -1390,8 +1390,8 @@ func set_clouds_cumulus_night_color(value: Color) -> void:
 func update_clouds_cumulus_night_color() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_NIGHT_COLOR, clouds_cumulus_night_color)
-	sky_material.set_shader_parameter(Sky3D.CLOUDS_NIGHT_COLOR, clouds_cumulus_night_color)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_night_color", clouds_cumulus_night_color)
+	sky_material.set_shader_parameter("clouds_night_color", clouds_cumulus_night_color)
 
 
 func set_clouds_cumulus_thickness(value: float) -> void:
@@ -1404,7 +1404,7 @@ func set_clouds_cumulus_thickness(value: float) -> void:
 func update_clouds_cumulus_thickness() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_THICKNESS, clouds_cumulus_thickness)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_thickness", clouds_cumulus_thickness)
 
 
 func set_clouds_cumulus_coverage(value: float) -> void:
@@ -1417,7 +1417,7 @@ func set_clouds_cumulus_coverage(value: float) -> void:
 func update_clouds_cumulus_coverage() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_COVERAGE, clouds_cumulus_coverage)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_coverage", clouds_cumulus_coverage)
 
 
 func set_clouds_cumulus_absorption(value: float) -> void:
@@ -1430,7 +1430,7 @@ func set_clouds_cumulus_absorption(value: float) -> void:
 func update_clouds_cumulus_absorption() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_ABSORPTION, clouds_cumulus_absorption)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_absorption", clouds_cumulus_absorption)
 
 
 func set_clouds_cumulus_noise_freq(value: float) -> void:
@@ -1443,7 +1443,7 @@ func set_clouds_cumulus_noise_freq(value: float) -> void:
 func update_clouds_cumulus_noise_freq() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_NOISE_FREQ, clouds_cumulus_noise_freq)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_noise_freq", clouds_cumulus_noise_freq)
 
 
 func set_clouds_cumulus_intensity(value: float) -> void:
@@ -1456,7 +1456,7 @@ func set_clouds_cumulus_intensity(value: float) -> void:
 func update_clouds_cumulus_intensity() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_INTENSITY, clouds_cumulus_intensity)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_intensity", clouds_cumulus_intensity)
 
 
 func set_clouds_cumulus_mie_intensity(value: float) -> void:
@@ -1469,7 +1469,7 @@ func set_clouds_cumulus_mie_intensity(value: float) -> void:
 func update_clouds_cumulus_mie_intensity() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_MIE_INTENSITY, clouds_cumulus_mie_intensity)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_mie_intensity", clouds_cumulus_mie_intensity)
 
 
 func set_clouds_cumulus_mie_anisotropy(value: float) -> void:
@@ -1483,7 +1483,7 @@ func update_clouds_cumulus_mie_anisotropy() -> void:
 	if !is_scene_built:
 		return
 	var partial: Vector3 = ScatterLib.get_partial_mie_phase(clouds_cumulus_mie_anisotropy)
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_PARTIAL_MIE_PHASE, partial)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_partial_mie_phase", partial)
 
 
 func set_clouds_cumulus_size(value: float) -> void:
@@ -1496,7 +1496,7 @@ func set_clouds_cumulus_size(value: float) -> void:
 func update_clouds_cumulus_size() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_SIZE, clouds_cumulus_size)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_size", clouds_cumulus_size)
 
 
 func set_clouds_cumulus_direction(value: Vector3) -> void:
@@ -1509,7 +1509,7 @@ func set_clouds_cumulus_direction(value: Vector3) -> void:
 func update_clouds_cumulus_direction() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_DIRECTION, clouds_cumulus_direction)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_direction", clouds_cumulus_direction)
 
 
 func set_clouds_cumulus_speed(value: float) -> void:
@@ -1522,7 +1522,7 @@ func set_clouds_cumulus_speed(value: float) -> void:
 func update_clouds_cumulus_speed() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_SPEED, clouds_cumulus_speed)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_speed", clouds_cumulus_speed)
 
 
 func _set_clouds_cumulus_texture(value: Texture2D) -> void:
@@ -1535,7 +1535,7 @@ func _set_clouds_cumulus_texture(value: Texture2D) -> void:
 func update_clouds_cumulus_texture() -> void:
 	if !is_scene_built:
 		return
-	clouds_cumulus_material.set_shader_parameter(Sky3D.CUMULUS_CLOUDS_TEXTURE, clouds_cumulus_texture)
+	clouds_cumulus_material.set_shader_parameter("cumulus_clouds_texture", clouds_cumulus_texture)
 
 
 #####################

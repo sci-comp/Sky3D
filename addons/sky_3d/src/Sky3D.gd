@@ -17,6 +17,17 @@ signal environment_changed
 @export_custom(PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY) 
 var version: String = "2.1-dev"
 
+const sky_shader: Shader = preload("res://addons/sky_3d/shaders/SkyMaterial.gdshader")
+const fog_shader: Shader = preload("res://addons/sky_3d/shaders/AtmFog.gdshader")
+
+const moon_texture: Texture2D = preload("res://addons/sky_3d/assets/thirdparty/textures/moon/MoonMap.png")
+const background_texture: Texture2D = preload("res://addons/sky_3d/assets/thirdparty/textures/milkyway/Milkyway.jpg")
+const stars_field_texture: Texture2D = preload("res://addons/sky_3d/assets/thirdparty/textures/milkyway/StarField.jpg")
+const sun_moon_curve_fade: Curve = preload("res://addons/sky_3d/assets/resources/SunMoonLightFade.tres")
+const stars_field_noise: Texture2D = preload("res://addons/sky_3d/assets/textures/noise.jpg")
+const clouds_texture: Texture2D = preload("res://addons/sky_3d/assets/resources/SNoise.tres")
+const clouds_cumulus_texture: Texture2D = preload("res://addons/sky_3d/assets/textures/noiseClouds.png")
+
 ## The Sun DirectionalLight.
 var sun: DirectionalLight3D
 ## The Moon DirectionalLight.
@@ -55,7 +66,7 @@ func set_sky_enabled(value: bool) -> void:
 	sky_enabled = value
 	if not sky or not sky_material:
 		return
-	sky_material.set_shader_parameter(Sky3D.SKY_VISIBLE, value)
+	sky_material.set_shader_parameter("sky_visible", value)
 	sky.clouds_cumulus_visible = clouds_enabled and value
 	sky.clouds_visible = clouds_enabled and value
 
@@ -423,7 +434,7 @@ func _initialize() -> void:
 	if environment.sky == null or environment.sky.sky_material is PhysicalSkyMaterial:
 		environment.sky = Sky.new()
 		environment.sky.sky_material = ShaderMaterial.new()
-		environment.sky.sky_material.shader = _sky_shader
+		environment.sky.sky_material.shader = sky_shader
 		
 	# Set a reference to the sky material for easy access.
 	sky_material = environment.sky.sky_material
@@ -488,130 +499,3 @@ func _set(property: StringName, value: Variant) -> bool:
 			emit_signal("environment_changed", environment)
 			return true
 	return false
-
-
-#####################
-## Constants
-#####################
-
-# Node Names
-const FOG_INSTANCE: String = "_FogMeshI"
-
-# Shaders
-const _sky_shader: Shader = preload("res://addons/sky_3d/shaders/SkyMaterial.gdshader")
-const _fog_shader: Shader = preload("res://addons/sky_3d/shaders/AtmFog.gdshader")
-
-# Textures
-const _moon_texture: Texture2D = preload("res://addons/sky_3d/assets/thirdparty/textures/moon/MoonMap.png")
-const _background_texture: Texture2D = preload("res://addons/sky_3d/assets/thirdparty/textures/milkyway/Milkyway.jpg")
-const _stars_field_texture: Texture2D = preload("res://addons/sky_3d/assets/thirdparty/textures/milkyway/StarField.jpg")
-const _sun_moon_curve_fade: Curve = preload("res://addons/sky_3d/assets/resources/SunMoonLightFade.tres")
-const _stars_field_noise: Texture2D = preload("res://addons/sky_3d/assets/textures/noise.jpg")
-const _clouds_texture: Texture2D = preload("res://addons/sky_3d/assets/resources/SNoise.tres")
-const _clouds_cumulus_texture: Texture2D = preload("res://addons/sky_3d/assets/textures/noiseClouds.png")
-
-# Coords
-const SUN_DIR: String = "_sun_direction"
-const MOON_DIR: String = "_moon_direction"
-const MOON_MATRIX: String = "_moon_matrix"
-
-# General
-const SKY_VISIBLE: String = "_sky_visible"
-const TEXTURE: String = "_texture"
-const COLOR_CORRECTION: String = "_color_correction_params"
-const GROUND_COLOR: String = "_ground_color"
-const NOISE_TEX: String = "_noise_tex"
-const HORIZON_LEVEL: String = "_horizon_level"
-
-# Atmosphere
-const ATM_DARKNESS: String = "_atm_darkness"
-const ATM_BETA_RAY: String = "_atm_beta_ray"
-const ATM_SUN_INTENSITY: String = "_atm_sun_intensity"
-const ATM_DAY_TINT: String = "_atm_day_tint"
-const ATM_HORIZON_LIGHT_TINT: String = "_atm_horizon_light_tint"
-
-const ATM_NIGHT_TINT: String = "_atm_night_tint"
-const ATM_LEVEL_PARAMS: String = "_atm_level_params"
-const ATM_THICKNESS: String = "_atm_thickness"
-const ATM_BETA_MIE: String = "_atm_beta_mie"
-
-const ATM_SUN_MIE_TINT: String = "_atm_sun_mie_tint"
-const ATM_SUN_MIE_INTENSITY: String = "_atm_sun_mie_intensity"
-const ATM_SUN_PARTIAL_MIE_PHASE: String = "_atm_sun_partial_mie_phase"
-
-const ATM_MOON_MIE_TINT: String = "_atm_moon_mie_tint"
-const ATM_MOON_MIE_INTENSITY: String = "_atm_moon_mie_intensity"
-const ATM_MOON_PARTIAL_MIE_PHASE: String = "_atm_moon_partial_mie_phase"
-
-# Fog
-const ATM_FOG_DENSITY: String = "_fog_density"
-const ATM_FOG_RAYLEIGH_DEPTH: String = "_fog_rayleigh_depth"
-const ATM_FOG_MIE_DEPTH: String = "_fog_mie_depth"
-const ATM_FOG_FALLOFF: String = "_fog_falloff"
-const ATM_FOG_START: String = "_fog_start"
-const ATM_FOG_END: String = "_fog_end"
-
-# Near Space
-const SUN_DISK_COLOR: String = "_sun_disk_color"
-const SUN_DISK_INTENSITY: String = "_sun_disk_intensity"
-const SUN_DISK_SIZE: String = "_sun_disk_size"
-const MOON_COLOR: String = "_moon_color"
-const MOON_SIZE: String = "_moon_size"
-const MOON_TEXTURE: String = "_moon_texture"
-const MOON_TEXTURE_ALIGN: String = "_moon_texture_alignment"
-const MOON_TEXTURE_FLIP_U: String = "_moon_texture_flip_u"
-const MOON_TEXTURE_FLIP_V: String = "_moon_texture_flip_v"
-
-# Deep Space
-const DEEP_SPACE_MATRIX: String = "_deep_space_matrix"
-const SKY_ALIGNMENT: String = "_sky_alignment"
-const SKY_ROTATION: String = "_sky_rotation"
-const SKY_TILT: String = "_sky_tilt"
-const BG_COL: String = "_background_color"
-const BG_TEXTURE: String = "_background_texture"
-const STARS_COLOR: String = "_stars_field_color"
-const STARS_TEXTURE: String = "_stars_field_texture"
-const STARS_SC: String = "_stars_scintillation"
-const STARS_SC_SPEED: String = "_stars_scintillation_speed"
-
-# Clouds
-const CLOUDS_VISIBLE: String = "_clouds_visible"
-const CLOUDS_THICKNESS: String = "_clouds_thickness"
-const CLOUDS_COVERAGE: String = "_clouds_coverage"
-const CLOUDS_ABSORPTION: String = "_clouds_absorption"
-const CLOUDS_SKY_TINT_FADE: String = "_clouds_sky_tint_fade"
-const CLOUDS_INTENSITY: String = "_clouds_intensity"
-const CLOUDS_SIZE: String = "_clouds_size"
-const CLOUDS_NOISE_FREQ: String = "_clouds_noise_freq"
-
-const CLOUDS_UV: String = "_clouds_uv"
-const CLOUDS_DIRECTION: String = "_clouds_direction"
-const CLOUDS_SPEED: String = "_clouds_speed"
-const CLOUDS_TEXTURE: String = "_clouds_texture"
-
-const CLOUDS_DAY_COLOR: String = "_clouds_day_color"
-const CLOUDS_HORIZON_LIGHT_COLOR: String = "_clouds_horizon_light_color"
-const CLOUDS_NIGHT_COLOR: String = "_clouds_night_color"
-const CLOUDS_MIE_INTENSITY: String = "_clouds_mie_intensity"
-const CLOUDS_PARTIAL_MIE_PHASE: String = "_clouds_partial_mie_phase"
-
-# Cumulus Clouds
-const CUMULUS_CLOUDS_VISIBLE: String = "_cumulus_clouds_visible"
-const CUMULUS_CLOUDS_THICKNESS: String = "_cumulus_clouds_thickness"
-const CUMULUS_CLOUDS_COVERAGE: String = "_cumulus_clouds_coverage"
-const CUMULUS_CLOUDS_ABSORPTION: String = "_cumulus_clouds_absorption"
-const CUMULUS_CLOUDS_SKY_TINT_FADE: String = "_cumulus_clouds_sky_tint_fade"
-const CUMULUS_CLOUDS_INTENSITY: String = "_cumulus_clouds_intensity"
-const CUMULUS_CLOUDS_SIZE: String = "_cumulus_clouds_size"
-const CUMULUS_CLOUDS_NOISE_FREQ: String = "_cumulus_clouds_noise_freq"
-
-const CUMULUS_CLOUDS_UV: String = "_cumulus_clouds_uv"
-const CUMULUS_CLOUDS_DIRECTION: String = "_cumulus_clouds_direction"
-const CUMULUS_CLOUDS_SPEED: String = "_cumulus_clouds_speed"
-const CUMULUS_CLOUDS_TEXTURE: String = "_cumulus_clouds_texture"
-
-const CUMULUS_CLOUDS_DAY_COLOR: String = "_cumulus_clouds_day_color"
-const CUMULUS_CLOUDS_HORIZON_LIGHT_COLOR: String = "_cumulus_clouds_horizon_light_color"
-const CUMULUS_CLOUDS_NIGHT_COLOR: String = "_cumulus_clouds_night_color"
-const CUMULUS_CLOUDS_MIE_INTENSITY: String = "_cumulus_clouds_mie_intensity"
-const CUMULUS_CLOUDS_PARTIAL_MIE_PHASE: String = "_cumulus_clouds_partial_mie_phase"

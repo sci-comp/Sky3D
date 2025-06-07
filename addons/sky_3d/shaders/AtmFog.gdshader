@@ -4,35 +4,35 @@
 shader_type spatial;
 render_mode blend_mix, cull_disabled, unshaded;
 
-uniform vec2 _color_correction_params;
+uniform vec2 color_correction_params;
 
-uniform float _fog_density = .0001;
-uniform float _fog_rayleigh_depth = .115;
-uniform float _fog_mie_depth = 0.;
-uniform float _fog_falloff = 3.;
-uniform float _fog_start = 0.;
-uniform float _fog_end = 1000.;
-uniform vec3 _sun_direction = vec3(.25, -.25, .25);
-uniform vec3 _moon_direction = vec3(.45, -.25, .45);
+uniform float fog_density = .0001;
+uniform float fog_rayleigh_depth = .115;
+uniform float fog_mie_depth = 0.;
+uniform float fog_falloff = 3.;
+uniform float fog_start = 0.;
+uniform float fog_end = 1000.;
+uniform vec3 sun_direction = vec3(.25, -.25, .25);
+uniform vec3 moon_direction = vec3(.45, -.25, .45);
 
-uniform float _atm_darkness = .5;
-uniform float _atm_sun_intensity = 30.;
-uniform vec4 _atm_day_tint: source_color = vec4(.78, .85, .98, 1.);
-uniform vec4 _atm_horizon_light_tint: source_color = vec4(.98, .73, .49, 1.);
-uniform vec4 _atm_night_tint: source_color = vec4(.16, .2, .25, 1.);
-uniform vec3 _atm_level_params = vec3(1., 0., 0.);
-uniform float _atm_thickness = .7;
+uniform float atm_darkness = .5;
+uniform float atm_sun_intensity = 30.;
+uniform vec4 atm_day_tint: source_color = vec4(.78, .85, .98, 1.);
+uniform vec4 atm_horizon_light_tint: source_color = vec4(.98, .73, .49, 1.);
+uniform vec4 atm_night_tint: source_color = vec4(.16, .2, .25, 1.);
+uniform vec3 atm_level_params = vec3(1., 0., 0.);
+uniform float atm_thickness = .7;
 
-uniform vec3 _atm_beta_ray;
-uniform vec3 _atm_beta_mie;
+uniform vec3 atm_beta_ray;
+uniform vec3 atm_beta_mie;
 
-uniform vec3 _atm_sun_partial_mie_phase;
-uniform vec4 _atm_sun_mie_tint: source_color = vec4(1.);
-uniform float _atm_sun_mie_intensity = 1.;
+uniform vec3 atm_sun_partial_mie_phase;
+uniform vec4 atm_sun_mie_tint: source_color = vec4(1.);
+uniform float atm_sun_mie_intensity = 1.;
 
-uniform vec3 _atm_moon_partial_mie_phase;
-uniform vec4 _atm_moon_mie_tint: source_color = vec4(.13, .18, .29, 1.);
-uniform float _atm_moon_mie_intensity = .7;
+uniform vec3 atm_moon_partial_mie_phase;
+uniform vec4 atm_moon_mie_tint: source_color = vec4(.13, .18, .29, 1.);
+uniform float atm_moon_mie_intensity = .7;
 
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
@@ -92,8 +92,8 @@ float miePhase(float mu, vec3 partial) {
 
 // Simplifield for more performance
 void simpleOpticalDepth(float y, out float sr, out float sm) {
-	y = max(0.03, y + 0.03) + _atm_level_params.y;
-	y = 1.0 / (y * _atm_level_params.x);
+	y = max(0.03, y + 0.03) + atm_level_params.y;
+	y = 1.0 / (y * atm_level_params.x);
 	sr = y * RAYLEIGH_ZENITH_LENGTH;
 	sm = y * MIE_ZENITH_LENGTH;
 }
@@ -101,38 +101,38 @@ void simpleOpticalDepth(float y, out float sr, out float sm) {
 // Paper based
 void opticalDepth(float y, out float sr, out float sm) {
 	y = max(0.0, y);
-	y = saturate(y * _atm_level_params.x);
+	y = saturate(y * atm_level_params.x);
 
 	float zenith = acos(y);
 	zenith = cos(zenith) + 0.15 * pow(93.885 - ((zenith * 180.0) / kPI), -1.253);
-	zenith = 1.0 / (zenith + _atm_level_params.y);
+	zenith = 1.0 / (zenith + atm_level_params.y);
 
 	sr = zenith * RAYLEIGH_ZENITH_LENGTH;
 	sm = zenith * MIE_ZENITH_LENGTH;
 }
 
 vec3 atmosphericScattering(float sr, float sm, vec2 mu, vec3 mult, float depth) {
-	vec3 betaMie = _atm_beta_mie;
-	vec3 betaRay = _atm_beta_ray * _atm_thickness;
+	vec3 betaMie = atm_beta_mie;
+	vec3 betaRay = atm_beta_ray * atm_thickness;
 
 	vec3 extcFactor = saturateRGB(exp(-(betaRay * sr + betaMie * sm)));
 
-	float extcFF = mix(saturate(_atm_thickness * 0.5), 1.0, mult.x);
+	float extcFF = mix(saturate(atm_thickness * 0.5), 1.0, mult.x);
 	vec3 finalExtcFactor = mix(1.0 - extcFactor, (1.0 - extcFactor) * extcFactor, extcFF);
 
 	float rayleighPhase = rayleighPhase(mu.x);
-	vec3 BRT = betaRay * rayleighPhase * saturate(depth * _fog_rayleigh_depth);
-	vec3 BMT = betaMie * miePhase(mu.x, _atm_sun_partial_mie_phase);
-	BMT *= _atm_sun_mie_intensity * _atm_sun_mie_tint.rgb * saturate(depth * _fog_mie_depth);
+	vec3 BRT = betaRay * rayleighPhase * saturate(depth * fog_rayleigh_depth);
+	vec3 BMT = betaMie * miePhase(mu.x, atm_sun_partial_mie_phase);
+	BMT *= atm_sun_mie_intensity * atm_sun_mie_tint.rgb * saturate(depth * fog_mie_depth);
 
 	vec3 BRMT = (BRT + BMT) / (betaRay + betaMie);
-	vec3 scatter = _atm_sun_intensity * (BRMT * finalExtcFactor) * _atm_day_tint.rgb * mult.y;
-	scatter = mix(scatter, scatter * (1.0 - extcFactor), _atm_darkness);
+	vec3 scatter = atm_sun_intensity * (BRMT * finalExtcFactor) * atm_day_tint.rgb * mult.y;
+	scatter = mix(scatter, scatter * (1.0 - extcFactor), atm_darkness);
 
-	vec3 lcol = mix(_atm_day_tint.rgb, _atm_horizon_light_tint.rgb, mult.x);
-	vec3 nscatter = (1.0 - extcFactor) * _atm_night_tint.rgb * saturate(depth * _fog_rayleigh_depth);
-	nscatter += miePhase(mu.y, _atm_moon_partial_mie_phase) *
-		_atm_moon_mie_tint.rgb * _atm_moon_mie_intensity * 0.005 * saturate(depth * _fog_mie_depth);
+	vec3 lcol = mix(atm_day_tint.rgb, atm_horizon_light_tint.rgb, mult.x);
+	vec3 nscatter = (1.0 - extcFactor) * atm_night_tint.rgb * saturate(depth * fog_rayleigh_depth);
+	nscatter += miePhase(mu.y, atm_moon_partial_mie_phase) *
+		atm_moon_mie_tint.rgb * atm_moon_mie_intensity * 0.005 * saturate(depth * fog_mie_depth);
 
 	return (scatter * lcol) + nscatter;
 }
@@ -149,7 +149,7 @@ float fogFalloff(float y, float zeroLevel, float falloff) {
 
 float fogDistance(float depth) {
 	float d = depth;
-	d = (_fog_end - d) / (_fog_end - _fog_start);
+	d = (fog_end - d) / (fog_end - fog_start);
 	return saturate(1.0 - d);
 }
 
@@ -178,16 +178,16 @@ varying flat int angle;
 void vertex() {
 	POSITION = vec4(VERTEX.xy, 1.0, 1.0);
 	angle = 0; //ignore; without this the line below errors in 4.3-stable
-	angle_mult.x = saturate(1.0 - _sun_direction.y);
-	angle_mult.y = saturate(_sun_direction.y + 0.45);
-	angle_mult.z = saturate(-_sun_direction.y + 0.30);
-	angle_mult.w = saturate(-_sun_direction.y + 0.60);
+	angle_mult.x = saturate(1.0 - sun_direction.y);
+	angle_mult.y = saturate(sun_direction.y + 0.45);
+	angle_mult.z = saturate(-sun_direction.y + 0.30);
+	angle_mult.w = saturate(-sun_direction.y + 0.60);
 	camera_matrix = INV_VIEW_MATRIX;
 }
 
 void fragment() {
 	float depthRaw = texture(DEPTH_TEXTURE, SCREEN_UV).r;
-	
+
 	#ifndef CURRENT_RENDERER
 	    // For 4.3 or earlier, will break if far plane is less than 1m.
 	    depthRaw = PROJECTION_MATRIX[3][2] > PROJECTION_MATRIX[2][2] ? depthRaw : depthRaw * 2.0 - 1.0;
@@ -202,18 +202,18 @@ void fragment() {
 	worldPos = normalize(worldPos);
 
 	float linearDepth = -view.z;
-	float fogFactor = fogExp(linearDepth, _fog_density);
-	fogFactor *= fogFalloff(worldPos.y, 0.0, _fog_falloff);
+	float fogFactor = fogExp(linearDepth, fog_density);
+	fogFactor *= fogFalloff(worldPos.y, 0.0, fog_falloff);
 	fogFactor *= fogDistance(linearDepth);
 
-	vec2 mu = vec2(dot(_sun_direction, worldPos), dot(_moon_direction, worldPos));
-	float sr; float sm; simpleOpticalDepth(worldPos.y + _atm_level_params.z, sr, sm);
+	vec2 mu = vec2(dot(sun_direction, worldPos), dot(moon_direction, worldPos));
+	float sr; float sm; simpleOpticalDepth(worldPos.y + atm_level_params.z, sr, sm);
 	vec3 scatter = atmosphericScattering(sr, sm, mu.xy, angle_mult.xyz, linearDepth);
 
 	vec3 tint =  scatter;
 	vec4 fogColor = vec4(tint.rgb, fogFactor);
 	fogColor = vec4((fogColor.rgb), saturate(fogColor.a));
-	fogColor.rgb = tonemapPhoto(fogColor.rgb, _color_correction_params.y, _color_correction_params.x);
+	fogColor.rgb = tonemapPhoto(fogColor.rgb, color_correction_params.y, color_correction_params.x);
 
 	ALBEDO = fogColor.rgb;
 	ALPHA = fogColor.a;
