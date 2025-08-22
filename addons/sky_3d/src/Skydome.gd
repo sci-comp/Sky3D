@@ -386,8 +386,6 @@ func moon_direction() -> Vector3:
 func update_moon_coords() -> void:
 	if !is_scene_built:
 		return
-	if _moon_light_node:
-		_moon_light_node.visible = true
 
 	var azimuth: float = moon_azimuth * TOD_Math.DEG_TO_RAD
 	var altitude: float = moon_altitude * TOD_Math.DEG_TO_RAD
@@ -395,20 +393,28 @@ func update_moon_coords() -> void:
 	_moon_transform.origin = TOD_Math.spherical_to_cartesian(altitude, azimuth)
 	_moon_transform = _moon_transform.looking_at(Vector3.ZERO, Vector3.LEFT)
 	
-	var moon_basis: Basis = get_parent().moon.get_global_transform().basis.inverse()
+	var moon_basis: Basis = get_moon_clamped_matrix()
 	sky_material.set_shader_parameter("moon_matrix", moon_basis)
 	fog_material.set_shader_parameter("moon_direction", moon_direction())
-	if _moon_light_node:
-		_moon_light_node.transform = _moon_transform
-	emit_signal("moon_transform_changed", _moon_transform)
 	
-	_moon_light_altitude_mult = clampf(moon_direction().y, 0., 1.)
+	if _moon_light_node:
+		_moon_light_node.visible = true
+		_moon_light_node.transform = _moon_transform
+	
+	emit_signal("moon_transform_changed", _moon_transform)
+	_moon_light_altitude_mult = clampf(moon_direction().y, 0.0, 1.0)
 	
 	update_night_intensity()
 	set_moon_light_color(moon_light_color)
 	update_moon_light_energy()
 	_update_environment()
 
+func get_moon_clamped_matrix() -> Basis:
+	return Basis(
+		-(_moon_transform.basis * Vector3.FORWARD),
+		-(_moon_transform.basis * Vector3.UP),
+		-(_moon_transform.basis * Vector3.RIGHT)
+	).transposed()
 
 #####################
 ## Atmosphere
