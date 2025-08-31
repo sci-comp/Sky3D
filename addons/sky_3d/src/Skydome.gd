@@ -267,7 +267,7 @@ func set_equatorial_color(value: Color) -> void:
 @export var sun_light_color: Color = Color.WHITE : set = set_sun_light_color 
 @export var sun_horizon_light_color: Color = Color(.98, 0.523, 0.294, 1.0): set = set_sun_horizon_light_color
 @export_range(-180.0, 180.0, 0.00001, "radians_as_degrees") var sun_azimuth: float = 0.0: set = set_sun_azimuth
-@export_range(-180.0, 180.0, 0.00001, "radians_as_degrees") var sun_altitude: float = -27.387: set = set_sun_altitude
+@export_range(-180.0, 180.0, 0.00001, "radians_as_degrees") var sun_altitude: float = -0.4779: set = set_sun_altitude
 
 var _sun_transform := Transform3D()
 var sun_light_enabled: bool = true: set = set_sun_light_enabled

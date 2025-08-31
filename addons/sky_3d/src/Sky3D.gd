@@ -389,7 +389,7 @@ func update_day_night(force: bool = false) -> void:
 
 
 ## Alias for CameraAttributes.auto_exposure_scale.
-@export_range(0.01, 16, 0.005) var auto_exposure_scale: float = 0.2 :
+@export_range(0.01, 16, 0.005) var auto_exposure_scale: float = 0.4 :
 	set(value):
 		if camera_attributes:
 			camera_attributes.auto_exposure_scale = value
