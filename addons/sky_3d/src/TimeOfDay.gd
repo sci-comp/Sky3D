@@ -21,13 +21,14 @@ const HALFPI : float = PI / 2.0
 
 
 func _init() -> void:
-	set_current_time(current_time)
-	set_day(day)
-	set_month(month)
-	set_year(year)
-	set_latitude(latitude)
-	set_longitude(longitude)
-	set_utc(utc)
+	## TODO, review: These four funcs will no longer shout out their signals when this
+	## _init method is run. I don't think we want these signals to fire in _init, 
+	## so I think these are fine to remove?
+	#current_time = current_time
+	#set_day(day)
+	#set_month(month)
+	#set_year(year)
+	_update_celestial_coords()
 
 
 func _ready() -> void:
@@ -97,6 +98,7 @@ var _sky_dome: SkyDome
 				pause()
 
 
+## TODO: Tooltip
 @export var dome_path: NodePath:
 	set(value):
 		dome_path = value
@@ -113,6 +115,7 @@ var _sky_dome: SkyDome
 ## enabled for this to work. Negative values moves time backwards. The Witcher 3 uses a 96 minute cycle. 
 ## Adjust [member update_interval] to match. Shorter days needs more updates. Longer days need less.
 @export var minutes_per_day: float = 15.0
+
 
 ## Celestial coordinates are updated based upon a timer, which continuously fires based on
 ## this interval: [0.016, 10s]. Set to the lowest, 0.016 (60fps) if your [member minutes_per_day] is short,
@@ -146,56 +149,58 @@ var game_time: String = "":
 			floor(fmod(current_time * 60.0, 1.0) * 60.0) ]
 
 
-@export_range(0.,23.9998) var current_time: float = 8.0 : set = set_current_time
-@export_range(0,31) var day: int = 1: set = set_day
-@export_range(0,12) var month: int = 1: set = set_month
-@export_range(-9999,9999) var year: int = 2025: set = set_year
+## TODO: Tooltip
+@export_range(0.,23.9998) var current_time: float = 8.0:
+	set(value):
+		if current_time != value:
+			current_time = value
+			while current_time > 23.9999:
+				current_time -= 24
+				day += 1
+			while current_time < 0.0000:
+				current_time += 24
+				day -= 1
+			emit_signal("time_changed", current_time)
+			_update_celestial_coords()
 
 
-func set_current_time(value: float) -> void:
-	if current_time != value:
-		current_time = value
-		while current_time > 23.9999:
-			current_time -= 24
-			day += 1
-		while current_time < 0.0000:
-			current_time += 24
-			day -= 1
-		emit_signal("time_changed", current_time)
-		_update_celestial_coords()
+## TODO: Tooltip
+@export_range(0,31) var day: int = 1:
+	set(value):
+		if day != value:
+			day = value
+			while day > max_days_per_month():
+				day -= max_days_per_month()
+				month += 1
+			while day < 1:
+				month -= 1
+				day += max_days_per_month()
+			emit_signal("day_changed", day)
+			_update_celestial_coords()
 
 
-func set_day(value: int) -> void:
-	if day != value:
-		day = value
-		while day > max_days_per_month():
-			day -= max_days_per_month()
-			month += 1
-		while day < 1:
-			month -= 1
-			day += max_days_per_month()
-		emit_signal("day_changed", day)
-		_update_celestial_coords()
+## TODO: Tooltip
+@export_range(0,12) var month: int = 1:
+	set(value):
+		if month != value:
+			month = value
+			while month > 12:
+				month -= 12
+				year += 1
+			while month < 1:
+				month += 12
+				year -= 1
+			emit_signal("month_changed", month)
+			_update_celestial_coords()
 
 
-func set_month(value: int) -> void:
-	if month != value:
-		month = value
-		while month > 12:
-			month -= 12
-			year += 1
-		while month < 1:
-			month += 12
-			year -= 1
-		emit_signal("month_changed", month)
-		_update_celestial_coords()
-
-
-func set_year(value: int) -> void:
-	if year != value:
-		year = value
-		emit_signal("year_changed", year)
-		_update_celestial_coords()
+## TODO: Tooltip
+@export_range(-9999,9999) var year: int = 2025:
+	set(value):
+		if year != value:
+			year = value
+			emit_signal("year_changed", year)
+			_update_celestial_coords()
 
 
 func is_leap_year() -> bool:
@@ -209,20 +214,20 @@ func max_days_per_month() -> int:
 		2:
 			return 29 if is_leap_year() else 28
 	return 30
-	
+
 
 func time_cycle_duration() -> float:
 	return minutes_per_day * 60.0
 
 
 func set_time(hour: int, minute: int, second: int) -> void: 
-	set_current_time(float(hour) + float(minute) / 60.0 + float(second) / 3600.0)
+	current_time = float(hour) + float(minute) / 60.0 + float(second) / 3600.0
 
 
 func set_from_datetime_dict(datetime_dict: Dictionary) -> void:
-	set_year(datetime_dict.year)
-	set_month(datetime_dict.month)
-	set_day(datetime_dict.day)
+	year = datetime_dict.year
+	month = datetime_dict.month
+	day = datetime_dict.day
 	set_time(datetime_dict.hour, datetime_dict.minute, datetime_dict.second)
 
 
@@ -248,15 +253,15 @@ func get_unix_timestamp() -> int:
 
 func _progress_time(delta: float) -> void:
 	if not is_zero_approx(time_cycle_duration()):
-		set_current_time(current_time + delta / time_cycle_duration() * HOURS_PER_DAY)
+		current_time = current_time + delta / time_cycle_duration() * HOURS_PER_DAY
 
 
 func _update_time_from_os() -> void:
 	var date_time_os: Dictionary = Time.get_datetime_dict_from_system()
 	set_time(date_time_os.hour, date_time_os.minute, date_time_os.second)
-	set_day(date_time_os.day)
-	set_month(date_time_os.month)
-	set_year(date_time_os.year)
+	day = date_time_os.day
+	month = date_time_os.month
+	year = date_time_os.year
 
 
 #####################
@@ -265,13 +270,6 @@ func _update_time_from_os() -> void:
 
 @export_group("Planetary And Location")
 enum CelestialMode { SIMPLE, REALISTIC }
-@export var celestials_calculations: CelestialMode = CelestialMode.REALISTIC: set = set_celestials_calculations
-@export_range(-90, 90, 0.00001, "radians_as_degrees") var latitude: float = deg_to_rad(16.): set = set_latitude
-@export_range(-180, 180, 0.00001, "radians_as_degrees") var longitude: float = deg_to_rad(108.): set = set_longitude
-@export_range(-12,14,.25) var utc: float = 7.0: set = set_utc
-@export var compute_moon_coords: bool = true: set = set_compute_moon_coords
-@export var compute_deep_space_coords: bool = true: set = set_compute_deep_space_coords
-@export var moon_coords_offset: Vector2 = Vector2(0.0, 0.0): set = set_moon_coords_offset
 var _sun_coords: Vector2 = Vector2.ZERO
 var _moon_coords: Vector2 = Vector2.ZERO
 var _sun_distance: float
@@ -283,41 +281,54 @@ var _sun_orbital_elements := OrbitalElements.new()
 var _moon_orbital_elements := OrbitalElements.new()
 
 
+@export var celestials_calculations: CelestialMode = CelestialMode.REALISTIC: set = set_celestials_calculations
 func set_celestials_calculations(value: int) -> void:
 	celestials_calculations = value
 	_update_celestial_coords()
 	notify_property_list_changed()
-	
-
-func set_latitude(value: float) -> void:
-	latitude = value
-	_update_celestial_coords()
 
 
-func set_longitude(value: float) -> void:
-	longitude = value
-	_update_celestial_coords()
+## TODO: Tooltip
+@export_range(-90, 90, 0.00001, "radians_as_degrees") var latitude: float = deg_to_rad(16.): 
+	set(value):
+		latitude = value
+		_update_celestial_coords()
 
 
-func set_utc(value: float) -> void:
-	utc = value
-	_update_celestial_coords()
+## TODO: Tooltip
+@export_range(-180, 180, 0.00001, "radians_as_degrees") var longitude: float = deg_to_rad(108.):
+	set(value):
+		longitude = value
+		_update_celestial_coords()
 
 
-func set_compute_moon_coords(value: bool) -> void:
-	compute_moon_coords = value
-	_update_celestial_coords()
-	notify_property_list_changed()
-	
-
-func set_compute_deep_space_coords(value: bool) -> void:
-	compute_deep_space_coords = value
-	_update_celestial_coords()
+## TODO: Tooltip
+@export_range(-12,14,.25) var utc: float = 7.0:
+	set(value):
+		utc = value
+		_update_celestial_coords()
 
 
-func set_moon_coords_offset(value: Vector2) -> void:
-	moon_coords_offset = value
-	_update_celestial_coords()
+## TODO: Tooltip
+@export var compute_moon_coords: bool = true:
+	set(value):
+		compute_moon_coords = value
+		_update_celestial_coords()
+		notify_property_list_changed()
+
+
+## TODO: Tooltip
+@export var compute_deep_space_coords: bool = true: 
+	set(value):
+		compute_deep_space_coords = value
+		_update_celestial_coords()
+
+
+## TODO: Tooltip
+@export var moon_coords_offset: Vector2 = Vector2(0.0, 0.0):
+	set(value):
+		moon_coords_offset = value
+		_update_celestial_coords()
 
 
 ## Returns the current time at UTC 0
