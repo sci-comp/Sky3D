@@ -42,7 +42,7 @@ var environment: Environment:
 func _update_ambient_color() -> void:
 	if not environment or not _sun_light_node:
 		return
-	var factor := clampf(-sun_direction().y + 0.60, 0., 1.)
+	var factor := clampf(-_sun_transform.origin.y + 0.60, 0., 1.)
 	var col: Color = _sun_light_node.light_color.lerp(atm_night_tint * atm_night_intensity(), factor)
 	col.a = 1.
 	col.v = clamp(col.v, .35, 1.)
@@ -232,11 +232,8 @@ func update_color_correction() -> void:
 			sky_material.set_shader_parameter("sun_disk_intensity", sun_disk_intensity)
 
 
-## TODO: _
 var _day := true
-## TODO: _
 var _sun_transform := Transform3D()
-## TODO: _
 var sun_light_enabled := true: 
 	set(value):
 		sun_light_enabled = value
@@ -247,6 +244,7 @@ var sun_light_enabled := true:
 			_sun_light_node.shadow_enabled = false
 
 
+## The day-night state
 func is_day() -> bool:
 	return _day
 
@@ -259,11 +257,7 @@ func _set_day_state(v: float, threshold := DAY_NIGHT_TRANSITION_ANGLE) -> void:
 		_day = true
 		emit_signal("day_night_changed", _day)
 
-## TODO: _
-func sun_direction() -> Vector3:
-	return _sun_transform.origin
-
-## TODO: _
+## Updates sun position and lighting calculations
 func update_sun_coords() -> void:
 	if !is_scene_built:
 		return
@@ -275,12 +269,11 @@ func update_sun_coords() -> void:
 	_sun_transform.origin = TOD_Math.spherical_to_cartesian(sun_altitude, sun_azimuth)
 	_sun_transform = _sun_transform.looking_at(Vector3.ZERO, Vector3.LEFT)
 	
-	fog_material.set_shader_parameter("sun_direction", sun_direction())
+	fog_material.set_shader_parameter("sun_direction", _sun_transform.origin)
 	if _sun_light_node:
 		_sun_light_node.transform = _sun_transform
 	
 	_set_day_state(sun_altitude)
-
 	update_night_intensity()
 	update_sun_light_color()
 	update_sun_light_energy()
@@ -298,28 +291,28 @@ func update_sun_coords() -> void:
 var _sun_light_node: DirectionalLight3D
 
 
-## TODO: Tooltip
+## Color of the sun DirectionalLight3D during midday
 @export var sun_light_color := Color.WHITE: 
 	set(value):
 		sun_light_color = value
 		update_sun_light_color()
 
 
-## TODO: Tooltip
+## Color of the sun DirectionalLight3D during sunrise and sunset
 @export var sun_horizon_light_color := Color(.98, 0.523, 0.294, 1.0):
 	set(value):
 		sun_horizon_light_color = value
 		update_sun_light_color()
 
 
-## TODO: Tooltip
+## Maximum light energy of the sun DirectionalLight3D
 @export var sun_light_energy := 1.0: 
 	set(value):
 		sun_light_energy = value
 		update_sun_light_energy()
 
 
-## TODO: Tooltip
+## NodePath to the sun DirectionalLight3D node
 @export_node_path("DirectionalLight3D") var sun_light_path := NodePath("../SunLight"): 
 	set(value):
 		sun_light_path = value
@@ -331,7 +324,7 @@ var _sun_light_node: DirectionalLight3D
 func update_sun_light_color() -> void:
 	if not _sun_light_node:
 		return
-	var sun_light_altitude_mult := clampf(sun_direction().y * 2.0, 0., 1.)
+	var sun_light_altitude_mult := clampf(_sun_transform.origin.y * 2.0, 0., 1.)
 	_sun_light_node.light_color = sun_horizon_light_color.lerp(sun_light_color, sun_light_altitude_mult)
 
 
@@ -340,7 +333,7 @@ func update_sun_light_energy() -> void:
 		return
 	
 	# Light energy should depend on how much of the sun disk is visible.
-	var y := sun_direction().y
+	var y := _sun_transform.origin.y
 	var sun_light_factor := clampf((y + sun_disk_size) / (2.0 * sun_disk_size), 0., 1.);
 	_sun_light_node.light_energy = lerpf(0.0, sun_light_energy, sun_light_factor)
 	
@@ -357,14 +350,14 @@ func update_sun_light_energy() -> void:
 @export_group("Moon")
 
 
-## TODO: Tooltip
+## Horizontal angle of the moon
 @export_range(-180.0, 180.0, 0.00001, "radians_as_degrees") var moon_azimuth := deg_to_rad(5.): 
 	set(value):
 		moon_azimuth = value
 		update_moon_coords()
 
 
-## TODO: Tooltip
+## Vertical angle of the moon
 @export_range(-180.0, 180.0, 0.00001, "radians_as_degrees") var moon_altitude := deg_to_rad(-80.):
 	set(value):
 		moon_altitude = value
@@ -387,37 +380,37 @@ func update_sun_light_energy() -> void:
 			sky_material.set_shader_parameter("moon_size", moon_size)
 
 
-## TODO: Tooltip
+## The moon's texture
 @export var moon_texture := MOON_TEXTURE: 
 	set(value):
 		moon_texture = value
 		update_moon_texture()
 
 
-## TODO: Tooltip
-@export var moon_texture_alignment := Vector3(7.0, 1.4, 4.8): 
+## XYZ rotation angles for orienting the moon surface features
+@export_custom(PROPERTY_HINT_RANGE, "-180,180,0.1,radians_as_degrees") var moon_texture_alignment := Vector3(7.0, 1.4, 4.8):
 	set(value):
 		moon_texture_alignment = value
 		update_moon_texture()
 
-
-## TODO: Tooltip
+## Horizontally flips the moon texture
 @export var flip_moon_texture_u := false: 
 	set(value):
 		flip_moon_texture_u = value
 		update_moon_texture()
 
 
-## TODO: Tooltip
+## Vertically flips the moon texture
 @export var flip_moon_texture_v := false:
 	set(value):
 		flip_moon_texture_v = value
 		update_moon_texture()
 
 
-## TODO: _
+## The moon's Transform3D
 var _moon_transform := Transform3D()
-## TODO: _
+## We disable the moon DirectionalLight3D by setting [member DirectionalLight3D.shadow_enabled] 
+## and [member DirectionalLight3D.light_energy] to false and zero respectively
 var moon_light_enabled := true:
 	set(value):
 		moon_light_enabled = value
@@ -428,11 +421,7 @@ var moon_light_enabled := true:
 			_moon_light_node.shadow_enabled = false
 
 
-## TODO: _
-func moon_direction() -> Vector3:
-	return _moon_transform.origin
-
-## TODO: _
+## Updates moon position and lighting calculations
 func update_moon_coords() -> void:
 	if !is_scene_built:
 		return
@@ -445,18 +434,18 @@ func update_moon_coords() -> void:
 	
 	var moon_basis: Basis = get_parent().moon.get_global_transform().basis.inverse()
 	sky_material.set_shader_parameter("moon_matrix", moon_basis)
-	fog_material.set_shader_parameter("moon_direction", moon_direction())
+	fog_material.set_shader_parameter("moon_direction", _moon_transform.origin)
 	if _moon_light_node:
 		_moon_light_node.transform = _moon_transform
 	
-	_moon_light_altitude_mult = clampf(moon_direction().y, 0., 1.)
+	_moon_light_altitude_mult = clampf(_moon_transform.origin.y, 0.0, 1.0)
 	
 	update_night_intensity()
 	update_moon_light_color()
 	update_moon_light_energy()
 	_update_ambient_color()
 
-## TODO: _
+## Applies moon texture and alignment to shader
 func update_moon_texture() -> void:
 	if is_scene_built:
 		sky_material.set_shader_parameter("moon_texture", moon_texture)
@@ -470,33 +459,32 @@ func update_moon_texture() -> void:
 #####################
 
 
-## TODO: Tooltip
+## Color of the moon DirectionalLight3D
 @export var moon_light_color := Color(0.572549, 0.776471, 0.956863, 1.0):
 	set(value):
 		moon_light_color = value
 		update_moon_light_color()
 
 
-## TODO: Tooltip
+## Maximum light energy of the moon DirectionalLight3D
 @export var moon_light_energy := 0.3:
 	set(value):
 		moon_light_energy = value
 		update_moon_light_energy()
 
 
-## TODO: Tooltip
+## Reference to the moon DirectionalLight3D
 var _moon_light_node: DirectionalLight3D
-## TODO: Tooltip
+## Used to fade moon light energy from zero at horizon to maximum at zenith. 
+## This value is clamped in the range [0..1].
 var _moon_light_altitude_mult := 0.0
 
 
-## TODO: Tooltip
 func update_moon_light_color() -> void:
 	if not _moon_light_node:
 		return
 	_moon_light_node.light_color = moon_light_color
 
-## TODO: Tooltip
 func update_moon_light_energy() -> void:
 	if not _moon_light_node or not moon_light_enabled:
 		return
@@ -504,7 +492,7 @@ func update_moon_light_energy() -> void:
 	var l := lerpf(0.0, moon_light_energy, _moon_light_altitude_mult)
 	l *= atm_moon_phases_mult()
 	
-	var fade := (1.0 - sun_direction().y) * 0.5
+	var fade := (1.0 - _sun_transform.origin.y) * 0.5
 	_moon_light_node.light_energy = l * SUN_MOON_CURVE.sample_baked(fade)
 	
 	if is_equal_approx(_moon_light_node.light_energy, 0.0) and _moon_light_node.shadow_enabled:
@@ -513,7 +501,7 @@ func update_moon_light_energy() -> void:
 		_moon_light_node.shadow_enabled = true
 
 
-## TODO: Tooltip
+## NodePath to the moon DirectionalLight3D node
 @export_node_path("DirectionalLight3D") var moon_light_path := NodePath("../MoonLight"): 
 	set(value):
 		moon_light_path = value
@@ -584,14 +572,15 @@ func update_moon_light_energy() -> void:
 		update_night_intensity()
 
 
-## TODO: Tooltip
+## Color tint applied to the nighttime atmosphere
 @export var atm_night_tint := Color(0.168627, 0.2, 0.25098, 1.0): 
 	set(value):
 		atm_night_tint = value
 		update_night_intensity()
 
 
-## TODO: Tooltip
+## A container for parameters passed to shaders. 
+## TODO: explain what these parameters are, and how they are used.
 @export var atm_level_params := Vector3(1.0, 0.0, 0.0): 
 	set(value):
 		atm_level_params = value
@@ -683,17 +672,17 @@ func update_moon_light_energy() -> void:
 func atm_moon_phases_mult() -> float:
 	if not atm_enable_moon_scatter_mode:
 		return atm_night_intensity()
-	return clampf(-sun_direction().dot(moon_direction()) + 0.60, 0., 1.)
+	return clampf(-_sun_transform.origin.dot(_moon_transform.origin) + 0.60, 0., 1.)
 
 func atm_night_intensity() -> float:
 	if not atm_enable_moon_scatter_mode:
-		return clampf(-sun_direction().y + 0.30, 0., 1.)
-	return clampf(moon_direction().y, 0., 1.) * atm_moon_phases_mult()
+		return clampf(-_sun_transform.origin.y + 0.30, 0., 1.)
+	return clampf(_moon_transform.origin.y, 0., 1.) * atm_moon_phases_mult()
 
 func fog_atm_night_intensity() -> float:
 	if not atm_enable_moon_scatter_mode:
-		return clampf(-sun_direction().y + 0.70, 0., 1.)
-	return clampf(-sun_direction().y, 0., 1.) * atm_moon_phases_mult()
+		return clampf(-_sun_transform.origin.y + 0.70, 0., 1.)
+	return clampf(-_sun_transform.origin.y, 0., 1.) * atm_moon_phases_mult()
 
 func update_night_intensity() -> void:
 	if is_scene_built:
@@ -1125,7 +1114,7 @@ func _check_cloud_processing() -> void:
 		sky_material.set_shader_parameter("starmap_flip_v", value)
 
 
-## TODO: Tooltip
+## Color tint applied to the background starmap
 @export var starmap_color := Color(0.709804, 0.709804, 0.709804, 0.854902): 
 	set(value):
 		starmap_color = value
