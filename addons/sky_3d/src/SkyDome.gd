@@ -106,16 +106,11 @@ func build_scene() -> void:
 	fog_material.shader = load(FOG_SHADER)
 	fog_material.render_priority = fog_render_priority
 	fog_mesh.material_override = fog_material
-	_setup_mesh_instance(fog_mesh, Vector3.ZERO)
+	fog_mesh.transform.origin = Vector3.ZERO
+	fog_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	fog_mesh.custom_aabb = AABB(Vector3(-1e31, -1e31, -1e31), Vector3(2e31, 2e31, 2e31))
 	add_child(fog_mesh)
-
 	is_scene_built = true
-
-
-func _setup_mesh_instance(target: MeshInstance3D, origin: Vector3) -> void:
-	target.transform.origin = origin
-	target.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	target.custom_aabb = AABB(Vector3(-1e31, -1e31, -1e31), Vector3(2e31, 2e31, 2e31))
 
 
 #####################
@@ -170,7 +165,7 @@ func process_tick(delta: float) -> void:
 
 
 ## The color displayed below the horizon.
-@export var ground_color: Color = Color(0.3, 0.3, 0.3, 1.0): 
+@export var ground_color := Color(0.3, 0.3, 0.3, 1.0): 
 	set(value):
 		ground_color = value
 		if is_scene_built:
@@ -199,6 +194,14 @@ func update_color_correction() -> void:
 @export_group("Sun")
 
 
+## Size of the sun disk.
+@export_range(0.0, 0.5, 0.001) var sun_disk_size: float = 0.02: 
+	set(value):
+		sun_disk_size = value
+		if is_scene_built:
+			sky_material.set_shader_parameter("sun_disk_size", sun_disk_size)
+
+
 ## Controls the horizontal direction of the sun in degrees. 0° is north, 90° is east, 180° is south, -90° is west.
 @export_range(-180.0, 180.0, 0.00001, "radians_as_degrees") var sun_azimuth: float = deg_to_rad(0.):
 	set(value):
@@ -214,7 +217,7 @@ func update_color_correction() -> void:
 
 
 ## The color of the sun disk when visible in the sky.
-@export var sun_disk_color: Color = Color(0.996094, 0.541334, 0.140076): 
+@export var sun_disk_color := Color(0.996094, 0.541334, 0.140076): 
 	set(value):
 		sun_disk_color = value
 		if is_scene_built:
@@ -229,18 +232,12 @@ func update_color_correction() -> void:
 			sky_material.set_shader_parameter("sun_disk_intensity", sun_disk_intensity)
 
 
-## Size of the sun disk.
-@export_range(0.0, 0.5, 0.001) var sun_disk_size: float = 0.02: 
-	set(value):
-		sun_disk_size = value
-		if is_scene_built:
-			sky_material.set_shader_parameter("sun_disk_size", sun_disk_size)
-
-
+## TODO: _
+var _day := true
+## TODO: _
 var _sun_transform := Transform3D()
-
-
-var sun_light_enabled: bool = true: 
+## TODO: _
+var sun_light_enabled := true: 
 	set(value):
 		sun_light_enabled = value
 		if value:
@@ -249,6 +246,9 @@ var sun_light_enabled: bool = true:
 			_sun_light_node.light_energy = 0.0
 			_sun_light_node.shadow_enabled = false
 
+
+func is_day() -> bool:
+	return _day
 
 ## Signal when day has changed to night and vice versa.
 func _set_day_state(v: float, threshold: float = DAY_NIGHT_TRANSITION_ANGLE) -> void:
@@ -259,16 +259,11 @@ func _set_day_state(v: float, threshold: float = DAY_NIGHT_TRANSITION_ANGLE) -> 
 		_day = true
 		emit_signal("day_night_changed", _day)
 
-
-var _day: bool: get = is_day
-func is_day() -> bool:
-	return _day == true
-
-
+## TODO: _
 func sun_direction() -> Vector3:
 	return _sun_transform.origin
 
-
+## TODO: _
 func update_sun_coords() -> void:
 	if !is_scene_built:
 		return
@@ -304,28 +299,24 @@ var _sun_light_node: DirectionalLight3D
 
 
 ## TODO: Tooltip
-@export var sun_light_color: Color = Color.WHITE: 
+@export var sun_light_color := Color.WHITE: 
 	set(value):
 		sun_light_color = value
 		update_sun_light_color()
 
 
 ## TODO: Tooltip
-@export var sun_horizon_light_color: Color = Color(.98, 0.523, 0.294, 1.0): set = set_sun_horizon_light_color
-func set_sun_horizon_light_color(value: Color) -> void:
-	if value.is_equal_approx(sun_horizon_light_color):
-		return
-	sun_horizon_light_color = value
-	update_sun_light_color()
+@export var sun_horizon_light_color: Color = Color(.98, 0.523, 0.294, 1.0):
+	set(value):
+		sun_horizon_light_color = value
+		update_sun_light_color()
 
 
 ## TODO: Tooltip
-@export var sun_light_energy: float = 1.0: set = set_sun_light_energy
-func set_sun_light_energy(value: float) -> void:
-	if is_equal_approx(value, sun_light_energy):
-		return
-	sun_light_energy = value
-	update_sun_light_energy()
+@export var sun_light_energy: float = 1.0: 
+	set(value):
+		sun_light_energy = value
+		update_sun_light_energy()
 
 
 ## TODO: Tooltip
@@ -367,25 +358,21 @@ func update_sun_light_energy() -> void:
 
 
 ## TODO: Tooltip
-@export_range(-180.0, 180.0, 0.00001, "radians_as_degrees") var moon_azimuth: float = deg_to_rad(5.): set = set_moon_azimuth
-func set_moon_azimuth(value: float) -> void:
-	if is_equal_approx(value, moon_azimuth):
-		return
-	moon_azimuth = value
-	update_moon_coords()
+@export_range(-180.0, 180.0, 0.00001, "radians_as_degrees") var moon_azimuth := deg_to_rad(5.): 
+	set(value):
+		moon_azimuth = value
+		update_moon_coords()
 
 
 ## TODO: Tooltip
-@export_range(-180.0, 180.0, 0.00001, "radians_as_degrees") var moon_altitude: float = deg_to_rad(-80.): set = set_moon_altitude
-func set_moon_altitude(value: float) -> void:
-	if is_equal_approx(value, moon_altitude):
-		return
-	moon_altitude = value
-	update_moon_coords()
+@export_range(-180.0, 180.0, 0.00001, "radians_as_degrees") var moon_altitude := deg_to_rad(-80.):
+	set(value):
+		moon_altitude = value
+		update_moon_coords()
 
 
 ## Color tint applied to the moon surface texture.
-@export var moon_color: Color = Color.WHITE: 
+@export var moon_color := Color.WHITE: 
 	set(value):
 		moon_color = value
 		if is_scene_built:
@@ -393,7 +380,7 @@ func set_moon_altitude(value: float) -> void:
 
 
 ## Larger values create a bigger moon.
-@export_range(0., .999) var moon_size: float = 0.07: 
+@export_range(0., .999) var moon_size := 0.07: 
 	set(value):
 		moon_size = value
 		if is_scene_built:
@@ -401,58 +388,51 @@ func set_moon_altitude(value: float) -> void:
 
 
 ## TODO: Tooltip
-@export var moon_texture: Texture2D = MOON_TEXTURE: set = set_moon_texture
-func set_moon_texture(value: Texture2D) -> void:
-	if value == moon_texture:
-		return
-	moon_texture = value
-	update_moon_texture()
+@export var moon_texture := MOON_TEXTURE: 
+	set(value):
+		moon_texture = value
+		update_moon_texture()
 
 
 ## TODO: Tooltip
-@export var moon_texture_alignment: Vector3 = Vector3(7.0, 1.4, 4.8): set = set_moon_texture_alignment
-func set_moon_texture_alignment(value: Vector3) -> void:
-	if value.is_equal_approx(moon_texture_alignment):
-		return
-	moon_texture_alignment = value
-	update_moon_texture()
+@export var moon_texture_alignment := Vector3(7.0, 1.4, 4.8): 
+	set(value):
+		moon_texture_alignment = value
+		update_moon_texture()
 
 
 ## TODO: Tooltip
-@export var flip_moon_texture_u: bool = false: set = set_flip_moon_texture_u
-func set_flip_moon_texture_u(value: bool) -> void:
-	if value == flip_moon_texture_u:
-		return
-	flip_moon_texture_u = value
-	update_moon_texture()
+@export var flip_moon_texture_u: bool = false: 
+	set(value):
+		flip_moon_texture_u = value
+		update_moon_texture()
 
 
 ## TODO: Tooltip
-@export var flip_moon_texture_v: bool = false: set = set_flip_moon_texture_v
-func set_flip_moon_texture_v(value: bool) -> void:
-	if value == flip_moon_texture_v:
-		return
-	flip_moon_texture_v = value
-	update_moon_texture()
+@export var flip_moon_texture_v := false:
+	set(value):
+		flip_moon_texture_v = value
+		update_moon_texture()
 
 
-var _moon_transform: Transform3D = Transform3D()
-var moon_light_enabled: bool = true: set = set_moon_light_enabled
+## TODO: _
+var _moon_transform := Transform3D()
+## TODO: _
+var moon_light_enabled := true:
+	set(value):
+		moon_light_enabled = value
+		if value:
+			update_moon_coords()
+		else:
+			_moon_light_node.light_energy = 0.0
+			_moon_light_node.shadow_enabled = false
 
 
-func set_moon_light_enabled(value: bool) -> void:
-	moon_light_enabled = value
-	if value:
-		update_moon_coords()
-	else:
-		_moon_light_node.light_energy = 0.0
-		_moon_light_node.shadow_enabled = false
-
-
+## TODO: _
 func moon_direction() -> Vector3:
 	return _moon_transform.origin
 
-
+## TODO: _
 func update_moon_coords() -> void:
 	if !is_scene_built:
 		return
@@ -476,7 +456,7 @@ func update_moon_coords() -> void:
 	update_moon_light_energy()
 	_update_ambient_color()
 
-
+## TODO: _
 func update_moon_texture() -> void:
 	if is_scene_built:
 		sky_material.set_shader_parameter("moon_texture", moon_texture)
@@ -489,30 +469,34 @@ func update_moon_texture() -> void:
 ## MoonLight
 #####################
 
+
+## TODO: Tooltip
+@export var moon_light_color: Color = Color(0.572549, 0.776471, 0.956863, 1.0):
+	set(value):
+		moon_light_color = value
+		update_moon_light_color()
+
+
+## TODO: Tooltip
+@export var moon_light_energy := 0.3:
+	set(value):
+		moon_light_energy = value
+		update_moon_light_energy()
+
+
+## TODO: Tooltip
 var _moon_light_node: DirectionalLight3D
+## TODO: Tooltip
 var _moon_light_altitude_mult: float = 0.0
 
 
-func set_moon_light_color(value: Color) -> void:
-	if value.is_equal_approx(moon_light_color):
-		return
-	moon_light_color = value
-	update_moon_light_color()
-
-
-@export var moon_light_color: Color = Color(0.572549, 0.776471, 0.956863, 1.0): set = set_moon_light_color
+## TODO: Tooltip
 func update_moon_light_color() -> void:
 	if not _moon_light_node:
 		return
 	_moon_light_node.light_color = moon_light_color
 
-
-@export var moon_light_energy: float = 0.3: set = set_moon_light_energy
-func set_moon_light_energy(value: float) -> void:
-	moon_light_energy = value
-	update_moon_light_energy()
-
-
+## TODO: Tooltip
 func update_moon_light_energy() -> void:
 	if not _moon_light_node or not moon_light_enabled:
 		return
@@ -543,14 +527,10 @@ func update_moon_light_energy() -> void:
 #####################
 
 @export_group("Atmosphere")
-@export var atm_enable_moon_scatter_mode: bool = false: set = set_atm_enable_moon_scatter_mode
-@export var atm_night_tint: Color = Color(0.168627, 0.2, 0.25098, 1.0): set = set_atm_night_tint
-@export var atm_mie: float = 0.07: set = set_atm_mie
-@export var atm_turbidity: float = 0.001: set = set_atm_turbidity
 
 
 ## Affects the overall color of the sky and fog.
-@export var atm_wavelengths: Vector3 = Vector3(680.0, 550.0, 440.0): 
+@export var atm_wavelengths := Vector3(680.0, 550.0, 440.0): 
 	set(value):
 		atm_wavelengths = value
 		if is_scene_built:
@@ -562,7 +542,7 @@ func update_moon_light_energy() -> void:
 
 
 ## Higher values darken the atmosphere.
-@export_range(0.0, 1.0, 0.01) var atm_darkness: float = 0.5: 
+@export_range(0.0, 1.0, 0.01) var atm_darkness := 0.5: 
 	set(value):
 		atm_darkness = value
 		if is_scene_built:
@@ -571,7 +551,7 @@ func update_moon_light_energy() -> void:
 
 
 ## Higher values increase the sun's contribution to the atmosphere.
-@export var atm_sun_intensity: float = 18.0: 
+@export var atm_sun_intensity := 18.0: 
 	set(value):
 		atm_sun_intensity = value
 		if is_scene_built:
@@ -580,7 +560,7 @@ func update_moon_light_energy() -> void:
 
 
 ## Color tint applied to the daytime sky atmosphere.
-@export var atm_day_tint: Color = Color(0.807843, 0.909804, 1.0): 
+@export var atm_day_tint := Color(0.807843, 0.909804, 1.0): 
 	set(value):
 		atm_day_tint = value
 		if is_scene_built:
@@ -589,7 +569,7 @@ func update_moon_light_energy() -> void:
 
 
 ## Color tint applied to atmosphere during sunrise and sunset.
-@export var atm_horizon_light_tint: Color = Color(0.980392, 0.635294, 0.462745, 1.0):
+@export var atm_horizon_light_tint := Color(0.980392, 0.635294, 0.462745, 1.0):
 	set(value):
 		atm_horizon_light_tint = value
 		if is_scene_built:
@@ -597,30 +577,22 @@ func update_moon_light_energy() -> void:
 			fog_material.set_shader_parameter("atm_horizon_light_tint", atm_horizon_light_tint)
 
 
-func set_atm_enable_moon_scatter_mode(value: bool) -> void:
-	if value == atm_enable_moon_scatter_mode:
-		return
-	atm_enable_moon_scatter_mode = value
-	update_night_intensity()
-
-
-func set_atm_night_tint(value: Color) -> void:
-	if value.is_equal_approx(atm_night_tint):
-		return
-	atm_night_tint = value
-	update_night_intensity()
-
-
-func update_night_intensity() -> void:
-	if is_scene_built:
-		var tint: Color = atm_night_tint * atm_night_intensity()
-		sky_material.set_shader_parameter("atm_night_tint", tint)
-		fog_material.set_shader_parameter("atm_night_tint", atm_night_tint * fog_atm_night_intensity())
-		atm_moon_mie_intensity = atm_moon_mie_anisotropy
+## TODO: Tooltip
+@export var atm_enable_moon_scatter_mode: bool = false:
+	set(value):
+		atm_enable_moon_scatter_mode = value
+		update_night_intensity()
 
 
 ## TODO: Tooltip
-@export var atm_level_params: Vector3 = Vector3(1.0, 0.0, 0.0): 
+@export var atm_night_tint: Color = Color(0.168627, 0.2, 0.25098, 1.0): 
+	set(value):
+		atm_night_tint = value
+		update_night_intensity()
+
+
+## TODO: Tooltip
+@export var atm_level_params := Vector3(1.0, 0.0, 0.0): 
 	set(value):
 		atm_level_params = value
 		if is_scene_built:
@@ -637,29 +609,22 @@ func update_night_intensity() -> void:
 			fog_material.set_shader_parameter("atm_thickness", atm_thickness)
 
 
-func set_atm_mie(value: float) -> void:
-	if is_equal_approx(value, atm_mie):
-		return
-	atm_mie = value
-	update_beta_mie()
+## TODO: Tooltip
+@export var atm_mie: float = 0.07: 
+	set(value):
+		atm_mie = value
+		update_beta_mie()
 
 
-func set_atm_turbidity(value: float) -> void:
-	if is_equal_approx(value, atm_turbidity):
-		return
-	atm_turbidity = value
-	update_beta_mie()
-
-
-func update_beta_mie() -> void:
-	if is_scene_built:
-		var bm: Vector3 = ScatterLib.compute_beta_mie(atm_mie, atm_turbidity)
-		sky_material.set_shader_parameter("atm_beta_mie", bm)
-		fog_material.set_shader_parameter("atm_beta_mie", bm)
+## TODO: Tooltip
+@export var atm_turbidity: float = 0.001:
+	set(value):
+		atm_turbidity = value
+		update_beta_mie()
 
 
 ## Color tint for Mie scattering caused by the sun.
-@export var atm_sun_mie_tint: Color = Color(1.0, 1.0, 1.0, 1.0): 
+@export var atm_sun_mie_tint := Color(1.0, 1.0, 1.0, 1.0): 
 	set(value):
 		atm_sun_mie_tint = value
 		if is_scene_built:
@@ -687,7 +652,7 @@ func update_beta_mie() -> void:
 
 
 ## Color tint for Mie scattering caused by the moon.
-@export var atm_moon_mie_tint: Color = Color(0.137255, 0.184314, 0.292196): 
+@export var atm_moon_mie_tint := Color(0.137255, 0.184314, 0.292196): 
 	set(value):
 		atm_moon_mie_tint = value
 		if is_scene_built:
@@ -720,17 +685,28 @@ func atm_moon_phases_mult() -> float:
 		return atm_night_intensity()
 	return clampf(-sun_direction().dot(moon_direction()) + 0.60, 0., 1.)
 
-
 func atm_night_intensity() -> float:
 	if not atm_enable_moon_scatter_mode:
 		return clampf(-sun_direction().y + 0.30, 0., 1.)
 	return clampf(moon_direction().y, 0., 1.) * atm_moon_phases_mult()
 
-
 func fog_atm_night_intensity() -> float:
 	if not atm_enable_moon_scatter_mode:
 		return clampf(-sun_direction().y + 0.70, 0., 1.)
 	return clampf(-sun_direction().y, 0., 1.) * atm_moon_phases_mult()
+
+func update_night_intensity() -> void:
+	if is_scene_built:
+		var tint: Color = atm_night_tint * atm_night_intensity()
+		sky_material.set_shader_parameter("atm_night_tint", tint)
+		fog_material.set_shader_parameter("atm_night_tint", atm_night_tint * fog_atm_night_intensity())
+		atm_moon_mie_intensity = atm_moon_mie_anisotropy
+
+func update_beta_mie() -> void:
+	if is_scene_built:
+		var bm: Vector3 = ScatterLib.compute_beta_mie(atm_mie, atm_turbidity)
+		sky_material.set_shader_parameter("atm_beta_mie", bm)
+		fog_material.set_shader_parameter("atm_beta_mie", bm)
 
 
 #####################
@@ -741,7 +717,7 @@ func fog_atm_night_intensity() -> float:
 
 
 ## Set the fog's visibility
-@export var fog_visible: bool = true: 
+@export var fog_visible := true: 
 	set(value):
 		fog_visible = value
 		if is_scene_built:
@@ -749,7 +725,7 @@ func fog_atm_night_intensity() -> float:
 
 
 ## TODO: Tooltip
-@export var fog_atm_level_params_offset: Vector3 = Vector3(0.0, 0.0, -1.0): 
+@export var fog_atm_level_params_offset := Vector3(0.0, 0.0, -1.0): 
 	set(value):
 		fog_atm_level_params_offset = value
 		if is_scene_built:
@@ -921,12 +897,12 @@ func _check_cloud_processing() -> void:
 @export_subgroup("Cirrus")
 
 
-@export var cirrus_visible: bool = true: set = set_cirrus_visible
-func set_cirrus_visible(value: bool) -> void:
-	if is_scene_built:
-		cirrus_visible = value
-		sky_material.set_shader_parameter("cirrus_visible", value)
-		_check_cloud_processing()
+@export var cirrus_visible := true:
+	set(value):
+		if is_scene_built:
+			cirrus_visible = value
+			sky_material.set_shader_parameter("cirrus_visible", value)
+			_check_cloud_processing()
 
 
 ## Set density for cirrus clouds.
@@ -978,7 +954,7 @@ func set_cirrus_visible(value: bool) -> void:
 
 
 ## TODO: Tooltip
-@export var cirrus_uv: Vector2 = Vector2(0.16, 0.11): 
+@export var cirrus_uv := Vector2(0.16, 0.11): 
 	set(value):
 		cirrus_uv = value
 		if is_scene_built:
@@ -1011,7 +987,7 @@ func set_cirrus_visible(value: bool) -> void:
 
 
 ## TODO: Tooltip
-@export var cumulus_day_color: Color = Color(0.823529, 0.87451, 1.0, 1.0): 
+@export var cumulus_day_color := Color(0.823529, 0.87451, 1.0, 1.0): 
 	set(value):
 		cumulus_day_color = value
 		if is_scene_built:
@@ -1020,7 +996,7 @@ func set_cirrus_visible(value: bool) -> void:
 
 
 ## TODO: Tooltip
-@export var cumulus_horizon_light_color: Color = Color(.98, 0.43, 0.15, 1.0): 
+@export var cumulus_horizon_light_color := Color(.98, 0.43, 0.15, 1.0): 
 	set(value):
 		cumulus_horizon_light_color = value
 		if is_scene_built:
@@ -1029,7 +1005,7 @@ func set_cirrus_visible(value: bool) -> void:
 
 
 ## TODO: Tooltip
-@export var cumulus_night_color: Color = Color(0.090196, 0.094118, 0.129412, 1.0): 
+@export var cumulus_night_color := Color(0.090196, 0.094118, 0.129412, 1.0): 
 	set(value):
 		cumulus_night_color = value
 		if is_scene_built:
@@ -1119,7 +1095,7 @@ func set_cirrus_visible(value: bool) -> void:
 
 
 ## For aligning the star map texture map to known reference points. See [annotation SkyDome.show_alignment_lasers].
-@export var starmap_alignment: Vector3 = Vector3(2.68288, -0.25891, 0.40101): 
+@export var starmap_alignment := Vector3(2.68288, -0.25891, 0.40101): 
 	set(value):
 		starmap_alignment = value
 		if sky_material:
@@ -1150,7 +1126,7 @@ func set_cirrus_visible(value: bool) -> void:
 
 
 ## TODO: Tooltip
-@export var starmap_color: Color = Color(0.709804, 0.709804, 0.709804, 0.854902): 
+@export var starmap_color := Color(0.709804, 0.709804, 0.709804, 0.854902): 
 	set(value):
 		starmap_color = value
 		if is_scene_built:
@@ -1166,7 +1142,7 @@ func set_cirrus_visible(value: bool) -> void:
 
 
 ## TODO: Tooltip
-@export var star_field_color: Color = Color.WHITE: 
+@export var star_field_color := Color.WHITE: 
 	set(value):
 		star_field_color = value
 		if is_scene_built:
@@ -1221,7 +1197,7 @@ func set_cirrus_visible(value: bool) -> void:
 
 
 ## TODO: Tooltip
-@export_range(0.0, 1.0, 0.001) var azimuthal_grid_rotation_offset = 0.03:
+@export_range(0.0, 1.0, 0.001) var azimuthal_grid_rotation_offset := 0.03:
 	set(value):
 		azimuthal_grid_rotation_offset = value
 		if sky_material:
@@ -1245,7 +1221,7 @@ func set_cirrus_visible(value: bool) -> void:
 
 
 ## TODO: Tooltip
-@export_range(0.0, 1.0, 0.001) var equatorial_grid_rotation_offset = 0.03: 
+@export_range(0.0, 1.0, 0.001) var equatorial_grid_rotation_offset := 0.03: 
 	set(value):
 		equatorial_grid_rotation_offset = value
 		if sky_material:
@@ -1256,8 +1232,8 @@ func set_cirrus_visible(value: bool) -> void:
 # This is counter to traditional math where "azimuth" would increase going counter-clockwise.
 # When inputting a star's known azimuth, it should be subtracted from 360 to map it to Godot's coordinates
 # and avoid negative angles. 
-const POLARIS_LASER_ALIGNMENT: Vector3 = Vector3(89.3707, 48.2213, 0.0)  # Real-world azimuth is 311.7787.
-const VEGA_LASER_ALIGNMENT: Vector3 = Vector3(38.8, 281.666, 0.0)  # Real-world azimuth is 78.334.
+const POLARIS_LASER_ALIGNMENT := Vector3(89.3707, 48.2213, 0.0)  # Real-world azimuth is 311.7787.
+const VEGA_LASER_ALIGNMENT := Vector3(38.8, 281.666, 0.0)  # Real-world azimuth is 78.334.
 const LASER_COLOR: Color = Color(1.0, 0.0, 0.0, 1.0)
 var _polaris_laser: MeshInstance3D
 var _vega_laser: MeshInstance3D

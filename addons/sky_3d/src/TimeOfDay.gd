@@ -21,13 +21,6 @@ const HALFPI : float = PI / 2.0
 
 
 func _init() -> void:
-	## TODO, review: These four funcs will no longer shout out their signals when this
-	## _init method is run. I don't think we want these signals to fire in _init, 
-	## so I think these are fine to remove?
-	#current_time = current_time
-	#set_day(day)
-	#set_month(month)
-	#set_year(year)
 	_update_celestial_coords()
 
 
@@ -281,11 +274,11 @@ var _sun_orbital_elements := OrbitalElements.new()
 var _moon_orbital_elements := OrbitalElements.new()
 
 
-@export var celestials_calculations: CelestialMode = CelestialMode.REALISTIC: set = set_celestials_calculations
-func set_celestials_calculations(value: int) -> void:
-	celestials_calculations = value
-	_update_celestial_coords()
-	notify_property_list_changed()
+@export var celestials_calculations := CelestialMode.REALISTIC: 
+	set(value):
+		celestials_calculations = value
+		_update_celestial_coords()
+		notify_property_list_changed()
 
 
 ## TODO: Tooltip
