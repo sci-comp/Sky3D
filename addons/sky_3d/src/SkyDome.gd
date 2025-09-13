@@ -380,7 +380,7 @@ func update_sun_light_energy() -> void:
 			sky_material.set_shader_parameter("moon_size", moon_size)
 
 
-## The moon's texture
+## The moon's surface texture
 @export var moon_texture := MOON_TEXTURE: 
 	set(value):
 		moon_texture = value
@@ -565,7 +565,8 @@ func update_moon_light_energy() -> void:
 			fog_material.set_shader_parameter("atm_horizon_light_tint", atm_horizon_light_tint)
 
 
-## TODO: Tooltip
+## Use moon phase angle for night-time Mie scattering intensity instead of the sun position. 
+## TODO: Explain why and when the user would want to enable this this.
 @export var atm_enable_moon_scatter_mode := false:
 	set(value):
 		atm_enable_moon_scatter_mode = value
@@ -713,7 +714,7 @@ func update_beta_mie() -> void:
 			fog_mesh.visible = fog_visible
 
 
-## TODO: Tooltip
+## TODO: Explain what these parameters are, and how they are used.
 @export var fog_atm_level_params_offset := Vector3(0.0, 0.0, -1.0): 
 	set(value):
 		fog_atm_level_params_offset = value
@@ -1169,7 +1170,7 @@ func _check_cloud_processing() -> void:
 @export_group("Overlays")
 
 
-## TODO: Tooltip
+## The azimuthal grid shows altitude (lines parallel to the horizon) and azimuth (lines perpendicular to the horizon), from the observer's position.
 @export var show_azimuthal_grid := false: 
 	set(value):
 		if is_scene_built:
@@ -1177,7 +1178,7 @@ func _check_cloud_processing() -> void:
 			sky_material.set_shader_parameter("show_azimuthal_grid", value)
 
 
-## TODO: Tooltip
+## Color for azimuthal coordinate grid lines.
 @export var azimuthal_grid_color := Color.BURLYWOOD:
 	set(value):
 		if is_scene_built:
@@ -1185,7 +1186,7 @@ func _check_cloud_processing() -> void:
 			sky_material.set_shader_parameter("azimuthal_grid_color", value)
 
 
-## TODO: Tooltip
+## Rotation offset for azimuthal grid.
 @export_range(0.0, 1.0, 0.001) var azimuthal_grid_rotation_offset := 0.03:
 	set(value):
 		azimuthal_grid_rotation_offset = value
@@ -1201,7 +1202,7 @@ func _check_cloud_processing() -> void:
 			sky_material.set_shader_parameter("show_equatorial_grid", value)
 
 
-## TODO: Tooltip
+## Color for equatorial coordinate grid lines.
 @export var equatorial_grid_color := Color(.0, .75, 1.): 
 	set(value):
 		if is_scene_built:
@@ -1209,7 +1210,7 @@ func _check_cloud_processing() -> void:
 			sky_material.set_shader_parameter("equatorial_grid_color", value)
 
 
-## TODO: Tooltip
+## Rotation offset for equatorial grid.
 @export_range(0.0, 1.0, 0.001) var equatorial_grid_rotation_offset := 0.03: 
 	set(value):
 		equatorial_grid_rotation_offset = value

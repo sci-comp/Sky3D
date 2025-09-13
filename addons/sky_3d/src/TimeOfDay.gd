@@ -91,7 +91,7 @@ var _sky_dome: SkyDome
 				pause()
 
 
-## TODO: Tooltip
+## NodePath to SkyDome 
 @export var dome_path: NodePath:
 	set(value):
 		dome_path = value
@@ -142,7 +142,7 @@ var game_time := "":
 			floor(fmod(current_time * 60.0, 1.0) * 60.0) ]
 
 
-## TODO: Tooltip
+## The current in-game time in hours, in the range [0.0 .. 23.9998]
 @export_range(0.,23.9998) var current_time := 8.0:
 	set(value):
 		if current_time != value:
@@ -157,7 +157,7 @@ var game_time := "":
 			_update_celestial_coords()
 
 
-## TODO: Tooltip
+## The current day of the month
 @export_range(0,31) var day := 1:
 	set(value):
 		if day != value:
@@ -172,7 +172,7 @@ var game_time := "":
 			_update_celestial_coords()
 
 
-## TODO: Tooltip
+## The current month of the year
 @export_range(0,12) var month := 1:
 	set(value):
 		if month != value:
@@ -187,7 +187,7 @@ var game_time := "":
 			_update_celestial_coords()
 
 
-## TODO: Tooltip
+## The current year
 @export_range(-9999,9999) var year := 2025:
 	set(value):
 		if year != value:
@@ -209,10 +209,7 @@ func max_days_per_month() -> int:
 	return 30
 
 
-func time_cycle_duration() -> float:
-	return minutes_per_day * 60.0
-
-
+## Sets [member current_time] from parameters.
 func set_time(hour: int, minute: int, second: int) -> void: 
 	current_time = float(hour) + float(minute) / 60.0 + float(second) / 3600.0
 
@@ -236,17 +233,19 @@ func get_datetime_dict() -> Dictionary:
 	return datetime_dict
 
 
+## Initializes datetime from Unix timestamp, used by users' save/load extentions.
 func set_from_unix_timestamp(timestamp: int) -> void:
 	set_from_datetime_dict(Time.get_datetime_dict_from_unix_time(timestamp))
 
 
+## Converts current datetime to Unix timestamp, used by users' save/load extentions.
 func get_unix_timestamp() -> int:
 	return Time.get_unix_time_from_datetime_dict(get_datetime_dict())
 
 
 func _progress_time(delta: float) -> void:
-	if not is_zero_approx(time_cycle_duration()):
-		current_time = current_time + delta / time_cycle_duration() * HOURS_PER_DAY
+	var hours_per_real_second := HOURS_PER_DAY / (minutes_per_day * 60.0)
+	current_time += delta * hours_per_real_second
 
 
 func _update_time_from_os() -> void:
@@ -281,28 +280,28 @@ var _moon_orbital_elements := OrbitalElements.new()
 		notify_property_list_changed()
 
 
-## TODO: Tooltip
+## The observer's position on Earth, north or south of the equator (0°=equator, +90°=North Pole, -90°=South Pole). 
 @export_range(-90, 90, 0.00001, "radians_as_degrees") var latitude := deg_to_rad(16.): 
 	set(value):
 		latitude = value
 		_update_celestial_coords()
 
 
-## TODO: Tooltip
+## The observer's position on Earth, east or west of the prime meridian (0°=Greenwich, +180°=International Date Line). 
 @export_range(-180, 180, 0.00001, "radians_as_degrees") var longitude := deg_to_rad(108.):
 	set(value):
 		longitude = value
 		_update_celestial_coords()
 
 
-## TODO: Tooltip
+## TODO: I think this property going to be removed?
 @export_range(-12,14,.25) var utc := 7.0:
 	set(value):
 		utc = value
 		_update_celestial_coords()
 
 
-## TODO: Tooltip
+## Calculate moon orbital position. Disable for performance if moon lighting not needed.
 @export var compute_moon_coords := true:
 	set(value):
 		compute_moon_coords = value
@@ -317,7 +316,7 @@ var _moon_orbital_elements := OrbitalElements.new()
 		_update_celestial_coords()
 
 
-## TODO: Tooltip
+## TODO: Tooltip, explain why the use would want this property
 @export var moon_coords_offset: Vector2 = Vector2(0.0, 0.0):
 	set(value):
 		moon_coords_offset = value
