@@ -15,9 +15,9 @@ signal day_changed(value)
 signal month_changed(value)
 signal year_changed(value)
 
-const HOURS_PER_DAY := 24
-const RADIANS_PER_HOUR := PI / 12.0
-const HALFPI := PI / 2.0
+const HOURS_PER_DAY: int = 24
+const RADIANS_PER_HOUR: float = PI / 12.0
+const HALFPI: float = PI / 2.0
 
 
 func _init() -> void:
@@ -70,7 +70,7 @@ var _sky_dome: SkyDome
 @export_group("General")
 
 ## Allows time to progress in the editor. 
-@export var editor_time_enabled := true :
+@export var editor_time_enabled: bool = true :
 	set(value):
 		editor_time_enabled = value
 		if Engine.is_editor_hint():
@@ -81,7 +81,7 @@ var _sky_dome: SkyDome
 
 
 ## Allows time to progress in game. 
-@export var game_time_enabled := true :
+@export var game_time_enabled: bool = true :
 	set(value):
 		game_time_enabled = value
 		if not Engine.is_editor_hint():
@@ -92,7 +92,7 @@ var _sky_dome: SkyDome
 
 
 ## NodePath to SkyDome 
-@export var dome_path: NodePath:
+@export var dome_path: NodePath :
 	set(value):
 		dome_path = value
 		if dome_path:
@@ -107,13 +107,13 @@ var _sky_dome: SkyDome
 ## [param 15] means a full in-game day takes 15 real-world minutes. [member game_time_enabled] must be
 ## enabled for this to work. Negative values moves time backwards. The Witcher 3 uses a 96 minute cycle. 
 ## Adjust [member update_interval] to match. Shorter days needs more updates. Longer days need less.
-@export var minutes_per_day := 15.0
+@export var minutes_per_day: float = 15.0
 
 
 ## Celestial coordinates are updated based upon a timer, which continuously fires based on
 ## this interval: [0.016, 10s]. Set to the lowest, 0.016 (60fps) if your [member minutes_per_day] is short,
 ## such as less than 15 minutes. The Witcher 3 uses a 96 minute day cycle, so 0.1 (10fps) is adequate.
-@export_range(0.016, 10) var update_interval := 0.016 :
+@export_range(0.016, 10) var update_interval: float = 0.016 :
 	set(value):
 		update_interval = clamp(value, .016, 10)
 		if is_instance_valid(_update_timer):
@@ -128,22 +128,22 @@ var _sky_dome: SkyDome
 @export_group("Current Time")
 
 ## Syncronize all of Sky3D with your system clock for a realtime sky, time, and date.
-@export var system_sync := false
+@export var system_sync: bool = false
 @export_custom(PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY) 
-var game_date := "":
+var game_date: String = "" :
 	get():
 		return "%04d-%02d-%02d" % [ year, month, day ]
 
 
 @export_custom(PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY) 
-var game_time := "":
+var game_time: String = "" :
 	get():
 		return "%02d:%02d:%02d" % [ floor(current_time), floor(fmod(current_time, 1.0) * 60.0), 
 			floor(fmod(current_time * 60.0, 1.0) * 60.0) ]
 
 
 ## The current in-game time in hours, in the range [0.0 .. 23.9998]
-@export_range(0.,23.9998) var current_time := 8.0:
+@export_range(0.,23.9998) var current_time: float = 8.0 :
 	set(value):
 		if current_time != value:
 			current_time = value
@@ -158,7 +158,7 @@ var game_time := "":
 
 
 ## The current day of the month
-@export_range(0,31) var day := 1:
+@export_range(0,31) var day: int = 1 :
 	set(value):
 		if day != value:
 			day = value
@@ -173,7 +173,7 @@ var game_time := "":
 
 
 ## The current month of the year
-@export_range(0,12) var month := 1:
+@export_range(0,12) var month: int = 1 :
 	set(value):
 		if month != value:
 			month = value
@@ -188,7 +188,7 @@ var game_time := "":
 
 
 ## The current year
-@export_range(-9999,9999) var year := 2025:
+@export_range(-9999,9999) var year: int = 2025 :
 	set(value):
 		if year != value:
 			year = value
@@ -244,7 +244,7 @@ func get_unix_timestamp() -> int:
 
 
 func _progress_time(delta: float) -> void:
-	var hours_per_real_second := HOURS_PER_DAY / (minutes_per_day * 60.0)
+	var hours_per_real_second: float = HOURS_PER_DAY / (minutes_per_day * 60.0)
 	current_time += delta * hours_per_real_second
 
 
@@ -261,7 +261,7 @@ func _update_time_from_os() -> void:
 #####################
 
 @export_group("Planetary And Location")
-enum CelestialMode { SIMPLE, REALISTIC }
+
 var _sun_coords: Vector2 = Vector2.ZERO
 var _moon_coords: Vector2 = Vector2.ZERO
 var _sun_distance: float
@@ -273,6 +273,7 @@ var _sun_orbital_elements := OrbitalElements.new()
 var _moon_orbital_elements := OrbitalElements.new()
 
 
+enum CelestialMode { SIMPLE, REALISTIC }
 @export var celestials_calculations := CelestialMode.REALISTIC: 
 	set(value):
 		celestials_calculations = value
@@ -281,28 +282,28 @@ var _moon_orbital_elements := OrbitalElements.new()
 
 
 ## The observer's position on Earth, north or south of the equator (0°=equator, +90°=North Pole, -90°=South Pole). 
-@export_range(-90, 90, 0.00001, "radians_as_degrees") var latitude := deg_to_rad(16.): 
+@export_range(-90, 90, 0.00001, "radians_as_degrees") var latitude: float = deg_to_rad(16.) :
 	set(value):
 		latitude = value
 		_update_celestial_coords()
 
 
 ## The observer's position on Earth, east or west of the prime meridian (0°=Greenwich, +180°=International Date Line). 
-@export_range(-180, 180, 0.00001, "radians_as_degrees") var longitude := deg_to_rad(108.):
+@export_range(-180, 180, 0.00001, "radians_as_degrees") var longitude: float = deg_to_rad(108.) :
 	set(value):
 		longitude = value
 		_update_celestial_coords()
 
 
 ## TODO: I think this property going to be removed?
-@export_range(-12,14,.25) var utc := 7.0:
+@export_range(-12,14,.25) var utc: float = 7.0 :
 	set(value):
 		utc = value
 		_update_celestial_coords()
 
 
 ## Calculate moon orbital position. Disable for performance if moon lighting not needed.
-@export var compute_moon_coords := true:
+@export var compute_moon_coords: bool = true :
 	set(value):
 		compute_moon_coords = value
 		_update_celestial_coords()
@@ -310,14 +311,14 @@ var _moon_orbital_elements := OrbitalElements.new()
 
 
 ## TODO: Tooltip
-@export var compute_deep_space_coords := true: 
+@export var compute_deep_space_coords: bool = true :
 	set(value):
 		compute_deep_space_coords = value
 		_update_celestial_coords()
 
 
 ## TODO: Tooltip, explain why the use would want this property
-@export var moon_coords_offset: Vector2 = Vector2(0.0, 0.0):
+@export var moon_coords_offset: Vector2 = Vector2(0.0, 0.0) :
 	set(value):
 		moon_coords_offset = value
 		_update_celestial_coords()
@@ -373,7 +374,7 @@ func _update_celestial_coords() -> void:
 
 func _compute_simple_sun_coords() -> void:
 	# PI/12.0 radians = 15 degrees => 1 hour is 15 degrees of rotation
-	var altitude := (get_current_time_utc0() + longitude) * RADIANS_PER_HOUR
+	var altitude: float = (get_current_time_utc0() + longitude) * RADIANS_PER_HOUR
 	# Todo: _sun_coords should be in radians
 	# As it is, _sun_coords seems to be in both radians and degrees in different places, I'm surprised it works at all!
 	_sun_coords.y = PI - altitude
