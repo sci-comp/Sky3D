@@ -1076,7 +1076,7 @@ func update_fog_render_priority() -> void:
 #####################
 @export_subgroup("Wind")
 
-var _cloud_speed: float = 0.07
+var _cloud_speed: float = 0.01
 var _cloud_direction := Vector2(0.25, 0.25)
 var _cloud_velocity := Vector2.ZERO
 var _cirrus_position1 := Vector2.ZERO
