@@ -421,22 +421,19 @@ func update_moon_coords() -> void:
 	var phi : float = moon_azimuth
 	_moon_transform.origin = TOD_Math.spherical_to_cartesian(theta, phi)
 	
-	# To construct an orthonormal basis, we must find our basis vectors
+	# To construct an orthonormal basis, we must find our basis vectors. We 
+	# accomplish this by finding the rate of change with respect to theta and 
+	# phi (normalized). The third axis will be the normalized position vector. 
 	
-	# Azimuthal direction,
-	#   partial(r)/partial(phi) = (sin(theta)*cos(phi), 0, -sin(theta)*sin(phi))
-	#   Length = sin(theta)
-	#   e_phi = (cos(phi), 0, -sin(phi))
+	# partial(r)/partial(phi) = (sin(theta)*cos(phi), 0, -sin(theta)*sin(phi))
+	# Length = sin(theta)
 	var azimuth_direction := Vector3(cos(phi), 0, -sin(phi))
 	
-	# Altitude direction,
-	#   partial(r)/partial(theta) = (cos(theta)*sin(phi), -sin(theta), cos(theta)*cos(phi))
-	#   Length = 1
-	#   e_theta = (cos(theta)*sin(phi), -sin(theta), cos(theta)*cos(phi))
+	# partial(r)/partial(theta) = (cos(theta)*sin(phi), -sin(theta), cos(theta)*cos(phi))
+	# The length of this vector is 1, so we are already normalized
 	var altitude_direction := Vector3(cos(theta) * sin(phi), -sin(theta), cos(theta) * cos(phi))
 	
-	# Radial direction,
-	#   e_r = normalized position
+	# The normalized position vector
 	var radial_direction : Vector3 = _moon_transform.origin.normalized()
 	
 	_moon_transform.basis = Basis(azimuth_direction, altitude_direction, radial_direction)
