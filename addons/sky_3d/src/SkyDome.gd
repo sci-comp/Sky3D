@@ -415,8 +415,31 @@ func update_moon_coords() -> void:
 	if _moon_light_node:
 		_moon_light_node.visible = true
 	
-	_moon_transform.origin = TOD_Math.spherical_to_cartesian(moon_altitude, moon_azimuth)
-	_moon_transform = _moon_transform.looking_at(Vector3.ZERO, Vector3.LEFT)
+	# Position vector in spherical coordinates:
+	#   r(theta, phi) = (sin(theta)*sin(phi), cos(theta), sin(theta)*cos(phi))
+	var theta = moon_altitude
+	var phi = moon_azimuth
+	_moon_transform.origin = TOD_Math.spherical_to_cartesian(theta, phi)
+	
+	# To construct an orthonormal basis, we must find our basis vectors
+	
+	# Azimuthal direction,
+	#   partial(r)/partial(phi) = (sin(theta)*cos(phi), 0, -sin(theta)*sin(phi))
+	#   Length = sin(theta)
+	#   e_phi = (cos(phi), 0, -sin(phi))
+	var azimuth_direction = Vector3(cos(phi), 0, -sin(phi))
+	
+	# Altitude direction,
+	#   partial(r)/partial(theta) = (cos(theta)*sin(phi), -sin(theta), cos(theta)*cos(phi))
+	#   Length = 1
+	#   e_theta = (cos(theta)*sin(phi), -sin(theta), cos(theta)*cos(phi))
+	var altitude_direction = Vector3(cos(theta) * sin(phi), -sin(theta), cos(theta) * cos(phi))
+	
+	# Radial direction (pointing outward from origin):
+	#   e_r = normalized position
+	var radial_direction = _moon_transform.origin.normalized()
+	
+	_moon_transform.basis = Basis(azimuth_direction, altitude_direction, radial_direction)
 	
 	var moon_basis: Basis = get_parent().moon.get_global_transform().basis.inverse()
 	sky_material.set_shader_parameter("moon_matrix", moon_basis)
