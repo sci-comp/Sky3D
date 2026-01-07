@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Sky3D"
 run/main_scene="res://demo/Sky3DDemo.tscn"
-config/features=PackedStringArray("4.4")
+config/features=PackedStringArray("4.5")
 config/icon="res://icon.png"
 
 [debug]
