@@ -252,6 +252,7 @@ func _update_sun_coords() -> void:
 	
 	# Position the sun on a unit sphere, orienting the light to the origin, mimicking a star orbiting a planet.
 	_sun_transform.origin = TOD_Math.spherical_to_cartesian(sun_altitude, sun_azimuth)
+	# Transform with Vector3.UP to ensure Z-rotation is 0, otherwise shadows will flicker more
 	_sun_transform = _sun_transform.looking_at(Vector3.ZERO, Vector3.UP)
 	
 	fog_material.set_shader_parameter("sun_direction", _sun_transform.origin)
@@ -416,7 +417,8 @@ func update_moon_coords() -> void:
 		_moon_light_node.visible = true
 	
 	_moon_transform.origin = TOD_Math.spherical_to_cartesian(moon_altitude, moon_azimuth)
-	_moon_transform = _moon_transform.looking_at(Vector3.ZERO, Vector3.UP)
+	# Transform with Vector3.Left which puts the slight gimbal lock on the horizon. Up puts it at the zenith.
+	_moon_transform = _moon_transform.looking_at(Vector3.ZERO, Vector3.LEFT)
 	
 	var moon_basis: Basis = get_parent().moon.get_global_transform().basis.inverse()
 	sky_material.set_shader_parameter("moon_matrix", moon_basis)
